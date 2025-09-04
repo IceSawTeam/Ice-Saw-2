@@ -1,13 +1,7 @@
 ﻿using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IceSaw2
 {
@@ -17,6 +11,8 @@ namespace IceSaw2
 
         Camera3D camera3D = new Camera3D();
         string LoadPath;
+
+        //Skybox Data
 
         //Object Data
         List<PatchObject> patchObjects = new List<PatchObject>();
@@ -40,8 +36,9 @@ namespace IceSaw2
             camera3D.FovY = 45f;
             camera3D.Projection = CameraProjection.Perspective;
 
+
             //Test Load
-            LoadProject("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\ConfigTricky.ssx");
+            //LoadProject("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\ConfigTricky.ssx");
 
             Update();
 
@@ -149,18 +146,35 @@ namespace IceSaw2
             }
         }
 
+        static FilePicker filePicker = new FilePicker();
+
         public void UpdateLogic()
         {
             //Update Camera
             Raylib.UpdateCamera(ref camera3D, CameraMode.Free);
 
+            string picked = filePicker.GetSelectedFile();
+            if (picked != null)
+            {
+                Console.WriteLine("Picked: " + picked);
+                // You can now do something with the file
+                LoadProject(picked);
+            }
+
             //Object Collision
+            if (Raylib.IsKeyPressed(KeyboardKey.F))
+            {
+                filePicker.Open();
+            }
+
+            filePicker.Update();
+
         }
 
         public void Render()
         {
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.Gray);
+            Raylib.ClearBackground(Color.White);
 
             //Render 3D
             Raylib.BeginMode3D(camera3D);
@@ -177,14 +191,12 @@ namespace IceSaw2
                 patchObjects[i].Render();
             }
 
-            //Raylib.DrawModelEx(model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One*0.01f, Color.White);
-            //Raylib.DrawModelEx(model1, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 0.01f, Color.White);
-
             //Render Wires
 
             Raylib.EndMode3D();
 
             //Render UI
+            filePicker.Draw();
 
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
 
