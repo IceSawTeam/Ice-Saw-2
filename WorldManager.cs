@@ -93,24 +93,25 @@ namespace IceSaw2
                 skyboxTexture2Ds.Add(textureData);
             }
 
+            //
 
-            Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
+            //Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
 
-            Raylib.UploadMesh(ref Test, false);
-            model = Raylib.LoadModelFromMesh(Test);
+            //Raylib.UploadMesh(ref Test, false);
+            //model = Raylib.LoadModelFromMesh(Test);
 
-            var Texture = worldTextureData[0].texture2D;
+            //var Texture = worldTextureData[0].texture2D;
 
-            Raylib.SetMaterialTexture(ref model, 0, MaterialMapIndex.Diffuse, ref Texture);
+            //Raylib.SetMaterialTexture(ref model, 0, MaterialMapIndex.Diffuse, ref Texture);
 
-            Mesh Test1 = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\1.obj");
+            //Mesh Test1 = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\1.obj");
 
-            Raylib.UploadMesh(ref Test1, false);
-            model1 = Raylib.LoadModelFromMesh(Test1);
+            //Raylib.UploadMesh(ref Test1, false);
+            //model1 = Raylib.LoadModelFromMesh(Test1);
 
-            var Texture1 = worldTextureData[1].texture2D;
+            //var Texture1 = worldTextureData[1].texture2D;
 
-            Raylib.SetMaterialTexture(ref model1, 0, MaterialMapIndex.Diffuse, ref Texture1);
+            //Raylib.SetMaterialTexture(ref model1, 0, MaterialMapIndex.Diffuse, ref Texture1);
         }
 
 
@@ -150,13 +151,13 @@ namespace IceSaw2
             Raylib.DrawGrid(100, 1);
 
             //Render Objects
-            Raylib.DrawModelEx(model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One*0.01f, Color.White);
-            Raylib.DrawModelEx(model1, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 0.01f, Color.White);
+            //Raylib.DrawModelEx(model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One*0.01f, Color.White);
+            //Raylib.DrawModelEx(model1, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 0.01f, Color.White);
 
             //Render Wires
 
             Raylib.EndMode3D();
-           
+
             //Render UI
 
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
