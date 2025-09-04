@@ -30,7 +30,9 @@ namespace IceSaw2
         {
             instance = this;
 
-            Raylib.InitWindow(800, 480, "Ice Saw 2");
+            Raylib.InitWindow(1080, 608, "Ice Saw 2");
+
+            Rlgl.DisableBackfaceCulling();
 
             camera3D.Position = new System.Numerics.Vector3(0, 100, 100);
             camera3D.Target = Vector3.Zero;
@@ -61,6 +63,8 @@ namespace IceSaw2
                 textureData.Name = Path.GetFileName(TextureFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(TextureFiles[i]);
 
+                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
+
                 worldTextureData.Add(textureData);
             }
 
@@ -75,6 +79,8 @@ namespace IceSaw2
                 textureData.Name = Path.GetFileName(LightmapFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(LightmapFiles[i]);
 
+                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
+
                 lightmapTexture2Ds.Add(textureData);
             }
 
@@ -88,6 +94,8 @@ namespace IceSaw2
 
                 textureData.Name = Path.GetFileName(SkyboxFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(SkyboxFiles[i]);
+
+                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
 
                 skyboxTexture2Ds.Add(textureData);
             }
