@@ -1,4 +1,6 @@
-﻿using Raylib_cs;
+﻿using IceSaw2.LevelObject.TrickyObjects;
+using Raylib_cs;
+using SSXMultiTool.JsonFiles.Tricky;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace IceSaw2
         string LoadPath;
 
         //Object Data
-
+        List<PatchObject> patchObjects = new List<PatchObject>();
 
         //Texture Data
         List<TextureData> worldTextureData = new List<TextureData>();
@@ -44,9 +46,6 @@ namespace IceSaw2
             Raylib.CloseWindow();
         }
 
-        Model model;
-        Model model1;
-
         public void LoadProject(string ConfigPath)
         {
             LoadPath = Path.GetDirectoryName(ConfigPath);
@@ -59,7 +58,7 @@ namespace IceSaw2
             {
                 TextureData textureData = new TextureData();
 
-                textureData.Name = Path.GetFileNameWithoutExtension(TextureFiles[i]);
+                textureData.Name = Path.GetFileName(TextureFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(TextureFiles[i]);
 
                 worldTextureData.Add(textureData);
@@ -73,7 +72,7 @@ namespace IceSaw2
             {
                 TextureData textureData = new TextureData();
 
-                textureData.Name = Path.GetFileNameWithoutExtension(LightmapFiles[i]);
+                textureData.Name = Path.GetFileName(LightmapFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(LightmapFiles[i]);
 
                 lightmapTexture2Ds.Add(textureData);
@@ -87,13 +86,26 @@ namespace IceSaw2
             {
                 TextureData textureData = new TextureData();
 
-                textureData.Name = Path.GetFileNameWithoutExtension(SkyboxFiles[i]);
+                textureData.Name = Path.GetFileName(SkyboxFiles[i]);
                 textureData.texture2D = Raylib.LoadTexture(SkyboxFiles[i]);
 
                 skyboxTexture2Ds.Add(textureData);
             }
 
-            //
+            patchObjects = new List<PatchObject>();
+
+            PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(LoadPath + "\\patches.json");
+
+            for (int i = 0; i < jsonHandler.Patches.Count; i++)
+            {
+                PatchObject patchObject = new PatchObject();
+
+                patchObject.LoadPatch(jsonHandler.Patches[i]);
+
+                patchObjects.Add(patchObject);
+            }
+
+
 
             //Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
 
@@ -151,6 +163,12 @@ namespace IceSaw2
             Raylib.DrawGrid(100, 1);
 
             //Render Objects
+
+            for (int i = 0; i < patchObjects.Count; i++)
+            {
+                patchObjects[i].Render();
+            }
+
             //Raylib.DrawModelEx(model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One*0.01f, Color.White);
             //Raylib.DrawModelEx(model1, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 0.01f, Color.White);
 
@@ -165,6 +183,18 @@ namespace IceSaw2
             Raylib.DrawText("Beta Test", 12, 12, 20, Color.Black);
 
             Raylib.EndDrawing();
+        }
+
+        public Texture2D ReturnTexture(string FileName)
+        {
+            for (int i = 0; i < worldTextureData.Count; i++)
+            {
+                if (worldTextureData[i].Name==FileName)
+                {
+                    return worldTextureData[i].texture2D;
+                }
+            }
+            return worldTextureData[0].texture2D;
         }
 
         struct TextureData

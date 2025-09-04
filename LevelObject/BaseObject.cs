@@ -8,6 +8,8 @@ namespace IceSaw2.LevelObject
 {
     public class BaseObject
     {
+        public string Name;
+
         public virtual void UpdateLogic()
         {
 
