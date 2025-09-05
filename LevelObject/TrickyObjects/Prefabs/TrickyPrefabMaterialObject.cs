@@ -16,12 +16,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             get { return ObjectType.PrefabMesh; }
         }
 
-        public TrickyPrefabMeshObject parent = null;
-
-        public Model Model;
-
-        public Material material;
-
         public void LoadPrefabMaterialObject(PrefabJsonHandler.MeshHeader objectHeader)
         {
             MeshPath = objectHeader.MeshPath;
@@ -34,38 +28,15 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             mesh = ObjImporter.ObjLoad(WorldManager.instance.LoadPath + "\\Models\\"+ MeshPath);
 
+            Raylib.UploadMesh(ref mesh, false);
+
             var TexturePath = WorldManager.instance.trickyMaterialObject[MaterialIndex].TexturePath;
 
-            Raylib.UploadMesh(ref mesh, false);
-            Model = Raylib.LoadModelFromMesh(mesh);
-
-            if (parent.IncludeMatrix)
-            {
-                //Matrix4x4 scale = Matrix4x4.CreateScale(parent.Scale);
-                //Matrix4x4 Rotation = Matrix4x4.CreateFromQuaternion(parent.Rotation);
-                //Matrix4x4 matrix4X4 = Matrix4x4.Multiply(scale, Rotation);
-                //Model.Transform.Translation = parent.Position;
-
-                //Model.Transform = matrix4X4;
-            }
+            Texture2D ReturnTexture = WorldManager.instance.ReturnTexture(TexturePath);
 
             material = Raylib.LoadMaterialDefault();
 
-            var Texture = WorldManager.instance.ReturnTexture(TexturePath);
-
-            Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, Texture);
-        }
-
-        public override void Render()
-        {
-            Matrix4x4 scale = MatrixScale(parent.Scale.X, parent.Scale.Y, parent.Scale.Z);
-            Matrix4x4 Rotation = QuaternionToMatrix(parent.Rotation);
-            Matrix4x4 matrix4X4 = MatrixMultiply(scale, Rotation);
-            matrix4X4 = MatrixMultiply(matrix4X4, MatrixTranslate(parent.Position.X, parent.Position.Y, parent.Position.Z));
-
-            matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(0.01f, 0.01f, 0.01f));
-
-            Raylib.DrawMesh(mesh, material , matrix4X4);
+            Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
         }
     }
 }

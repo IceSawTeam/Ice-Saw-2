@@ -22,7 +22,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public string TexturePath;
         public int LightmapID;
 
-        public Model Model;
         NURBS.Surface surface;
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
@@ -54,11 +53,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             GeneratePatch();
         }
 
-        public override void Render()
-        {
-            Raylib.DrawModelEx(Model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 0.001f, Color.White);
-        }
-
         public void GeneratePatch()
         {
             Vector3[,] vertices = new Vector3[4, 4];
@@ -85,10 +79,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             surface = new NURBS.Surface(cps, degreeU, degreeV);
 
             //Build mesh (reusing Mesh to save GC allocation)
-            var mesh = surface.BuildMesh(resolutionU, resolutionV);
-
-
-            
+            mesh = surface.BuildMesh(resolutionU, resolutionV);
 
             cps = new NURBS.ControlPoint[2, 2];
 
@@ -110,11 +101,12 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
 
             Raylib.UploadMesh(ref mesh, false);
-            Model = Raylib.LoadModelFromMesh(mesh);
 
             var Texture = WorldManager.instance.ReturnTexture(TexturePath);
 
-            Raylib.SetMaterialTexture(ref Model, 0, MaterialMapIndex.Diffuse, ref Texture);
+            material = Raylib.LoadMaterialDefault();
+
+            Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, Texture);
         }
 
         public List<Vector2> PointCorrection(List<Vector2> NewList)
@@ -128,67 +120,5 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             return NewList;
         }
-
-        //public void LoadUVMap()
-        //{
-        //    //Build UV Points
-
-        //    NURBS.ControlPoint[,] cps = new NURBS.ControlPoint[2, 2];
-
-        //    List<Vector2> vector2s = new List<Vector2>();
-        //    vector2s.Add(UVPoint1);
-        //    vector2s.Add(UVPoint2);
-        //    vector2s.Add(UVPoint3);
-        //    vector2s.Add(UVPoint4);
-
-        //    vector2s = PointCorrection(vector2s);
-
-        //    cps[0, 0] = new NURBS.ControlPoint(vector2s[0].x, vector2s[0].y, 0, 1);
-        //    cps[1, 0] = new NURBS.ControlPoint(vector2s[1].x, vector2s[1].y, 0, 1);
-        //    cps[0, 1] = new NURBS.ControlPoint(vector2s[2].x, vector2s[2].y, 0, 1);
-        //    cps[1, 1] = new NURBS.ControlPoint(vector2s[3].x, vector2s[3].y, 0, 1);
-
-        //    surface = new NURBS.Surface(cps, 1, 1);
-
-        //    int resolutionU = 7; //7;
-        //    int resolutionV = 7; //7; ()
-
-        //    Vector3[] UV = surface.ReturnVertices(resolutionU, resolutionV);
-
-        //    Vector2[] UV2 = new Vector2[UV.Length];
-
-        //    for (int i = 0; i < UV.Length; i++)
-        //    {
-        //        UV2[i] = new Vector2(UV[i].x, UV[i].y);
-        //    }
-        //    meshFilter.sharedMesh.uv = UV2;
-        //}
-
-        //public void LoadLightmap()
-        //{
-        //    //Build Lightmap Points
-        //    NURBS.ControlPoint[,] cps = new NURBS.ControlPoint[2, 2];
-
-        //    cps[0, 0] = new NURBS.ControlPoint(0.1f, 0.1f, 0, 1);
-        //    cps[1, 0] = new NURBS.ControlPoint(0.1f, 0.9f, 0, 1);
-        //    cps[0, 1] = new NURBS.ControlPoint(0.9f, 0.1f, 0, 1);
-        //    cps[1, 1] = new NURBS.ControlPoint(0.9f, 0.9f, 0, 1);
-
-        //    surface = new NURBS.Surface(cps, 1, 1);
-
-        //    int resolutionU = 7; //7;
-        //    int resolutionV = 7; //7; ()
-
-        //    Vector3[] UV = surface.ReturnVertices(resolutionU, resolutionV);
-
-        //    Vector2[] UV2 = new Vector2[UV.Length];
-
-        //    for (int i = 0; i < UV.Length; i++)
-        //    {
-        //        UV2[i] = new Vector2(UV[i].x, UV[i].y);
-        //    }
-
-        //    meshFilter.sharedMesh.uv2 = UV2;
-        //}
     }
 }
