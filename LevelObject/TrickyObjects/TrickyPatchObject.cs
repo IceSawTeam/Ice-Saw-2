@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class PatchObject : BaseObject
+    public class TrickyPatchObject : BaseObject
     {
         public Vector4 LightMapPoint;
         public List<Vector2> UVPoints;

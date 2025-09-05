@@ -15,7 +15,8 @@ namespace IceSaw2
         //Skybox Data
 
         //Object Data
-        List<PatchObject> patchObjects = new List<PatchObject>();
+        List<TrickyPatchObject> patchObjects = new List<TrickyPatchObject>();
+        List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
 
         //Texture Data
         List<TextureData> worldTextureData = new List<TextureData>();
@@ -97,18 +98,20 @@ namespace IceSaw2
                 skyboxTexture2Ds.Add(textureData);
             }
 
-            patchObjects = new List<PatchObject>();
+            patchObjects = new List<TrickyPatchObject>();
 
             PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(LoadPath + "\\patches.json");
 
             for (int i = 0; i < jsonHandler.Patches.Count; i++)
             {
-                PatchObject patchObject = new PatchObject();
+                TrickyPatchObject patchObject = new TrickyPatchObject();
 
                 patchObject.LoadPatch(jsonHandler.Patches[i]);
 
                 patchObjects.Add(patchObject);
             }
+
+            trickyPrefabObjects = new List<TrickyPrefabObject>();
 
 
 
