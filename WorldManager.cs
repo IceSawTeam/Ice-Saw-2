@@ -1,7 +1,9 @@
 ﻿using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
+using ImGuiNET;
 using Raylib_cs;
+using rlImGui_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Numerics;
 
@@ -12,6 +14,7 @@ namespace IceSaw2
         public static WorldManager instance = new WorldManager();
 
         public WindowMode windowMode = WindowMode.World;
+        public bool Open = true;
 
         Camera3D worldCamera3D = new Camera3D();
         Camera3D materialCamera3D = new Camera3D();
@@ -39,6 +42,7 @@ namespace IceSaw2
             instance = this;
 
             Raylib.InitWindow(1080, 608, "Ice Saw 2");
+            rlImGui.Setup(true);
 
             Rlgl.DisableBackfaceCulling();
 
@@ -318,6 +322,24 @@ namespace IceSaw2
                 Raylib.EndMode3D();
 
                 //Render UI
+                rlImGui.Begin();
+
+                ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+                ImGui.SetNextWindowSizeConstraints(new Vector2(400, 400), new Vector2((float)Raylib.GetScreenWidth(), (float)Raylib.GetScreenHeight()));
+
+                if (ImGui.Begin("3D View", ref Open, ImGuiWindowFlags.NoScrollbar))
+                {
+                    //Focused = ImGui.IsWindowFocused(ImGuiFocusedFlags.ChildWindows);
+
+                    // draw the view
+                    //rlImGui.ImageRenderTextureFit(ViewTexture, true);
+
+                    ImGui.End();
+                }
+                ImGui.PopStyleVar();
+
+                rlImGui.End();
+
                 filePicker.Draw();
 
             }
