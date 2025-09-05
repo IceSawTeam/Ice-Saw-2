@@ -95,6 +95,8 @@ namespace IceSaw2.LevelObject.Materials
 
         public override void Render()
         {
+
+
             Raylib.DrawModelEx(Model, Vector3.Zero, Vector3.UnitX, 0, Vector3.One * 1f, Color.White);
         }
 

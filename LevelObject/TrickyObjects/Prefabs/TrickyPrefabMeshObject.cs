@@ -7,6 +7,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 {
     public class TrickyPrefabMeshObject : TrickyPrefabMeshBase
     {
+        public TrickyPrefabObject parent = null;
 
         public List<TrickyPrefabMaterialObject> trickyPrefabMaterialObjects = new List<TrickyPrefabMaterialObject>();
         public void LoadPrefabMeshObject(PrefabJsonHandler.ObjectHeader objectHeader)
@@ -62,6 +63,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             for (int i = 0; i < objectHeader.MeshData.Count; i++)
             {
                 var TrickyPrefabMaterialObject = new TrickyPrefabMaterialObject();
+
+                TrickyPrefabMaterialObject.parent = this;
 
                 TrickyPrefabMaterialObject.LoadPrefabMaterialObject(objectHeader.MeshData[i]);
 

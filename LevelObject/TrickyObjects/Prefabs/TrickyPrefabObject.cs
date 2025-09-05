@@ -28,6 +28,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 var TrickyPrefabMeshObject = new TrickyPrefabMeshObject();
 
+                TrickyPrefabMeshObject.parent = this;
+
                 TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.PrefabObjects[i]);
 
                 trickyPrefabSubObjects.Add(TrickyPrefabMeshObject);
