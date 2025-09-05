@@ -1,4 +1,5 @@
-﻿using IceSaw2.LevelObject.Materials;
+﻿using IceSaw2.LevelObject;
+using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
@@ -20,7 +21,8 @@ namespace IceSaw2
 
         //Object Data
         List<TrickyPatchObject> trickyPatchObjects = new List<TrickyPatchObject>();
-        List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
+        public List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
+        List<TrickyInstanceObject> trickyInstanceObjects = new List<TrickyInstanceObject>();
 
         //Texture Data
         List<TextureData> worldTextureData = new List<TextureData>();
@@ -151,7 +153,18 @@ namespace IceSaw2
                 trickyPrefabObjects.Add(NewPrefab);
             }
 
+            trickyInstanceObjects = new List<TrickyInstanceObject>();
 
+            InstanceJsonHandler instanceJsonHandler = InstanceJsonHandler.Load(LoadPath + "\\instances.json");
+
+            for (int i = 0; i < instanceJsonHandler.Instances.Count; i++)
+            {
+                var Instance = new TrickyInstanceObject();
+
+                Instance.LoadInstance(instanceJsonHandler.Instances[i]);
+
+                trickyInstanceObjects.Add(Instance);
+            }
 
             //Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
 
@@ -293,6 +306,11 @@ namespace IceSaw2
                 for (int i = 0; i < trickyPatchObjects.Count; i++)
                 {
                     trickyPatchObjects[i].Render();
+                }
+
+                for (int i = 0; i < trickyInstanceObjects.Count; i++)
+                {
+                    trickyInstanceObjects[i].Render();
                 }
 
                 //Render Wires

@@ -34,7 +34,7 @@ namespace IceSaw2.LevelObject
                 }
                 else
                 {
-                    matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(0.01f, 0.01f, 0.01f));
+                    matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(0.001f, 0.001f, 0.001f));
                 }
 
                 return matrix4X4;
