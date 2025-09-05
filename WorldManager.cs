@@ -14,7 +14,7 @@ namespace IceSaw2
 
         Camera3D worldCamera3D = new Camera3D();
         Camera3D materialCamera3D = new Camera3D();
-        string LoadPath;
+        public string LoadPath;
 
         //Skybox Data
 
@@ -27,9 +27,10 @@ namespace IceSaw2
         List<TextureData> skyboxTexture2Ds = new List<TextureData>();
         List<TextureData> lightmapTexture2Ds = new List<TextureData>();
 
-        List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
+        public List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
 
         int MaterialSelection = 0;
+        int PrefabSelection = 0;
 
         public void Initalise()
         {
@@ -124,10 +125,6 @@ namespace IceSaw2
                 trickyPatchObjects.Add(patchObject);
             }
 
-            trickyPrefabObjects = new List<TrickyPrefabObject>();
-            //
-
-
             trickyMaterialObject = new List<TrickyMaterialObject>();
 
             MaterialJsonHandler matJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\materials.json");
@@ -140,6 +137,21 @@ namespace IceSaw2
 
                 trickyMaterialObject.Add(materialObject);
             }
+
+            trickyPrefabObjects = new List<TrickyPrefabObject>();
+            //
+            PrefabJsonHandler prefabJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\prefabs.json");
+
+            for (int i = 0; i < prefabJsonHandler.Prefabs.Count; i++)
+            {
+                var NewPrefab = new TrickyPrefabObject();
+
+                NewPrefab.LoadPrefab(prefabJsonHandler.Prefabs[i]);
+
+                trickyPrefabObjects.Add(NewPrefab);
+            }
+
+
 
             //Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
 
@@ -200,19 +212,9 @@ namespace IceSaw2
 
                 filePicker.Update();
 
-                if (Raylib.IsKeyPressed(KeyboardKey.M))
-                {
-                    windowMode = WindowMode.Materials;
-                }
             }
-            else
+            if (windowMode == WindowMode.Materials)
             {
-                if (Raylib.IsKeyPressed(KeyboardKey.M))
-                {
-                    windowMode = WindowMode.World;
-                }
-
-
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
                     MaterialSelection -= 1;
@@ -232,6 +234,41 @@ namespace IceSaw2
                 }
 
                 Raylib.UpdateCamera(ref materialCamera3D, CameraMode.Orbital);
+            }
+            if (windowMode == WindowMode.Prefabs)
+            {
+                if (Raylib.IsKeyPressed(KeyboardKey.Left))
+                {
+                    PrefabSelection -= 1;
+                    if (PrefabSelection == -1)
+                    {
+                        PrefabSelection = trickyPrefabObjects.Count - 1;
+                    }
+                }
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Right))
+                {
+                    PrefabSelection += 1;
+                    if (MaterialSelection == trickyPrefabObjects.Count)
+                    {
+                        PrefabSelection = 0;
+                    }
+                }
+
+                Raylib.UpdateCamera(ref materialCamera3D, CameraMode.Orbital);
+            }
+
+            if (Raylib.IsKeyPressed(KeyboardKey.M))
+            {
+                windowMode = WindowMode.Materials;
+            }
+            if (Raylib.IsKeyPressed(KeyboardKey.P))
+            {
+                windowMode = WindowMode.Prefabs;
+            }
+            if (Raylib.IsKeyPressed(KeyboardKey.L))
+            {
+                windowMode = WindowMode.World;
             }
 
         }
@@ -280,6 +317,25 @@ namespace IceSaw2
                 if (trickyMaterialObject.Count != 0)
                 {
                     trickyMaterialObject[MaterialSelection].Render();
+                }
+
+                Raylib.EndMode3D();
+            }
+
+            if (windowMode == WindowMode.Prefabs)
+            {
+                if (trickyPrefabObjects.Count != 0)
+                {
+                    Raylib.DrawText(trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                }
+
+                Raylib.BeginMode3D(materialCamera3D);
+
+                Raylib.DrawGrid(10, 1);
+
+                if (trickyPrefabObjects.Count != 0)
+                {
+                    trickyPrefabObjects[PrefabSelection].Render();
                 }
 
                 Raylib.EndMode3D();

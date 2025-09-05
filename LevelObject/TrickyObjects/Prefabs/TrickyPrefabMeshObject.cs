@@ -63,7 +63,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 var TrickyPrefabMaterialObject = new TrickyPrefabMaterialObject();
 
-                TrickyPrefabMaterialObject.LoadPrefabMeshObject(objectHeader.MeshData[i]);
+                TrickyPrefabMaterialObject.LoadPrefabMaterialObject(objectHeader.MeshData[i]);
 
                 trickyPrefabMaterialObjects.Add(TrickyPrefabMaterialObject);
 
@@ -75,6 +75,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 //ChildMesh.transform.localRotation = new Quaternion(0, 0, 0, 0);
 
                 //ChildMesh.AddComponent<PrefabMeshObject>().LoadPrefabMeshObject(objectHeader.MeshData[i]);
+            }
+        }
+
+        public override void Render()
+        {
+            for (int i = 0; i < trickyPrefabMaterialObjects.Count; i++)
+            {
+                trickyPrefabMaterialObjects[i].Render();
             }
         }
     }

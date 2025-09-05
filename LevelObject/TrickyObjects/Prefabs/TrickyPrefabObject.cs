@@ -1,6 +1,8 @@
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 
 
 namespace IceSaw2.LevelObject.TrickyObjects
@@ -29,6 +31,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.PrefabObjects[i]);
 
                 trickyPrefabSubObjects.Add(TrickyPrefabMeshObject);
+            }
+        }
+
+        public override void Render()
+        {
+            for (int i = 0; i < trickyPrefabSubObjects.Count; i++)
+            {
+                trickyPrefabSubObjects[i].Render();
             }
         }
     }
