@@ -1,4 +1,5 @@
-﻿using IceSaw2.LevelObject.TrickyObjects;
+﻿using IceSaw2.LevelObject.Materials;
+using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Numerics;
@@ -9,19 +10,26 @@ namespace IceSaw2
     {
         public static WorldManager instance = new WorldManager();
 
-        Camera3D camera3D = new Camera3D();
+        public WindowMode windowMode = WindowMode.World;
+
+        Camera3D worldCamera3D = new Camera3D();
+        Camera3D materialCamera3D = new Camera3D();
         string LoadPath;
 
         //Skybox Data
 
         //Object Data
-        List<TrickyPatchObject> patchObjects = new List<TrickyPatchObject>();
+        List<TrickyPatchObject> trickyPatchObjects = new List<TrickyPatchObject>();
         List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
 
         //Texture Data
         List<TextureData> worldTextureData = new List<TextureData>();
         List<TextureData> skyboxTexture2Ds = new List<TextureData>();
         List<TextureData> lightmapTexture2Ds = new List<TextureData>();
+
+        List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
+
+        int MaterialSelection = 0;
 
         public void Initalise()
         {
@@ -31,12 +39,17 @@ namespace IceSaw2
 
             Rlgl.DisableBackfaceCulling();
 
-            camera3D.Position = new System.Numerics.Vector3(0, 100, 100);
-            camera3D.Target = Vector3.Zero;
-            camera3D.Up = new Vector3(0, 0, 1);
-            camera3D.FovY = 45f;
-            camera3D.Projection = CameraProjection.Perspective;
+            worldCamera3D.Position = new System.Numerics.Vector3(0, 100, 100);
+            worldCamera3D.Target = Vector3.Zero;
+            worldCamera3D.Up = new Vector3(0, 0, 1);
+            worldCamera3D.FovY = 45f;
+            worldCamera3D.Projection = CameraProjection.Perspective;
 
+            materialCamera3D.Position = new System.Numerics.Vector3(0, 10, 3);
+            materialCamera3D.Target = Vector3.Zero;
+            materialCamera3D.Up = new Vector3(0, 0, 1);
+            materialCamera3D.FovY = 45f;
+            materialCamera3D.Projection = CameraProjection.Perspective;
 
             //Test Load
             //LoadProject("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\ConfigTricky.ssx");
@@ -98,7 +111,7 @@ namespace IceSaw2
                 skyboxTexture2Ds.Add(textureData);
             }
 
-            patchObjects = new List<TrickyPatchObject>();
+            trickyPatchObjects = new List<TrickyPatchObject>();
 
             PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(LoadPath + "\\patches.json");
 
@@ -108,12 +121,25 @@ namespace IceSaw2
 
                 patchObject.LoadPatch(jsonHandler.Patches[i]);
 
-                patchObjects.Add(patchObject);
+                trickyPatchObjects.Add(patchObject);
             }
 
             trickyPrefabObjects = new List<TrickyPrefabObject>();
+            //
 
 
+            trickyMaterialObject = new List<TrickyMaterialObject>();
+
+            MaterialJsonHandler matJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\materials.json");
+
+            for (int i = 0; i < matJsonHandler.Materials.Count; i++)
+            {
+                TrickyMaterialObject materialObject = new TrickyMaterialObject();
+
+                materialObject.LoadMaterial(matJsonHandler.Materials[i]);
+
+                trickyMaterialObject.Add(materialObject);
+            }
 
             //Mesh Test = ObjImporter.ObjLoad("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\Models\\0.obj");
 
@@ -153,24 +179,60 @@ namespace IceSaw2
 
         public void UpdateLogic()
         {
-            //Update Camera
-            Raylib.UpdateCamera(ref camera3D, CameraMode.Free);
-
-            string picked = filePicker.GetSelectedFile();
-            if (picked != null)
+            if (windowMode == WindowMode.World)
             {
-                Console.WriteLine("Picked: " + picked);
-                // You can now do something with the file
-                LoadProject(picked);
-            }
+                //Update Camera
+                Raylib.UpdateCamera(ref worldCamera3D, CameraMode.Free);
 
-            //Object Collision
-            if (Raylib.IsKeyPressed(KeyboardKey.F))
+                string picked = filePicker.GetSelectedFile();
+                if (picked != null)
+                {
+                    Console.WriteLine("Picked: " + picked);
+                    // You can now do something with the file
+                    LoadProject(picked);
+                }
+
+                //Object Collision
+                if (Raylib.IsKeyPressed(KeyboardKey.F))
+                {
+                    filePicker.Open();
+                }
+
+                filePicker.Update();
+
+                if (Raylib.IsKeyPressed(KeyboardKey.M))
+                {
+                    windowMode = WindowMode.Materials;
+                }
+            }
+            else
             {
-                filePicker.Open();
-            }
+                if (Raylib.IsKeyPressed(KeyboardKey.M))
+                {
+                    windowMode = WindowMode.World;
+                }
 
-            filePicker.Update();
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Left))
+                {
+                    MaterialSelection -= 1;
+                    if(MaterialSelection==-1)
+                    {
+                        MaterialSelection = trickyMaterialObject.Count-1;
+                    }
+                }
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Right))
+                {
+                    MaterialSelection += 1;
+                    if (MaterialSelection == trickyMaterialObject.Count)
+                    {
+                        MaterialSelection = 0;
+                    }
+                }
+
+                Raylib.UpdateCamera(ref materialCamera3D, CameraMode.Orbital);
+            }
 
         }
 
@@ -179,27 +241,49 @@ namespace IceSaw2
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.White);
 
-            //Render 3D
-            Raylib.BeginMode3D(camera3D);
-
-            //Render Skybox
-
-            //Render Default
-            Raylib.DrawGrid(100, 1);
-
-            //Render Objects
-
-            for (int i = 0; i < patchObjects.Count; i++)
+            if (windowMode == WindowMode.World)
             {
-                patchObjects[i].Render();
+                //Render 3D
+                Raylib.BeginMode3D(worldCamera3D);
+
+                //Render Skybox
+
+                //Render Default
+                Raylib.DrawGrid(100, 1);
+
+                //Render Objects
+
+                for (int i = 0; i < trickyPatchObjects.Count; i++)
+                {
+                    trickyPatchObjects[i].Render();
+                }
+
+                //Render Wires
+
+                Raylib.EndMode3D();
+
+                //Render UI
+                filePicker.Draw();
+
             }
+            if(windowMode == WindowMode.Materials)
+            {
+                if (trickyMaterialObject.Count != 0)
+                {
+                    Raylib.DrawText(trickyMaterialObject[MaterialSelection].Name, 12, 30, 20, Color.Black);
+                }
 
-            //Render Wires
+                Raylib.BeginMode3D(materialCamera3D);
 
-            Raylib.EndMode3D();
+                Raylib.DrawGrid(10, 1);
 
-            //Render UI
-            filePicker.Draw();
+                if (trickyMaterialObject.Count != 0)
+                {
+                    trickyMaterialObject[MaterialSelection].Render();
+                }
+
+                Raylib.EndMode3D();
+            }
 
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
 
@@ -224,6 +308,14 @@ namespace IceSaw2
         {
             public string Name;
             public Texture2D texture2D;
+        }
+
+
+        public enum WindowMode
+        {
+            World,
+            Materials,
+            Prefabs
         }
 
     }
