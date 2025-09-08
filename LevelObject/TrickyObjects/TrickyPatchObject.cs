@@ -103,7 +103,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             Raylib.UploadMesh(ref mesh, false);
 
-            var Texture = DataManager.ReturnTexture(TexturePath);
+            var Texture = DataManager.ReturnTexture(TexturePath, false);
 
             material = Raylib.LoadMaterialDefault();
 

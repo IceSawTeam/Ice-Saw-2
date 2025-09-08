@@ -15,6 +15,8 @@ namespace IceSaw2.Manager
     public static class DataManager
     {
         //Skybox Data
+        public static List<TrickyMaterialObject> trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
+        public static List<TrickyPrefabObject> trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
 
         //Object Data
         public static List<TrickyPatchObject> trickyPatchObjects = new List<TrickyPatchObject>();
@@ -94,7 +96,7 @@ namespace IceSaw2.Manager
             {
                 TrickyMaterialObject materialObject = new TrickyMaterialObject();
 
-                materialObject.LoadMaterial(matJsonHandler.Materials[i]);
+                materialObject.LoadMaterial(matJsonHandler.Materials[i], false);
 
                 trickyMaterialObject.Add(materialObject);
             }
@@ -122,16 +124,30 @@ namespace IceSaw2.Manager
             }
         }
 
-        public static Texture2D ReturnTexture(string FileName)
+        public static Texture2D ReturnTexture(string FileName, bool Skybox)
         {
-            for (int i = 0; i < worldTextureData.Count; i++)
+            if (!Skybox)
             {
-                if (worldTextureData[i].Name == FileName)
+                for (int i = 0; i < worldTextureData.Count; i++)
                 {
-                    return worldTextureData[i].texture2D;
+                    if (worldTextureData[i].Name == FileName)
+                    {
+                        return worldTextureData[i].texture2D;
+                    }
                 }
+                return worldTextureData[0].texture2D;
             }
-            return worldTextureData[0].texture2D;
+            else
+            {
+                for (int i = 0; i < skyboxTexture2Ds.Count; i++)
+                {
+                    if (skyboxTexture2Ds[i].Name == FileName)
+                    {
+                        return skyboxTexture2Ds[i].texture2D;
+                    }
+                }
+                return skyboxTexture2Ds[0].texture2D;
+            }
         }
 
         public struct TextureData

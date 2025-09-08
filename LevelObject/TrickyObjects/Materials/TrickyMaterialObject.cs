@@ -10,6 +10,7 @@ namespace IceSaw2.LevelObject.Materials
 {
     public class TrickyMaterialObject : BaseObject
     {
+        bool Skybox = false;
         public override ObjectType Type
         {
             get { return ObjectType.Material; }
@@ -42,8 +43,10 @@ namespace IceSaw2.LevelObject.Materials
 
         public List<string> TextureFlipbook = new List<string>();
 
-        public void LoadMaterial(MaterialJsonHandler.MaterialsJson json)
+        public void LoadMaterial(MaterialJsonHandler.MaterialsJson json, bool _skybox)
         {
+            Skybox = _skybox;
+
             if (json.MaterialName != "" && json.MaterialName != null)
             {
                 Name = json.MaterialName;
@@ -82,7 +85,7 @@ namespace IceSaw2.LevelObject.Materials
         {
             mesh = Raylib.GenMeshCube(2000, 1000, 2000);
 
-            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath);
+            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, Skybox);
 
             material = Raylib.LoadMaterialDefault();
 

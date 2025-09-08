@@ -32,7 +32,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             var TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
 
-            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath);
+            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, false);
 
             material = Raylib.LoadMaterialDefault();
 
