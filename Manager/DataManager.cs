@@ -37,6 +37,8 @@ namespace IceSaw2.Manager
 
         public static void LoadProject(string ConfigPath)
         {
+            UnloadProject();
+
             LoadPath = Path.GetDirectoryName(ConfigPath);
 
             //Texture Data
@@ -154,6 +156,49 @@ namespace IceSaw2.Manager
 
                 trickyInstanceObjects.Add(Instance);
             }
+        }
+
+        public static void UnloadProject()
+        {
+            trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
+            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
+
+            trickyPatchObjects = new List<TrickyPatchObject>();
+            trickyMaterialObject = new List<TrickyMaterialObject>();
+            trickyPrefabObjects = new List<TrickyPrefabObject>();
+            trickyInstanceObjects = new List<TrickyInstanceObject>();
+
+            for (int i = 0; i < worldTextureData.Count; i++)
+            {
+                Raylib.UnloadTexture(worldTextureData[i].texture2D);
+            }
+
+            for (int i = 0; i < skyboxTexture2Ds.Count; i++)
+            {
+                Raylib.UnloadTexture(skyboxTexture2Ds[i].texture2D);
+            }
+
+            for (int i = 0; i < lightmapTexture2Ds.Count; i++)
+            {
+                Raylib.UnloadTexture(lightmapTexture2Ds[i].texture2D);
+            }
+
+            worldTextureData = new List<TextureData>();
+            skyboxTexture2Ds = new List<TextureData>();
+            lightmapTexture2Ds = new List<TextureData>();
+
+            for (int i = 0; i < worldMeshes.Count; i++)
+            {
+                Raylib.UnloadMesh(worldMeshes[i].mesh);
+            }
+
+            for (int i = 0; i < skyboxMeshes.Count; i++)
+            {
+                Raylib.UnloadMesh(skyboxMeshes[i].mesh);
+            }
+
+            worldMeshes = new List<MeshData>();
+            skyboxMeshes = new List<MeshData>();
         }
 
         public static Texture2D ReturnTexture(string FileName, bool Skybox)
