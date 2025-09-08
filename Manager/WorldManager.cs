@@ -2,6 +2,7 @@
 using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Settings;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
@@ -34,7 +35,7 @@ namespace IceSaw2.Manager
             prefabEditorWindow.Initilize();
             materialEditorWindow.Initilize();
 
-            Raylib.InitWindow(1280, 780, "Ice Saw 2");
+            Raylib.InitWindow(GeneralSettings.ScreenWidth, GeneralSettings.ScreenHeight, "Ice Saw 2");
             rlImGui.Setup(true);
 
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
@@ -94,15 +95,15 @@ namespace IceSaw2.Manager
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.M))
+            if (Raylib.IsKeyPressed(HotkeySettings.MaterialWindow))
             {
                 windowMode = WindowMode.Materials;
             }
-            if (Raylib.IsKeyPressed(KeyboardKey.P))
+            if (Raylib.IsKeyPressed(HotkeySettings.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(KeyboardKey.L))
+            if (Raylib.IsKeyPressed(HotkeySettings.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }
