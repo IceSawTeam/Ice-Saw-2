@@ -23,6 +23,22 @@ namespace IceSaw2.Manager
         public static List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
         public static List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
         public static List<TrickyInstanceObject> trickyInstanceObjects = new List<TrickyInstanceObject>();
+        //Splines
+        //Particle Prefabs
+        //Particles
+        //Camera
+
+        //Pathing Data
+        //AIP RaceLine
+        //AIP AI
+        //SOP Raceline
+        //SOP AI
+
+        //Effect Data
+        //Effect Slots
+        //Physics
+        //Functions
+        //Effects
 
         //Texture Data
         public static List<TextureData> worldTextureData = new List<TextureData>();
