@@ -29,6 +29,10 @@ namespace IceSaw2.Manager
         public static List<TextureData> skyboxTexture2Ds = new List<TextureData>();
         public static List<TextureData> lightmapTexture2Ds = new List<TextureData>();
 
+        //Mesh Data
+        public static List<MeshData> worldMeshes = new List<MeshData>();
+        public static List<MeshData> skyboxMeshes = new List<MeshData>();
+
         public static string LoadPath = "";
 
         public static void LoadProject(string ConfigPath)
@@ -76,6 +80,34 @@ namespace IceSaw2.Manager
                 Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
 
                 skyboxTexture2Ds.Add(textureData);
+            }
+
+            worldMeshes = new List<MeshData>();
+            string[] MeshFiles = Directory.GetFiles(LoadPath + "\\Models\\", "*.obj", SearchOption.AllDirectories);
+            for (int i = 0; i < MeshFiles.Length; i++)
+            {
+                var TempMesh = new MeshData();
+
+                TempMesh.Name = Path.GetFileName(MeshFiles[i]);
+                TempMesh.mesh = ObjImporter.ObjLoad(MeshFiles[i]);
+
+                Raylib.UploadMesh(ref TempMesh.mesh, false);
+
+                worldMeshes.Add(TempMesh);
+            }
+
+            skyboxMeshes = new List<MeshData>();
+            string[] SkyboxMeshFiles = Directory.GetFiles(LoadPath + "\\Skybox\\Models\\", "*.obj", SearchOption.AllDirectories);
+            for (int i = 0; i < SkyboxMeshFiles.Length; i++)
+            {
+                var TempMesh = new MeshData();
+
+                TempMesh.Name = Path.GetFileName(SkyboxMeshFiles[i]);
+                TempMesh.mesh = ObjImporter.ObjLoad(SkyboxMeshFiles[i]);
+
+                Raylib.UploadMesh(ref TempMesh.mesh, false);
+
+                skyboxMeshes.Add(TempMesh);
             }
 
             //Object Data
@@ -150,10 +182,42 @@ namespace IceSaw2.Manager
             }
         }
 
+        public static Mesh ReturnMesh(string FileName, bool Skybox)
+        {
+            if (!Skybox)
+            {
+                for (int i = 0; i < worldMeshes.Count; i++)
+                {
+                    if (worldMeshes[i].Name == FileName)
+                    {
+                        return worldMeshes[i].mesh;
+                    }
+                }
+                return worldMeshes[0].mesh;
+            }
+            else
+            {
+                for (int i = 0; i < skyboxMeshes.Count; i++)
+                {
+                    if (skyboxMeshes[i].Name == FileName)
+                    {
+                        return skyboxMeshes[i].mesh;
+                    }
+                }
+                return skyboxMeshes[0].mesh;
+            }
+        }
+
         public struct TextureData
         {
             public string Name;
             public Texture2D texture2D;
+        }
+
+        public struct MeshData
+        {
+            public string Name;
+            public Mesh mesh;
         }
     }
 }

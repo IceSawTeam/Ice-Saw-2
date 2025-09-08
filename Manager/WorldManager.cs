@@ -30,6 +30,7 @@ namespace IceSaw2.Manager
         public void Initalise()
         {
             instance = this;
+            filePicker = new IMGuiFilePicker(GeneralSettings.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();

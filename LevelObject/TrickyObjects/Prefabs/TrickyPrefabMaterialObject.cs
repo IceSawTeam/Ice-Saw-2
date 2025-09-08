@@ -26,9 +26,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void GenerateModel()
         {
-            mesh = ObjImporter.ObjLoad(DataManager.LoadPath + "\\Models\\"+ MeshPath);
+            //Have it pull mesh and material from trickyMaterial and mesh instead
 
-            Raylib.UploadMesh(ref mesh, false);
+            mesh = DataManager.ReturnMesh(MeshPath, false);
 
             var TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
 

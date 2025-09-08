@@ -18,6 +18,11 @@ namespace IceSaw2
 
         public IMGuiFilePicker(string startPath = null)
         {
+            if(startPath=="")
+            {
+                startPath = null;
+            }
+
             currentPath = startPath ?? Directory.GetCurrentDirectory();
             selectedFile = null;
             isOpen = false;
