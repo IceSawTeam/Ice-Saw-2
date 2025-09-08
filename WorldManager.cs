@@ -18,8 +18,8 @@ namespace IceSaw2
         public PrefabEditorWindow prefabEditorWindow = new PrefabEditorWindow();
         public MaterialEditorWindow materialEditorWindow = new MaterialEditorWindow();
 
-        public int heightScreen = 1080;
-        public int widthScreen = 610;
+        public int heightScreen { get { return Raylib.GetScreenHeight(); } }
+        public int widthScreen { get { return Raylib.GetScreenWidth(); } }
 
         public WindowMode windowMode = WindowMode.World;
 
@@ -49,10 +49,12 @@ namespace IceSaw2
             prefabEditorWindow.Initilize();
             materialEditorWindow.Initilize();
 
-            Raylib.InitWindow(heightScreen, widthScreen, "Ice Saw 2");
+            Raylib.InitWindow(1280, 780, "Ice Saw 2");
             rlImGui.Setup(true);
 
             Rlgl.DisableBackfaceCulling();
+
+            Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 
             Update();
 
@@ -207,6 +209,8 @@ namespace IceSaw2
                 Raylib.BeginDrawing();
                 rlImGui.Begin();
                 Raylib.ClearBackground(Color.White);
+
+                //Render();
 
                 if (windowMode == WindowMode.World)
                 {

@@ -59,6 +59,29 @@ namespace IceSaw2.EditorWindows
 
             Raylib.EndMode3D();
 
+            float menuBarHeight = ImGui.GetFrameHeight(); // Typically height of main menu bar
+
+            // Sidebar dimensions
+            int sidebarWidth = 300;
+
+            // Position and size sidebar *below* the main menu bar
+            ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, WorldManager.instance.heightScreen - menuBarHeight), ImGuiCond.Always);
+
+            // Optional: remove decorations
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
+
+            ImGui.Text("Sidebar content below main menu bar.");
+            //ImGui.Separator();
+            //ImGui.Button("Click Me");
+
+            // Add your sidebar content here
+
+            ImGui.End();
+            ImGui.PopStyleVar(2);
+
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
 
