@@ -19,7 +19,7 @@ namespace IceSaw2
         public MaterialEditorWindow materialEditorWindow = new MaterialEditorWindow();
 
         public int heightScreen = 1080;
-        public int widthScreen = 608;
+        public int widthScreen = 610;
 
         public WindowMode windowMode = WindowMode.World;
 
@@ -39,6 +39,8 @@ namespace IceSaw2
 
         public List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
 
+        static FilePicker filePicker = new FilePicker();
+
         public void Initalise()
         {
             instance = this;
@@ -51,9 +53,6 @@ namespace IceSaw2
             rlImGui.Setup(true);
 
             Rlgl.DisableBackfaceCulling();
-
-            //Test Load
-            //LoadProject("G:\\SSX Modding\\disk\\SSX Tricky\\DATA\\MODELS\\Gari\\ConfigTricky.ssx");
 
             Update();
 
@@ -206,6 +205,7 @@ namespace IceSaw2
                 UpdateLogic();
 
                 Raylib.BeginDrawing();
+                rlImGui.Begin();
                 Raylib.ClearBackground(Color.White);
 
                 if (windowMode == WindowMode.World)
@@ -223,7 +223,8 @@ namespace IceSaw2
 
                 Render();
 
-                Raylib.DrawText("Beta Test", 12, 12, 20, Color.Black);
+                Raylib.DrawText("Beta Test", 12, widthScreen-20, 20, Color.Black);
+                rlImGui.End();
                 Raylib.EndDrawing();
             }
         }
@@ -243,11 +244,80 @@ namespace IceSaw2
                 windowMode = WindowMode.World;
             }
 
+            string picked = filePicker.GetSelectedFile();
+            if (picked != null)
+            {
+                Console.WriteLine("Picked: " + picked);
+                // You can now do something with the file
+                WorldManager.instance.LoadProject(picked);
+            }
+
+            filePicker.Update();
         }
 
         public void Render()
         {
+            filePicker.Draw();
 
+            if (ImGui.BeginMainMenuBar())
+            {
+                if (ImGui.BeginMenu("File"))
+                {
+                    if (ImGui.MenuItem("Open..."))
+                    {
+                        // Handle file open
+                        filePicker.Open();
+                    }
+
+                    if (ImGui.MenuItem("Save"))
+                    {
+                        // Handle save
+                    }
+
+                    if (ImGui.MenuItem("Exit"))
+                    {
+                        // Handle exit
+                        Environment.Exit(0);
+                    }
+
+                    ImGui.EndMenu();
+                }
+
+                if (ImGui.BeginMenu("Edit"))
+                {
+                    if (ImGui.MenuItem("Undo")) { }
+                    if (ImGui.MenuItem("Redo")) { }
+                    ImGui.EndMenu();
+                }
+
+                if(ImGui.BeginMenu("Window"))
+                {
+                    if (ImGui.MenuItem("Level")) 
+                    {
+                        windowMode = WindowMode.World;
+                    }
+                    if (ImGui.MenuItem("Prefab"))
+                    {
+                        windowMode = WindowMode.Prefabs;
+                    }
+                    if (ImGui.MenuItem("Material")) 
+                    {
+                        windowMode = WindowMode.Materials;
+                    }
+                    ImGui.EndMenu();
+                }
+
+                if (ImGui.BeginMenu("Help"))
+                {
+                    if (ImGui.MenuItem("About"))
+                    {
+                        // Show About modal
+                    }
+                    ImGui.EndMenu();
+                }
+
+                ImGui.EndMainMenuBar();
+            }
         }
 
         public Texture2D ReturnTexture(string FileName)
