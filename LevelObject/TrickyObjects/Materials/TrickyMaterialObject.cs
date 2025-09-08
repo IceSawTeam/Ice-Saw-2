@@ -1,4 +1,5 @@
 using IceSaw2.LevelObject;
+using IceSaw2.Manager;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Collections;
@@ -14,7 +15,7 @@ namespace IceSaw2.LevelObject.Materials
             get { return ObjectType.Material; }
         }
 
-        public string TexturePath;
+        public string TexturePath = "";
         public int UnknownInt2;
         public int UnknownInt3;
 
@@ -39,7 +40,7 @@ namespace IceSaw2.LevelObject.Materials
 
         public int UnknownInt20;
 
-        public List<string> TextureFlipbook;
+        public List<string> TextureFlipbook = new List<string>();
 
         public void LoadMaterial(MaterialJsonHandler.MaterialsJson json)
         {
@@ -81,7 +82,7 @@ namespace IceSaw2.LevelObject.Materials
         {
             mesh = Raylib.GenMeshCube(2000, 1000, 2000);
 
-            Texture2D ReturnTexture = WorldManager.instance.ReturnTexture(TexturePath);
+            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath);
 
             material = Raylib.LoadMaterialDefault();
 

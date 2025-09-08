@@ -1,5 +1,6 @@
 ﻿using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Manager;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
@@ -9,11 +10,11 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using static IceSaw2.WorldManager;
+using static IceSaw2.Manager.WorldManager;
 
 namespace IceSaw2.EditorWindows
 {
-    public class LevelEditorWindow
+    public class LevelEditorWindow : BaseEditorWindow
     {
         Camera3D worldCamera3D = new Camera3D();
         public bool Open = true;
@@ -26,17 +27,11 @@ namespace IceSaw2.EditorWindows
             worldCamera3D.Projection = CameraProjection.Perspective;
         }
 
-        public void MainUpdate()
-        {
-            LogicUpdate();
-
-            RenderUpdate();
-        }
-
-        public void RenderUpdate()
+        public override void RenderUpdate()
         {
             //Render 3D
             Raylib.BeginMode3D(worldCamera3D);
+            Rlgl.DisableBackfaceCulling();
 
             //Render Skybox
 
@@ -45,14 +40,14 @@ namespace IceSaw2.EditorWindows
 
             //Render Objects
 
-            for (int i = 0; i < WorldManager.instance.trickyPatchObjects.Count; i++)
+            for (int i = 0; i < DataManager.trickyPatchObjects.Count; i++)
             {
-                WorldManager.instance.trickyPatchObjects[i].Render();
+                DataManager.trickyPatchObjects[i].Render();
             }
 
-            for (int i = 0; i < WorldManager.instance.trickyInstanceObjects.Count; i++)
+            for (int i = 0; i < DataManager.trickyInstanceObjects.Count; i++)
             {
-                WorldManager.instance.trickyInstanceObjects[i].Render();
+                DataManager.trickyInstanceObjects[i].Render();
             }
 
             //Render Wires
@@ -85,7 +80,7 @@ namespace IceSaw2.EditorWindows
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             //Update Camera
             Raylib.UpdateCamera(ref worldCamera3D, CameraMode.Free);

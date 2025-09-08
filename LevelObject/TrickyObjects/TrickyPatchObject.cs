@@ -1,4 +1,5 @@
-﻿using NURBS;
+﻿using IceSaw2.Manager;
+using NURBS;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System;
@@ -22,7 +23,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public string TexturePath;
         public int LightmapID;
 
-        NURBS.Surface surface;
+        Surface surface;
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
         {
@@ -58,7 +59,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             Vector3[,] vertices = new Vector3[4, 4];
 
             //Control points
-            NURBS.ControlPoint[,] cps = new NURBS.ControlPoint[4, 4];
+            ControlPoint[,] cps = new ControlPoint[4, 4];
             int c = 0;
             for (int i = 0; i < 4; i++)
             {
@@ -81,7 +82,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             //Build mesh (reusing Mesh to save GC allocation)
             mesh = surface.BuildMesh(resolutionU, resolutionV);
 
-            cps = new NURBS.ControlPoint[2, 2];
+            cps = new ControlPoint[2, 2];
 
             //UVPoints = PointCorrection(UVPoints);
 
@@ -102,7 +103,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             Raylib.UploadMesh(ref mesh, false);
 
-            var Texture = WorldManager.instance.ReturnTexture(TexturePath);
+            var Texture = DataManager.ReturnTexture(TexturePath);
 
             material = Raylib.LoadMaterialDefault();
 

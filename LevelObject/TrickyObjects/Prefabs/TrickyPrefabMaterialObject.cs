@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Numerics;
 using static Raylib_cs.Raymath;
+using IceSaw2.Manager;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -26,13 +27,13 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void GenerateModel()
         {
-            mesh = ObjImporter.ObjLoad(WorldManager.instance.LoadPath + "\\Models\\"+ MeshPath);
+            mesh = ObjImporter.ObjLoad(DataManager.LoadPath + "\\Models\\"+ MeshPath);
 
             Raylib.UploadMesh(ref mesh, false);
 
-            var TexturePath = WorldManager.instance.trickyMaterialObject[MaterialIndex].TexturePath;
+            var TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
 
-            Texture2D ReturnTexture = WorldManager.instance.ReturnTexture(TexturePath);
+            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath);
 
             material = Raylib.LoadMaterialDefault();
 

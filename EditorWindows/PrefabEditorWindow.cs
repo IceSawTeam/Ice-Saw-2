@@ -1,4 +1,5 @@
 ﻿using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Manager;
 using Raylib_cs;
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,11 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using static IceSaw2.WorldManager;
+using static IceSaw2.Manager.WorldManager;
 
 namespace IceSaw2.EditorWindows
 {
-    public class PrefabEditorWindow
+    public class PrefabEditorWindow : BaseEditorWindow
     {
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
@@ -24,21 +25,21 @@ namespace IceSaw2.EditorWindows
             camera3D.Projection = CameraProjection.Perspective;
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             if (Raylib.IsKeyPressed(KeyboardKey.Left))
             {
                 PrefabSelection -= 1;
                 if (PrefabSelection == -1)
                 {
-                    PrefabSelection = WorldManager.instance.trickyPrefabObjects.Count - 1;
+                    PrefabSelection = DataManager.trickyPrefabObjects.Count - 1;
                 }
             }
 
             if (Raylib.IsKeyPressed(KeyboardKey.Right))
             {
                 PrefabSelection += 1;
-                if (PrefabSelection == WorldManager.instance.trickyPrefabObjects.Count)
+                if (PrefabSelection == DataManager.trickyPrefabObjects.Count)
                 {
                     PrefabSelection = 0;
                 }
@@ -47,20 +48,20 @@ namespace IceSaw2.EditorWindows
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
         }
 
-        public void RenderUpdate()
+        public override void RenderUpdate()
         {
-            if (WorldManager.instance.trickyPrefabObjects.Count != 0)
+            if (DataManager.trickyPrefabObjects.Count != 0)
             {
-                Raylib.DrawText(WorldManager.instance.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                Raylib.DrawText(DataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
             }
 
             Raylib.BeginMode3D(camera3D);
 
             Raylib.DrawGrid(10, 1);
 
-            if (WorldManager.instance.trickyPrefabObjects.Count != 0)
+            if (DataManager.trickyPrefabObjects.Count != 0)
             {
-                WorldManager.instance.trickyPrefabObjects[PrefabSelection].Render();
+                DataManager.trickyPrefabObjects[PrefabSelection].Render();
             }
 
             Raylib.EndMode3D();

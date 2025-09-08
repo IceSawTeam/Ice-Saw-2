@@ -1,4 +1,5 @@
 ﻿using IceSaw2.LevelObject.Materials;
+using IceSaw2.Manager;
 using Raylib_cs;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IceSaw2.EditorWindows
 {
-    public class MaterialEditorWindow
+    public class MaterialEditorWindow : BaseEditorWindow
     {
         Camera3D camera3D = new Camera3D();
         int MaterialSelection = 0;
@@ -23,21 +24,21 @@ namespace IceSaw2.EditorWindows
             camera3D.Projection = CameraProjection.Perspective;
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             if (Raylib.IsKeyPressed(KeyboardKey.Left))
             {
                 MaterialSelection -= 1;
                 if (MaterialSelection == -1)
                 {
-                    MaterialSelection = WorldManager.instance.trickyMaterialObject.Count - 1;
+                    MaterialSelection = DataManager.trickyMaterialObject.Count - 1;
                 }
             }
 
             if (Raylib.IsKeyPressed(KeyboardKey.Right))
             {
                 MaterialSelection += 1;
-                if (MaterialSelection == WorldManager.instance.trickyMaterialObject.Count)
+                if (MaterialSelection == DataManager.trickyMaterialObject.Count)
                 {
                     MaterialSelection = 0;
                 }
@@ -46,20 +47,20 @@ namespace IceSaw2.EditorWindows
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
         }
 
-        public void RenderUpdate()
+        public override void RenderUpdate()
         {
-            if (WorldManager.instance.trickyMaterialObject.Count != 0)
+            if (DataManager.trickyMaterialObject.Count != 0)
             {
-                Raylib.DrawText(WorldManager.instance.trickyMaterialObject[MaterialSelection].Name, 12, 30, 20, Color.Black);
+                Raylib.DrawText(DataManager.trickyMaterialObject[MaterialSelection].Name, 12, 30, 20, Color.Black);
             }
 
             Raylib.BeginMode3D(camera3D);
 
             Raylib.DrawGrid(10, 1);
 
-            if (WorldManager.instance.trickyMaterialObject.Count != 0)
+            if (DataManager.trickyMaterialObject.Count != 0)
             {
-                WorldManager.instance.trickyMaterialObject[MaterialSelection].Render();
+                DataManager.trickyMaterialObject[MaterialSelection].Render();
             }
 
             Raylib.EndMode3D();

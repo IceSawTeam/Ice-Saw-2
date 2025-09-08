@@ -1,5 +1,6 @@
 using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Manager;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections.Generic;
@@ -157,7 +158,7 @@ namespace IceSaw2.LevelObject
         {
             if (ModelID != -1)
             {
-                TrickyPrefab = WorldManager.instance.trickyPrefabObjects[ModelID];
+                TrickyPrefab = DataManager.trickyPrefabObjects[ModelID];
             }
         }
 

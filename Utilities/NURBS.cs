@@ -45,8 +45,8 @@ namespace NURBS
         /// <param name="knots">Knot vector in U</param>
         public void DegreeU(int degree, float[] knots)
         {
-            this.degreeU = degree;
-            this.knotsU = knots;
+            degreeU = degree;
+            knotsU = knots;
         }
         /// <summary>
         /// Change degree in U axis. Knot vector is automatically generated
@@ -54,8 +54,8 @@ namespace NURBS
         /// <param name="degree">Degree U</param>
         public void DegreeU(int degree)
         {
-            this.degreeU = degree;
-            this.knotsU = GenerateKnots(degree, controlPoints.GetLength(0), true, true);
+            degreeU = degree;
+            knotsU = GenerateKnots(degree, controlPoints.GetLength(0), true, true);
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace NURBS
         /// <param name="knots">Knot vector in V</param>
         public void DegreeV(int degree, float[] knots)
         {
-            this.degreeV = degree;
-            this.knotsV = knots;
+            degreeV = degree;
+            knotsV = knots;
         }
         /// <summary>
         /// Change degree in V axis. Knot vector is automatically generated
@@ -74,8 +74,8 @@ namespace NURBS
         /// <param name="degree">Degree U</param>
         public void DegreeV(int degree)
         {
-            this.degreeV = degree;
-            this.knotsV = GenerateKnots(degree, controlPoints.GetLength(1), true, true);
+            degreeV = degree;
+            knotsV = GenerateKnots(degree, controlPoints.GetLength(1), true, true);
         }
 
         /// <summary>
@@ -108,8 +108,8 @@ namespace NURBS
             this.controlPoints = controlPoints;
 
             //No knots provided, generate
-            this.knotsU = GenerateKnots(degreeU, controlPoints.GetLength(0), true, true);
-            this.knotsV = GenerateKnots(degreeV, controlPoints.GetLength(1), true, true);
+            knotsU = GenerateKnots(degreeU, controlPoints.GetLength(0), true, true);
+            knotsV = GenerateKnots(degreeV, controlPoints.GetLength(1), true, true);
         }
 
         /// <summary>
