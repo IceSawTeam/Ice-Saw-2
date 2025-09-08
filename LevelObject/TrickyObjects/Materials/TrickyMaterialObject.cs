@@ -79,7 +79,7 @@ namespace IceSaw2.LevelObject.Materials
 
         public void GenerateMesh()
         {
-            mesh = Raylib.GenMeshCube(200, 100, 200);
+            mesh = Raylib.GenMeshCube(2000, 1000, 2000);
 
             Texture2D ReturnTexture = WorldManager.instance.ReturnTexture(TexturePath);
 
