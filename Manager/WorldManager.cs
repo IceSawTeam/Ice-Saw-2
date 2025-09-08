@@ -63,6 +63,10 @@ namespace IceSaw2.Manager
                 {
                     materialEditorWindow.LogicUpdate();
                 }
+                if (windowMode == WindowMode.Textures)
+                {
+                    textureEditorWindow.LogicUpdate();
+                }
 
                 UpdateLogic();
 
@@ -83,6 +87,10 @@ namespace IceSaw2.Manager
                 if (windowMode == WindowMode.Materials)
                 {
                     materialEditorWindow.RenderUpdate();
+                }
+                if(windowMode == WindowMode.Textures)
+                {
+                    textureEditorWindow.RenderUpdate();
                 }
 
                 Render();
@@ -162,6 +170,10 @@ namespace IceSaw2.Manager
                     if (ImGui.MenuItem("Material")) 
                     {
                         windowMode = WindowMode.Materials;
+                    }
+                    if (ImGui.MenuItem("Texture"))
+                    {
+                        windowMode = WindowMode.Textures;
                     }
                     ImGui.EndMenu();
                 }
