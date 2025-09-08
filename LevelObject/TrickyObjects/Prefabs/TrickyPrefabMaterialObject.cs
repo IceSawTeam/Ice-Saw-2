@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Numerics;
-using static Raylib_cs.Raymath;
 using IceSaw2.Manager;
 
 namespace IceSaw2.LevelObject.TrickyObjects

@@ -24,7 +24,7 @@ namespace IceSaw2.Manager
 
         public WindowMode windowMode = WindowMode.World;
 
-        static FilePicker filePicker = new FilePicker();
+        static IMGuiFilePicker filePicker = new IMGuiFilePicker();
 
         public void Initalise()
         {
@@ -36,8 +36,6 @@ namespace IceSaw2.Manager
 
             Raylib.InitWindow(1280, 780, "Ice Saw 2");
             rlImGui.Setup(true);
-
-            Rlgl.DisableBackfaceCulling();
 
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 
@@ -70,7 +68,7 @@ namespace IceSaw2.Manager
                 Raylib.BeginDrawing();
                 rlImGui.Begin();
                 Raylib.ClearBackground(Color.White);
-
+                Rlgl.DisableBackfaceCulling();
                 //Render();
 
                 if (windowMode == WindowMode.World)
@@ -108,21 +106,11 @@ namespace IceSaw2.Manager
             {
                 windowMode = WindowMode.World;
             }
-
-            string picked = filePicker.GetSelectedFile();
-            if (picked != null)
-            {
-                Console.WriteLine("Picked: " + picked);
-                // You can now do something with the file
-                DataManager.LoadProject(picked);
-            }
-
-            filePicker.Update();
         }
 
         public void Render()
         {
-            filePicker.Draw();
+            filePicker.Render();
 
             if (ImGui.BeginMainMenuBar())
             {
@@ -130,8 +118,13 @@ namespace IceSaw2.Manager
                 {
                     if (ImGui.MenuItem("Open..."))
                     {
+                        filePicker.Show((selectedPath) =>
+                        {
+                            DataManager.LoadProject(selectedPath);
+                            // Do something with selectedPath
+                        });
                         // Handle file open
-                        filePicker.Open();
+                        //filePicker.Open();
                     }
 
                     if (ImGui.MenuItem("Save"))
