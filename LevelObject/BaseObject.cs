@@ -41,6 +41,9 @@ namespace IceSaw2.LevelObject
             }
         }
 
+        public bool Visable = true;
+        public bool Enabled = true;
+
         public Material material;
         public Mesh mesh;
         public virtual ObjectType Type
@@ -55,9 +58,12 @@ namespace IceSaw2.LevelObject
 
         public virtual void Render()
         {
-            if(mesh.VertexCount!=0)
+            if (Visable && Enabled)
             {
-                Raylib.DrawMesh(mesh, material, matrix4X4);
+                if (mesh.VertexCount != 0)
+                {
+                    Raylib.DrawMesh(mesh, material, matrix4X4);
+                }
             }
         }
 

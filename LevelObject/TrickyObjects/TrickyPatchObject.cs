@@ -16,7 +16,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
     {
         public Vector4 LightMapPoint;
         public List<Vector2> UVPoints;
-        public Vector3[,] Points;
+        public Vector3[,] WorldPoints;
 
         public int SurfaceType;
         public bool TrickOnlyPatch;
@@ -36,13 +36,13 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 UVPoints.Add(new Vector2(patchJson.UVPoints[i, 0], patchJson.UVPoints[i, 1]));
             }
 
-            Points = new Vector3[4,4];
+            WorldPoints = new Vector3[4,4];
 
             for (int y = 0; y < 4; y++)
             {
                 for (global::System.Int32 x = 0; x < 4; x++)
                 {
-                    Points[x, y] = new Vector3(patchJson.Points[x + y*4, 0], patchJson.Points[x + y * 4, 1], patchJson.Points[x + y * 4, 2]);
+                    WorldPoints[x, y] = new Vector3(patchJson.Points[x + y*4, 0], patchJson.Points[x + y * 4, 1], patchJson.Points[x + y * 4, 2]);
                 }
             }
 
@@ -56,6 +56,11 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void GeneratePatch()
         {
+            if(mesh.VertexCount!=0)
+            {
+                Raylib.UnloadMesh(mesh);
+            }
+
             Vector3[,] vertices = new Vector3[4, 4];
 
             //Control points
@@ -65,7 +70,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    Vector3 pos = Points[j, i];
+                    Vector3 pos = WorldPoints[j, i];
                     cps[i, j] = new NURBS.ControlPoint(pos.X, pos.Y, pos.Z, 1);
                     c++;
                 }
