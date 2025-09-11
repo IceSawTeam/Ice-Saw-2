@@ -27,7 +27,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         //[OnChangedCall("DrawCurve")]
         public List<SplineSegment> splineSegments = new List<SplineSegment>();
 
-        int SEGMENT_COUNT = 10;
+        int SEGMENT_COUNT = 7;
 
         List<Vector3> curves = new List<Vector3>();
 
