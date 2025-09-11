@@ -50,6 +50,11 @@ namespace IceSaw2.EditorWindows
                 DataManager.trickyInstanceObjects[i].Render();
             }
 
+            for (int i = 0; i < DataManager.trickySplineObjects.Count; i++)
+            {
+                DataManager.trickySplineObjects[i].Render();
+            }
+
             //Render Wires
 
             Raylib.EndMode3D();

@@ -23,7 +23,7 @@ namespace IceSaw2.Manager
         public static List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
         public static List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
         public static List<TrickyInstanceObject> trickyInstanceObjects = new List<TrickyInstanceObject>();
-        //Splines
+        public static List<TrickySplineObject> trickySplineObjects = new List<TrickySplineObject>();
         //Particle Prefabs
         //Particles
         //Camera
@@ -171,6 +171,17 @@ namespace IceSaw2.Manager
                 Instance.LoadInstance(instanceJsonHandler.Instances[i]);
 
                 trickyInstanceObjects.Add(Instance);
+            }
+
+            trickySplineObjects = new List<TrickySplineObject>();
+            SplineJsonHandler splineJsonHandler = SplineJsonHandler.Load(LoadPath + "\\splines.json");
+            for (int i = 0; i < splineJsonHandler.Splines.Count; i++)
+            {
+                var Spline = new TrickySplineObject();
+
+                Spline.LoadSpline(splineJsonHandler.Splines[i]);
+
+                trickySplineObjects.Add(Spline);
             }
         }
 
