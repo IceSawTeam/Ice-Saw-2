@@ -11,6 +11,8 @@ namespace IceSaw2.LevelObject
 {
     public class BaseObject
     {
+        public static float WorldScale = 0.001f;
+
         public string Name = "Null";
 
         public BaseObject parent;
@@ -34,7 +36,7 @@ namespace IceSaw2.LevelObject
                 }
                 else
                 {
-                    matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(0.001f, 0.001f, 0.001f));
+                    matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
                 }
 
                 return matrix4X4;

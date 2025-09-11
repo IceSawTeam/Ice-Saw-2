@@ -118,7 +118,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             for (int i = 0; i < curves.Count-1; i++)
             {
-                Raylib.DrawLine3D(curves[i]*0.001f, curves[i+1] * 0.001f, Color.Black);
+                Raylib.DrawLine3D(curves[i]* WorldScale, curves[i+1] * WorldScale, Color.Black);
             }
         }
 
