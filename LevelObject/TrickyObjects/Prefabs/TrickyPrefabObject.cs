@@ -7,17 +7,24 @@ using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabObject : TrickyPrefabBase
+    public class TrickyPrefabObject : BaseObject
     {
+        bool Skybox;
+
         public override ObjectType Type
         {
             get { return ObjectType.Prefab; }
         }
 
+        public int Unknown3;
+        public float AnimTime;
+
         public List<TrickyPrefabMeshObject> trickyPrefabSubObjects = new List<TrickyPrefabMeshObject>();
 
-        public void LoadPrefab(PrefabJsonHandler.PrefabJson prefabJson, bool Skybox = false)
+        public void LoadPrefab(PrefabJsonHandler.PrefabJson prefabJson, bool skybox = false)
         {
+            Skybox = skybox;
+
             Name = prefabJson.PrefabName;
             Unknown3 = prefabJson.Unknown3;
             AnimTime = prefabJson.AnimTime;
@@ -30,7 +37,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 TrickyPrefabMeshObject.parent = this;
 
-                TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.PrefabObjects[i]);
+                TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.PrefabObjects[i], Skybox);
 
                 trickyPrefabSubObjects.Add(TrickyPrefabMeshObject);
             }

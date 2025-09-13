@@ -5,11 +5,23 @@ using SSXMultiTool.JsonFiles.Tricky;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabMeshObject : TrickyPrefabMeshBase
+    public class TrickyPrefabMeshObject : BaseObject
     {
+        bool Skybox;
+
+        public int ParentID;
+        public int Flags;
+
+        public ObjectAnimation Animation = new ObjectAnimation();
+
+        public bool IncludeAnimation;
+        public bool IncludeMatrix;
+
         public List<TrickyPrefabMaterialObject> trickyPrefabMaterialObjects = new List<TrickyPrefabMaterialObject>();
-        public void LoadPrefabMeshObject(PrefabJsonHandler.ObjectHeader objectHeader)
+        public void LoadPrefabMeshObject(PrefabJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
+            Skybox = skybox;
+
             ParentID = objectHeader.ParentID;
             Flags = objectHeader.Flags;
 
@@ -64,7 +76,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 TrickyPrefabMaterialObject.parent = this;
 
-                TrickyPrefabMaterialObject.LoadPrefabMaterialObject(objectHeader.MeshData[i]);
+                TrickyPrefabMaterialObject.LoadPrefabMaterialObject(objectHeader.MeshData[i], Skybox);
 
                 trickyPrefabMaterialObjects.Add(TrickyPrefabMaterialObject);
 
@@ -85,6 +97,35 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 trickyPrefabMaterialObjects[i].Render();
             }
+        }
+
+        [Serializable]
+        public struct ObjectAnimation
+        {
+            public float U1;
+            public float U2;
+            public float U3;
+            public float U4;
+            public float U5;
+            public float U6;
+
+            public int AnimationAction;
+            public List<AnimationEntry> AnimationEntries;
+        }
+        [Serializable]
+        public struct AnimationEntry
+        {
+            public List<AnimationMath> AnimationMaths;
+        }
+        [Serializable]
+        public struct AnimationMath
+        {
+            public float Value1;
+            public float Value2;
+            public float Value3;
+            public float Value4;
+            public float Value5;
+            public float Value6;
         }
     }
 }

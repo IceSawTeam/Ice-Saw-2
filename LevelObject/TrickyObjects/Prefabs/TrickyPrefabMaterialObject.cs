@@ -9,15 +9,21 @@ using IceSaw2.Manager;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabMaterialObject : TrickyPrefabMaterialBase
+    public class TrickyPrefabMaterialObject : BaseObject
     {
+        bool Skybox;
+
         public override ObjectType Type
         {
             get { return ObjectType.PrefabMesh; }
         }
 
-        public void LoadPrefabMaterialObject(PrefabJsonHandler.MeshHeader objectHeader)
+        public string MeshPath;
+        public int MaterialIndex;
+        public void LoadPrefabMaterialObject(PrefabJsonHandler.MeshHeader objectHeader, bool skybox)
         {
+            Skybox = skybox;
+
             MeshPath = objectHeader.MeshPath;
             MaterialIndex = objectHeader.MaterialID;
 
@@ -28,11 +34,21 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             //Have it pull mesh and material from trickyMaterial and mesh instead
 
-            mesh = DataManager.ReturnMesh(MeshPath, false);
 
-            var TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
+            mesh = DataManager.ReturnMesh(MeshPath, Skybox);
 
-            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, false);
+            var TexturePath = ""; 
+            
+            if(!Skybox)
+            {
+                TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
+            }
+            else
+            {
+                TexturePath = DataManager.trickySkyboxMaterialObject[MaterialIndex].TexturePath;
+            }
+
+            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, Skybox);
 
             material = Raylib.LoadMaterialDefault();
 

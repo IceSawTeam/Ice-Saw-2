@@ -69,6 +69,16 @@ namespace IceSaw2.LevelObject
             }
         }
 
+        //Vector3 static ConvertLocalPoint(Vector3 point)
+        //{
+        //    return transform.InverseTransformPoint(TrickyLevelManager.Instance.transform.TransformPoint(point));
+        //}
+
+        //static Vector3 ConvertToWorldPoint(Vector3 point)
+        //{
+        //    return new Vector3(0, 0, 0);//TrickyLevelManager.Instance.transform.InverseTransformPoint(transform.TransformPoint(point));
+        //}
+
         public enum ObjectType
         {
             None,
