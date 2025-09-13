@@ -13,8 +13,11 @@ namespace IceSaw2.EditorWindows
 {
     public class PrefabEditorWindow : BaseEditorWindow
     {
+        bool Skybox;
+
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
+        int SkyboxSelection = 0;
 
         public void Initilize()
         {
@@ -27,22 +30,50 @@ namespace IceSaw2.EditorWindows
 
         public override void LogicUpdate()
         {
-            if (Raylib.IsKeyPressed(KeyboardKey.Left))
+            if (!Skybox)
             {
-                PrefabSelection -= 1;
-                if (PrefabSelection == -1)
+                if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
-                    PrefabSelection = DataManager.trickyPrefabObjects.Count - 1;
+                    PrefabSelection -= 1;
+                    if (PrefabSelection == -1)
+                    {
+                        PrefabSelection = DataManager.trickyPrefabObjects.Count - 1;
+                    }
+                }
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Right))
+                {
+                    PrefabSelection += 1;
+                    if (PrefabSelection == DataManager.trickyPrefabObjects.Count)
+                    {
+                        PrefabSelection = 0;
+                    }
+                }
+            }
+            else
+            {
+                if (Raylib.IsKeyPressed(KeyboardKey.Left))
+                {
+                    SkyboxSelection -= 1;
+                    if (SkyboxSelection == -1)
+                    {
+                        SkyboxSelection = DataManager.trickySkyboxPrefabObjects.Count - 1;
+                    }
+                }
+
+                if (Raylib.IsKeyPressed(KeyboardKey.Right))
+                {
+                    SkyboxSelection += 1;
+                    if (SkyboxSelection == DataManager.trickySkyboxPrefabObjects.Count)
+                    {
+                        SkyboxSelection = 0;
+                    }
                 }
             }
 
-            if (Raylib.IsKeyPressed(KeyboardKey.Right))
+            if (Raylib.IsKeyPressed(KeyboardKey.Slash))
             {
-                PrefabSelection += 1;
-                if (PrefabSelection == DataManager.trickyPrefabObjects.Count)
-                {
-                    PrefabSelection = 0;
-                }
+                Skybox = !Skybox;
             }
 
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
@@ -50,21 +81,42 @@ namespace IceSaw2.EditorWindows
 
         public override void RenderUpdate()
         {
-            if (DataManager.trickyPrefabObjects.Count != 0)
+            if (!Skybox)
             {
-                Raylib.DrawText(DataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                if (DataManager.trickyPrefabObjects.Count != 0)
+                {
+                    Raylib.DrawText(DataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                }
+
+                Raylib.BeginMode3D(camera3D);
+
+                Raylib.DrawGrid(10, 1);
+
+                if (DataManager.trickyPrefabObjects.Count != 0)
+                {
+                    DataManager.trickyPrefabObjects[PrefabSelection].Render();
+                }
+
+                Raylib.EndMode3D();
             }
-
-            Raylib.BeginMode3D(camera3D);
-
-            Raylib.DrawGrid(10, 1);
-
-            if (DataManager.trickyPrefabObjects.Count != 0)
+            else
             {
-                DataManager.trickyPrefabObjects[PrefabSelection].Render();
-            }
+                if (DataManager.trickySkyboxPrefabObjects.Count != 0)
+                {
+                    Raylib.DrawText(DataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 30, 20, Color.Black);
+                }
 
-            Raylib.EndMode3D();
+                Raylib.BeginMode3D(camera3D);
+
+                Raylib.DrawGrid(10, 1);
+
+                if (DataManager.trickySkyboxPrefabObjects.Count != 0)
+                {
+                    DataManager.trickySkyboxPrefabObjects[SkyboxSelection].Render();
+                }
+
+                Raylib.EndMode3D();
+            }
         }
     }
 }

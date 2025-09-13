@@ -34,6 +34,13 @@ namespace IceSaw2.EditorWindows
             Rlgl.DisableBackfaceCulling();
 
             //Render Skybox
+            //for (int i = 0; i < DataManager.trickySkyboxPrefabObjects.Count; i++)
+            //{
+            //    var TempLocation = DataManager.trickySkyboxPrefabObjects[i].Position;
+            //    DataManager.trickySkyboxPrefabObjects[i].Position = worldCamera3D.Position;
+            //    DataManager.trickySkyboxPrefabObjects[i].Render();
+            //    DataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
+            //}
 
             //Render Default
             Raylib.DrawGrid(100, 1);

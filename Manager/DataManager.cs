@@ -183,6 +183,29 @@ namespace IceSaw2.Manager
 
                 trickySplineObjects.Add(Spline);
             }
+
+            //Skybox
+            trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
+            MaterialJsonHandler matskyJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\Skybox\\materials.json");
+            for (int i = 0; i < matskyJsonHandler.Materials.Count; i++)
+            {
+                TrickyMaterialObject materialObject = new TrickyMaterialObject();
+
+                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], false);
+
+                trickySkyboxMaterialObject.Add(materialObject);
+            }
+
+            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
+            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\Skybox\\prefabs.json");
+            for (int i = 0; i < prefabSkyboxJsonHandler.Prefabs.Count; i++)
+            {
+                var NewPrefab = new TrickyPrefabObject();
+
+                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Prefabs[i], true);
+
+                trickySkyboxPrefabObjects.Add(NewPrefab);
+            }
         }
 
         public static void UnloadProject()
