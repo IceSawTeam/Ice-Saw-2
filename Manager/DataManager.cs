@@ -27,6 +27,7 @@ namespace IceSaw2.Manager
         //Particle Prefabs
         //Particles
         //Camera
+        //Lights
 
         //Pathing Data
         //AIP RaceLine
