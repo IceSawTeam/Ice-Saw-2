@@ -33,14 +33,17 @@ namespace IceSaw2.EditorWindows
             Raylib.BeginMode3D(worldCamera3D);
             Rlgl.DisableBackfaceCulling();
 
+            Rlgl.DisableDepthMask();
             //Render Skybox
-            //for (int i = 0; i < DataManager.trickySkyboxPrefabObjects.Count; i++)
-            //{
-            //    var TempLocation = DataManager.trickySkyboxPrefabObjects[i].Position;
-            //    DataManager.trickySkyboxPrefabObjects[i].Position = worldCamera3D.Position;
-            //    DataManager.trickySkyboxPrefabObjects[i].Render();
-            //    DataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
-            //}
+            for (int i = 0; i < DataManager.trickySkyboxPrefabObjects.Count; i++)
+            {
+                var TempLocation = DataManager.trickySkyboxPrefabObjects[i].Position;
+
+                DataManager.trickySkyboxPrefabObjects[i].Position = worldCamera3D.Position / BaseObject.WorldScale;
+                DataManager.trickySkyboxPrefabObjects[i].Render();
+                DataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
+            }
+            Rlgl.EnableDepthMask();
 
             //Render Default
             Raylib.DrawGrid(100, 1);
@@ -91,6 +94,11 @@ namespace IceSaw2.EditorWindows
 
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
+
+        float cameraSpeed = 0.1f;
+        float mouseSensitivity = 0.003f;
+        float yaw = 0.0f;
+        float pitch = 0.0f;
 
         public override void LogicUpdate()
         {
