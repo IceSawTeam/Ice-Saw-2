@@ -12,8 +12,6 @@ public class TrickyCameraObject : BaseObject
         get { return ObjectType.Camera; }
     }
 
-    public Vector3 eulerAngles;
-
     public int CameraType;
     public float FocalLength;
     public float AspectRatio;
@@ -35,7 +33,7 @@ public class TrickyCameraObject : BaseObject
     {
         Name = cameraInstance.CameraName;
         Position = JsonUtil.ArrayToVector3(cameraInstance.Translation);
-        eulerAngles = JsonUtil.ArrayToVector3(cameraInstance.Rotation);
+        EulerAngles = JsonUtil.ArrayToVector3(cameraInstance.Rotation);
 
         CameraType = cameraInstance.Type;
         FocalLength = cameraInstance.FocalLength;
@@ -84,7 +82,7 @@ public class TrickyCameraObject : BaseObject
 
         cameraInstance.CameraName = Name;
         cameraInstance.Translation = JsonUtil.Vector3ToArray(Position);
-        cameraInstance.Rotation = JsonUtil.Vector3ToArray(eulerAngles);
+        cameraInstance.Rotation = JsonUtil.Vector3ToArray(EulerAngles);
 
         cameraInstance.Type = CameraType;
         cameraInstance.FocalLength = FocalLength;

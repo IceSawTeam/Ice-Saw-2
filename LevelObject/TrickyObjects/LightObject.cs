@@ -60,7 +60,7 @@ public class LightObject : BaseObject
         NewLight.UnknownFloat1 = UnknownFloat1;
         NewLight.UnknownInt1 = UnknownInt1;
         NewLight.Colour = JsonUtil.Vector3ToArray(Colour);
-        //NewLight.Direction = JsonUtil.Vector3ToArray(TrickyLevelManager.Instance.transform.InverseTransformPoint(transform.TransformVector(Vector3.forward * 100)).normalized);
+        NewLight.Direction = JsonUtil.Vector3ToArray(Raymath.Vector3Normalize(Raymath.Vector3Transform(Vector3.UnitX, matrix4X4)));
         NewLight.LowestXYZ = JsonUtil.Vector3ToArray(LowestXYZ);
         NewLight.HighestXYZ = JsonUtil.Vector3ToArray(HighestXYZ);
         NewLight.UnknownFloat2 = UnknownFloat2;

@@ -20,6 +20,17 @@ namespace IceSaw2.LevelObject
         public Vector3 Position = Vector3.Zero;
         public Quaternion Rotation = Quaternion.Identity;
         public Vector3 Scale = Vector3.One;
+        public Vector3 EulerAngles
+        {
+            get
+            {
+                return QuaternionToEuler(Rotation);
+            }
+            set
+            {
+                Rotation = QuaternionFromEuler(EulerAngles.Z, EulerAngles.Y, EulerAngles.X);
+            }
+        }
 
         public Matrix4x4 matrix4X4 
         { 
