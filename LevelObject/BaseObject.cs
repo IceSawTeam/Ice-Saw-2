@@ -15,11 +15,63 @@ namespace IceSaw2.LevelObject
 
         public string Name = "Null";
 
-        public BaseObject parent;
+        private BaseObject _parent;
+        public BaseObject parent
+        {
+            get
+            { return _parent; }
+            set
+            {
+                if(_parent!=null)
+                {
+                    _parent.children.Remove(this);
+                }
 
-        public Vector3 Position = Vector3.Zero;
-        public Quaternion Rotation = Quaternion.Identity;
-        public Vector3 Scale = Vector3.One;
+                if(value!=null)
+                {
+                    value.children.Add(this);
+                }
+
+                _parent = value;
+
+                UpdateMatrix();
+            }
+        }
+
+        public List<BaseObject> children = new List<BaseObject>();
+
+        private Vector3 _position = Vector3.Zero;
+        public Vector3 Position
+        {
+            get
+                { return _position; }
+            set {
+                _position = value;
+                UpdateMatrix();
+            }
+        }
+        private Quaternion _rotation = Quaternion.Identity;
+        public Quaternion Rotation
+        {
+            get
+                { return _rotation; }
+            set
+            {
+                _rotation = value;
+                UpdateMatrix();
+            }
+        }
+        private Vector3 _scale = Vector3.One;
+        public Vector3 Scale
+        {
+            get
+                { return _scale; }
+            set
+            {
+                _scale = value;
+                UpdateMatrix();
+            }
+        }
         public Vector3 EulerAngles
         {
             get
@@ -32,25 +84,23 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        public Matrix4x4 matrix4X4 
-        { 
+        public Matrix4x4 localMatrix4X4
+        {
+            get; private set;
+        }
+
+        public Matrix4x4 worldMatrix4x4
+        {
             get
             {
-                Matrix4x4 scale = MatrixScale(Scale.X, Scale.Y, Scale.Z);
-                Matrix4x4 rotation = QuaternionToMatrix(Rotation);
-                Matrix4x4 matrix4X4 = MatrixMultiply(scale, rotation);
-                matrix4X4 = MatrixMultiply(matrix4X4, MatrixTranslate(Position.X, Position.Y, Position.Z));
-
-                if (parent != null)
+                if (_parent != null)
                 {
-                    matrix4X4 = MatrixMultiply(matrix4X4, parent.matrix4X4);
+                    return MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
                 }
                 else
                 {
-                    matrix4X4 = MatrixMultiply(matrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
+                    return MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
                 }
-
-                return matrix4X4;
             }
         }
 
@@ -59,9 +109,15 @@ namespace IceSaw2.LevelObject
 
         public Material material;
         public Mesh mesh;
+
         public virtual ObjectType Type
         {
             get { return ObjectType.None; }
+        }
+
+        public BaseObject()
+        {
+            UpdateMatrix();
         }
 
         public virtual void UpdateLogic()
@@ -75,20 +131,20 @@ namespace IceSaw2.LevelObject
             {
                 if (mesh.VertexCount != 0)
                 {
-                    Raylib.DrawMesh(mesh, material, matrix4X4);
+                    Raylib.DrawMesh(mesh, material, worldMatrix4x4);
                 }
             }
         }
 
-        //Vector3 static ConvertLocalPoint(Vector3 point)
-        //{
-        //    return transform.InverseTransformPoint(TrickyLevelManager.Instance.transform.TransformPoint(point));
-        //}
+        void UpdateMatrix()
+        {
+            Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
+            Matrix4x4 rotation = QuaternionToMatrix(_rotation);
+            Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
+            TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
 
-        //static Vector3 ConvertToWorldPoint(Vector3 point)
-        //{
-        //    return new Vector3(0, 0, 0);//TrickyLevelManager.Instance.transform.InverseTransformPoint(transform.TransformPoint(point));
-        //}
+            localMatrix4X4 = TempMatrix4X4;
+        }
 
         public enum ObjectType
         {
