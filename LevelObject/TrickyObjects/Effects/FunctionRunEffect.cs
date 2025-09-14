@@ -17,21 +17,22 @@ public class FunctionRunEffect : EffectBase
         FunctionIndex = effect.FunctionRunIndex.Value;
     }
 
-    //public override SSFJsonHandler.Effect SaveEffect()
-    //{
-    //    var NewEffect = new SSFJsonHandler.Effect();
+    public override SSFJsonHandler.Effect SaveEffect()
+    {
+        var NewEffect = new SSFJsonHandler.Effect();
 
-    //    NewEffect.MainType = EffectType;
+        NewEffect.MainType = EffectType;
 
-    //    if(FunctionObject!=null)
-    //    {
-    //        NewEffect.FunctionRunIndex = TrickyLevelManager.Instance.dataManager.GetFunctionID(FunctionObject);
-    //    }
-    //    else
-    //    {
-    //        NewEffect.FunctionRunIndex = -1;
-    //    }
+        NewEffect.FunctionRunIndex = FunctionIndex;
+        //if (FunctionObject != null)
+        //{
+        //    NewEffect.FunctionRunIndex = TrickyLevelManager.Instance.dataManager.GetFunctionID(FunctionObject);
+        //}
+        //else
+        //{
+        //    NewEffect.FunctionRunIndex = -1;
+        //}
 
-    //    return NewEffect;
-    //}
+        return NewEffect;
+    }
 }

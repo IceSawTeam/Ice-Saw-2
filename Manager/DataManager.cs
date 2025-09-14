@@ -38,8 +38,8 @@ namespace IceSaw2.Manager
         //Effect Data
         //Effect Slots
         //Physics
-        //Functions
-        //Effects
+        public static List<TrickyFunctionHeader> trickyFunctionHeaders = new List<TrickyFunctionHeader>();
+        public static List<TrickyEffectHeader> trickyEffectHeaders = new List<TrickyEffectHeader>();
 
         //Texture Data
         public static List<TextureData> worldTextureData = new List<TextureData>();
@@ -206,6 +206,29 @@ namespace IceSaw2.Manager
                 NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Prefabs[i], true);
 
                 trickySkyboxPrefabObjects.Add(NewPrefab);
+            }
+
+            //Effects
+            SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(LoadPath + "\\SSFLogic.json");
+
+            trickyFunctionHeaders = new List<TrickyFunctionHeader>();
+            for (int i = 0; i < sSFJsonHandler.Functions.Count; i++)
+            {
+                var NewEffect = new TrickyFunctionHeader();
+
+                NewEffect.LoadFunction(sSFJsonHandler.Functions[i]);
+
+                trickyFunctionHeaders.Add(NewEffect);
+            }
+
+            trickyEffectHeaders = new List<TrickyEffectHeader>();
+            for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)
+            {
+                var NewEffect = new TrickyEffectHeader();
+
+                NewEffect.LoadEffectList(sSFJsonHandler.EffectHeaders[i]);
+
+                trickyEffectHeaders.Add(NewEffect);
             }
         }
 

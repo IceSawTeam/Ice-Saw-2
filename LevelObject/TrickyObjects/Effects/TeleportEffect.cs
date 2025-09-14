@@ -17,21 +17,22 @@ public class TeleportEffect : EffectBase
         TeleportInstanceIndex = effect.TeleportInstanceIndex.Value;
     }
 
-    //public override SSFJsonHandler.Effect SaveEffect()
-    //{
-    //    var NewEffect = new SSFJsonHandler.Effect();
+    public override SSFJsonHandler.Effect SaveEffect()
+    {
+        var NewEffect = new SSFJsonHandler.Effect();
 
-    //    NewEffect.MainType = EffectType;
+        NewEffect.MainType = EffectType;
 
-    //    if (InstanceObject != null)
-    //    {
-    //        NewEffect.TeleportInstanceIndex = TrickyLevelManager.Instance.dataManager.GetInstanceID(InstanceObject);
-    //    }
-    //    else
-    //    {
-    //        NewEffect.TeleportInstanceIndex = -1;
-    //    }
+        NewEffect.TeleportInstanceIndex = TeleportInstanceIndex;
+        //if (InstanceObject != null)
+        //{
+        //    NewEffect.TeleportInstanceIndex = TrickyLevelManager.Instance.dataManager.GetInstanceID(InstanceObject);
+        //}
+        //else
+        //{
+        //    NewEffect.TeleportInstanceIndex = -1;
+        //}
 
-    //    return NewEffect;
-    //}
+        return NewEffect;
+    }
 }

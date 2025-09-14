@@ -22,34 +22,37 @@ public class InstanceRunEffect : EffectBase
         EffectIndex = effect.Instance.Value.EffectIndex;
     }
 
-    //public override SSFJsonHandler.Effect SaveEffect()
-    //{
-    //    var NewEffect = new SSFJsonHandler.Effect();
+    public override SSFJsonHandler.Effect SaveEffect()
+    {
+        var NewEffect = new SSFJsonHandler.Effect();
 
-    //    NewEffect.MainType = EffectType;
+        NewEffect.MainType = EffectType;
 
-    //    var NewInstanceEffect = new SSFJsonHandler.InstanceEffect();
+        var NewInstanceEffect = new SSFJsonHandler.InstanceEffect();
 
-    //    if(InstanceObject != null)
-    //    {
-    //        NewInstanceEffect.InstanceIndex = TrickyLevelManager.Instance.dataManager.GetInstanceID(InstanceObject);
-    //    }    
-    //    else
-    //    {
-    //        NewInstanceEffect.InstanceIndex = -1;
-    //    }
+        NewInstanceEffect.InstanceIndex = InstanceIndex;
+        NewInstanceEffect.EffectIndex = EffectIndex;
 
-    //    if (EffectHeaderObject != null)
-    //    {
-    //        NewInstanceEffect.EffectIndex = TrickyLevelManager.Instance.dataManager.GetEffectID(EffectHeaderObject);
-    //    }
-    //    else
-    //    {
-    //        NewInstanceEffect.EffectIndex = -1;
-    //    }
+        //if (InstanceObject != null)
+        //{
+        //    NewInstanceEffect.InstanceIndex = TrickyLevelManager.Instance.dataManager.GetInstanceID(InstanceObject);
+        //}
+        //else
+        //{
+        //    NewInstanceEffect.InstanceIndex = -1;
+        //}
 
-    //    NewEffect.Instance = NewInstanceEffect;
+        //if (EffectHeaderObject != null)
+        //{
+        //    NewInstanceEffect.EffectIndex = TrickyLevelManager.Instance.dataManager.GetEffectID(EffectHeaderObject);
+        //}
+        //else
+        //{
+        //    NewInstanceEffect.EffectIndex = -1;
+        //}
 
-    //    return NewEffect;
-    //}
+        NewEffect.Instance = NewInstanceEffect;
+
+        return NewEffect;
+    }
 }

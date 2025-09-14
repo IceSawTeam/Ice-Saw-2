@@ -22,35 +22,37 @@ public class SplineRunEffect : EffectBase
         EffectIndex = effect.Spline.Value.Effect;
     }
 
-    //public override SSFJsonHandler.Effect SaveEffect()
-    //{
-    //    var NewEffect = new SSFJsonHandler.Effect();
+    public override SSFJsonHandler.Effect SaveEffect()
+    {
+        var NewEffect = new SSFJsonHandler.Effect();
 
-    //    NewEffect.MainType = EffectType;
+        NewEffect.MainType = EffectType;
 
-    //    var NewInstanceEffect = new SSFJsonHandler.SplineEffect();
+        var NewInstanceEffect = new SSFJsonHandler.SplineEffect();
 
-    //    if (SplineObject != null)
-    //    {
-    //        NewInstanceEffect.SplineIndex = TrickyLevelManager.Instance.dataManager.GetSplineID(SplineObject);
-    //    }
-    //    else
-    //    {
-    //        NewInstanceEffect.SplineIndex = -1;
-    //    }
+        NewInstanceEffect.SplineIndex = SplineIndex;
+        NewInstanceEffect.Effect = EffectIndex;
+        //if (SplineObject != null)
+        //{
+        //    NewInstanceEffect.SplineIndex = TrickyLevelManager.Instance.dataManager.GetSplineID(SplineObject);
+        //}
+        //else
+        //{
+        //    NewInstanceEffect.SplineIndex = -1;
+        //}
 
-    //    if (EffectHeader != null)
-    //    {
-    //        NewInstanceEffect.Effect = TrickyLevelManager.Instance.dataManager.GetEffectHeaderID(EffectHeader);
-    //    }
-    //    else
-    //    {
-    //        NewInstanceEffect.Effect = -1;
-    //    }
+        //if (EffectHeader != null)
+        //{
+        //    NewInstanceEffect.Effect = TrickyLevelManager.Instance.dataManager.GetEffectHeaderID(EffectHeader);
+        //}
+        //else
+        //{
+        //    NewInstanceEffect.Effect = -1;
+        //}
 
 
-    //    NewEffect.Spline = NewInstanceEffect;
+        NewEffect.Spline = NewInstanceEffect;
 
-    //    return NewEffect;
-    //}
+        return NewEffect;
+    }
 }
