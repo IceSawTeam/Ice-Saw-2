@@ -120,6 +120,8 @@ namespace IceSaw2.Manager
 
         public void Render()
         {
+            Raylib.DrawFPS(widthScreen - 150, heightScreen - 30);
+
             filePicker.Render();
 
             if (ImGui.BeginMainMenuBar())
