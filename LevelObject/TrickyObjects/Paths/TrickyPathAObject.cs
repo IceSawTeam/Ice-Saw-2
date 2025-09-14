@@ -7,14 +7,17 @@ using SSXMultiTool.Utilities;
 
 public class TrickyPathAObject : BaseObject
 {
+    public override ObjectType Type
+    {
+        get { return ObjectType.PathA; }
+    }
+
     public bool Respawnable;
 
     public List<Vector3> PathPoints;
     public List<Vector3> VectorPoints;
 
     public List<PathEvent> PathEvents;
-
-
 
     public void LoadPathA(AIPSOPJsonHandler.PathA pathA)
     {

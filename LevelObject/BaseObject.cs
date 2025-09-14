@@ -112,7 +112,9 @@ namespace IceSaw2.LevelObject
             SkyboxPrefabMesh,
             PathManager,
             Effect,
-            Function
+            Function,
+            PathA,
+            PathB
         }
     }
 }

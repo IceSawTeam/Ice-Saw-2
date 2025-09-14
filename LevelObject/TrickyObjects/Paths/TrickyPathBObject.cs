@@ -8,13 +8,17 @@ using System.Numerics;
 
 public class TrickyPathBObject : BaseObject
 {
+    public override ObjectType Type
+    {
+        get { return ObjectType.PathB; }
+    }
+
     public float DistanceToFinish;
 
     public List<Vector3> PathPoints;
     public List<Vector3> VectorPoints;
 
     public List<PathEvent> PathEvents;
-
 
     public void LoadPathB(AIPSOPJsonHandler.PathB pathB)
     {
