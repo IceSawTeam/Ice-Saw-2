@@ -20,10 +20,12 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public int SurfaceType;
         public bool TrickOnlyPatch;
-        public string TexturePath;
+        public string TexturePath = "";
         public int LightmapID;
 
         Surface surface;
+
+        bool MeshLoaded =false;
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
         {
@@ -56,7 +58,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void GeneratePatch()
         {
-            if(mesh.VertexCount!=0)
+            if(MeshLoaded)
             {
                 Raylib.UnloadMesh(mesh);
             }
@@ -107,6 +109,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
 
             Raylib.UploadMesh(ref mesh, false);
+            MeshLoaded = true;
 
             var Texture = DataManager.ReturnTexture(TexturePath, false);
 
