@@ -50,6 +50,7 @@ namespace IceSaw2.LevelObject
                 UpdateMatrix();
             }
         }
+
         private Quaternion _rotation = Quaternion.Identity;
         public Quaternion Rotation
         {
@@ -61,6 +62,7 @@ namespace IceSaw2.LevelObject
                 UpdateMatrix();
             }
         }
+
         private Vector3 _scale = Vector3.One;
         public Vector3 Scale
         {
@@ -80,7 +82,7 @@ namespace IceSaw2.LevelObject
             }
             set
             {
-                Rotation = QuaternionFromEuler(EulerAngles.Z, EulerAngles.Y, EulerAngles.X);
+                Rotation = QuaternionFromEuler(value.Z, value.Y, value.X);
             }
         }
 
@@ -110,6 +112,7 @@ namespace IceSaw2.LevelObject
 
         public Material material;
         public Mesh mesh;
+
 
         public virtual ObjectType Type
         {
