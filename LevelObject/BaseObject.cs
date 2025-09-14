@@ -34,7 +34,7 @@ namespace IceSaw2.LevelObject
 
                 _parent = value;
 
-                UpdateMatrix();
+                UpdateMatrix(false);
             }
         }
 
@@ -91,17 +91,18 @@ namespace IceSaw2.LevelObject
 
         public Matrix4x4 worldMatrix4x4
         {
-            get
-            {
-                if (_parent != null)
-                {
-                    return MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
-                }
-                else
-                {
-                    return MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
-                }
-            }
+            get; private set;
+            //get
+            //{
+            //    if (_parent != null)
+            //    {
+            //        return MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
+            //    }
+            //    else
+            //    {
+            //        return MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
+            //    }
+            //}
         }
 
         public bool Visable = true;
@@ -136,14 +137,33 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        void UpdateMatrix()
+        void UpdateMatrix(bool UpdateLocal = true)
         {
-            Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
-            Matrix4x4 rotation = QuaternionToMatrix(_rotation);
-            Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
-            TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
+            if (UpdateLocal)
+            {
+                Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
+                Matrix4x4 rotation = QuaternionToMatrix(_rotation);
+                Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
+                TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
 
-            localMatrix4X4 = TempMatrix4X4;
+                localMatrix4X4 = TempMatrix4X4;
+            }
+
+            //Check Parent
+            if (_parent == null)
+            {
+                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
+            }
+            else
+            {
+                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
+            }
+
+            //Update Children
+            for (global::System.Int32 i = 0; i < children.Count; i++)
+            {
+                children[i].UpdateMatrix(false);
+            }
         }
 
         public enum ObjectType
