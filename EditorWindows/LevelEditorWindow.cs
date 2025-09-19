@@ -23,7 +23,7 @@ namespace IceSaw2.EditorWindows
             worldCamera3D.Position = new System.Numerics.Vector3(0, 100, 100);
             worldCamera3D.Target = Vector3.Zero;
             worldCamera3D.Up = new Vector3(0, 0, 1);
-            worldCamera3D.FovY = 45f;
+            worldCamera3D.FovY = 65f;
             worldCamera3D.Projection = CameraProjection.Perspective;
         }
 
@@ -46,7 +46,9 @@ namespace IceSaw2.EditorWindows
             Rlgl.EnableDepthMask();
 
             //Render Default
-            Raylib.DrawGrid(100, 1);
+            Raylib.DrawLine3D(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), new Color(212, 28, 4));
+            Raylib.DrawLine3D(new Vector3(0, -1000, 0), new Vector3(0, 1000, 0), new Color(17, 212, 4));
+            Raylib.DrawLine3D(new Vector3(0, 0, -1000), new Vector3(0, 0, 1000), new Color(2, 99, 224));
 
             //Render Objects
 
