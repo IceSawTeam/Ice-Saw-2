@@ -44,7 +44,7 @@ namespace IceSaw2
             {
                 ImGui.Text($"Current Path: {currentPath}");
 
-                if (ImGui.Button("Up"))
+                if (ImGui.Button("^ Up"))
                 {
                     try
                     {
@@ -60,7 +60,7 @@ namespace IceSaw2
                     // List directories
                     foreach (var dir in Directory.GetDirectories(currentPath))
                     {
-                        if (ImGui.Selectable("[DIR] " + Path.GetFileName(dir)))
+                        if (ImGui.Selectable("  /" + Path.GetFileName(dir) + "/"))
                         {
                             currentPath = dir;
                         }
@@ -70,10 +70,14 @@ namespace IceSaw2
                     foreach (var file in Directory.GetFiles(currentPath))
                     {
                         bool selected = selectedFile == file;
-                        if (ImGui.Selectable(Path.GetFileName(file), selected))
+                        if (file.EndsWith("ssx"))
                         {
-                            selectedFile = file;
+                            if (ImGui.Selectable(Path.GetFileName(file), selected))
+                            {
+                                selectedFile = file;
+                            }
                         }
+                        
                     }
                 }
                 catch (Exception e)
@@ -87,7 +91,7 @@ namespace IceSaw2
                 if (selectedFile != null)
                 {
                     ImGui.Text("Selected: " + Path.GetFileName(selectedFile));
-                    if (ImGui.Button("Select"))
+                    if (ImGui.Button("Accept"))
                     {
                         onFileSelected?.Invoke(selectedFile);
                         Close();
