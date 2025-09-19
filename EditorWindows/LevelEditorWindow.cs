@@ -79,21 +79,22 @@ namespace IceSaw2.EditorWindows
                 Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
 
                 // Movement
-                if (Raylib.IsKeyDown(KeyboardKey.W)) camera3D.Position += forward * moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.S)) camera3D.Position -= forward * moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.D)) camera3D.Position -= right * moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.A)) camera3D.Position += right * moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.E)) camera3D.Position.Z += moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.Q)) camera3D.Position.Z -= moveSpeed;
+                float currentSpeed = moveSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.LeftShift)) currentSpeed *= 2.0f;
+                if (Raylib.IsKeyDown(KeyboardKey.W)) camera3D.Position += forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.S)) camera3D.Position -= forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.D)) camera3D.Position -= right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.A)) camera3D.Position += right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.E)) camera3D.Position.Z += currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.Q)) camera3D.Position.Z -= currentSpeed;
 
                 float wheel = Raylib.GetMouseWheelMove();
                 if (wheel != 0)
                 {
                     moveSpeed += wheel * moveSpeedStep;
                     moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
-                    Debug.WriteLine(moveSpeed);
+                    //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
                 }
-                
 
                 camera3D.Target = camera3D.Position + forward;
             }
@@ -101,9 +102,6 @@ namespace IceSaw2.EditorWindows
             {
                 Raylib.ShowCursor();
             }
-            
-
-
 
             
 
