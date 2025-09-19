@@ -61,51 +61,7 @@ namespace IceSaw2.EditorWindows
                 DataManager.trickySkyboxPrefabObjects[i].Render();
                 DataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
             }
-            Rlgl.EnableDepthMask();
-
-
-            // Viewport Camera
-            if (Raylib.IsMouseButtonDown(MouseButton.Right))
-            {
-                Raylib.HideCursor();
-
-                // Look
-                Vector2 mouseDelta = Raylib.GetMouseDelta();
-                yaw += mouseDelta.X * mouseSensitivity;
-                pitch -= mouseDelta.Y * mouseSensitivity;
-                pitch = Math.Clamp(pitch, -1.5f, 1.5f);
-
-                Raylib.SetMousePosition(screenWidth / 2, screenHeight / 2);
-
-                Vector3 forward = new Vector3(MathF.Cos(pitch) * MathF.Sin(yaw), MathF.Cos(pitch) * MathF.Cos(yaw), MathF.Sin(pitch));
-                Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
-
-                // Movement
-                float currentSpeed = moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.LeftShift)) currentSpeed *= 2.0f;
-                if (Raylib.IsKeyDown(KeyboardKey.W)) viewCamera3D.Position += forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.S)) viewCamera3D.Position -= forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.D)) viewCamera3D.Position -= right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.A)) viewCamera3D.Position += right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.E)) viewCamera3D.Position.Z += currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.Q)) viewCamera3D.Position.Z -= currentSpeed;
-
-                float wheel = Raylib.GetMouseWheelMove();
-                if (wheel != 0)
-                {
-                    moveSpeed += wheel * moveSpeedStep;
-                    moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
-                    //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
-                }
-
-                viewCamera3D.Target = viewCamera3D.Position + forward;
-            }
-            if (Raylib.IsMouseButtonReleased(MouseButton.Right))
-            {
-                Raylib.ShowCursor();
-            }
-
-            
+            Rlgl.EnableDepthMask();            
 
             //Render Default
             Raylib.DrawLine3D(new Vector3(-axisLineSize, 0, 0), new Vector3(axisLineSize, 0, 0), new Color(212, 28, 4));
@@ -159,11 +115,51 @@ namespace IceSaw2.EditorWindows
             //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
 
-        //public override void LogicUpdate()
-        //{
-        //    //Update Camera
-        //    Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
-        //}
+        public override void LogicUpdate()
+        {
+            //Update Camera
+            //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
+            // Viewport Camera
+            if (Raylib.IsMouseButtonDown(MouseButton.Right))
+            {
+                Raylib.HideCursor();
+
+                // Look
+                Vector2 mouseDelta = Raylib.GetMouseDelta();
+                yaw += mouseDelta.X * mouseSensitivity;
+                pitch -= mouseDelta.Y * mouseSensitivity;
+                pitch = Math.Clamp(pitch, -1.5f, 1.5f);
+
+                Raylib.SetMousePosition(screenWidth / 2, screenHeight / 2);
+
+                Vector3 forward = new Vector3(MathF.Cos(pitch) * MathF.Sin(yaw), MathF.Cos(pitch) * MathF.Cos(yaw), MathF.Sin(pitch));
+                Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
+
+                // Movement
+                float currentSpeed = moveSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.LeftShift)) currentSpeed *= 2.0f;
+                if (Raylib.IsKeyDown(KeyboardKey.W)) viewCamera3D.Position += forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.S)) viewCamera3D.Position -= forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.D)) viewCamera3D.Position -= right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.A)) viewCamera3D.Position += right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.E)) viewCamera3D.Position.Z += currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.Q)) viewCamera3D.Position.Z -= currentSpeed;
+
+                float wheel = Raylib.GetMouseWheelMove();
+                if (wheel != 0)
+                {
+                    moveSpeed += wheel * moveSpeedStep;
+                    moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
+                    //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
+                }
+
+                viewCamera3D.Target = viewCamera3D.Position + forward;
+            }
+            if (Raylib.IsMouseButtonReleased(MouseButton.Right))
+            {
+                Raylib.ShowCursor();
+            }
+        }
 
 
     }
