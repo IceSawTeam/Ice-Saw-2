@@ -25,6 +25,8 @@ namespace IceSaw2.EditorWindows
             worldCamera3D.Up = new Vector3(0, 0, 1);
             worldCamera3D.FovY = 65f;
             worldCamera3D.Projection = CameraProjection.Perspective;
+
+            
         }
 
         public override void RenderUpdate()
@@ -32,6 +34,16 @@ namespace IceSaw2.EditorWindows
             //Render 3D
             Raylib.BeginMode3D(worldCamera3D);
             Rlgl.DisableBackfaceCulling();
+
+            if (Raylib.IsMouseButtonDown(MouseButton.Right))
+            {
+                Raylib.DisableCursor();
+            }
+            if (Raylib.IsMouseButtonReleased(MouseButton.Right))
+            {
+                Raylib.EnableCursor();
+            }
+
 
             Rlgl.DisableDepthMask();
             //Render Skybox
