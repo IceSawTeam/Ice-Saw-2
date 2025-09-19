@@ -26,6 +26,8 @@ namespace IceSaw2.EditorWindows
         private int screenWidth;
         private int screenHeight;
 
+        private float axisLineSize = 1000f;
+
         Camera3D camera3D = new Camera3D();
         public bool Open = true;
 
@@ -106,9 +108,9 @@ namespace IceSaw2.EditorWindows
             
 
             //Render Default
-            Raylib.DrawLine3D(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), new Color(212, 28, 4));
-            Raylib.DrawLine3D(new Vector3(0, -1000, 0), new Vector3(0, 1000, 0), new Color(17, 212, 4));
-            Raylib.DrawLine3D(new Vector3(0, 0, -1000), new Vector3(0, 0, 1000), new Color(2, 99, 224));
+            Raylib.DrawLine3D(new Vector3(-axisLineSize, 0, 0), new Vector3(axisLineSize, 0, 0), new Color(212, 28, 4));
+            Raylib.DrawLine3D(new Vector3(0, -axisLineSize, 0), new Vector3(0, axisLineSize, 0), new Color(17, 212, 4));
+            Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
             //Render Objects
 
