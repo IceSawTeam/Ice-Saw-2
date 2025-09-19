@@ -28,17 +28,17 @@ namespace IceSaw2.EditorWindows
 
         private float axisLineSize = 1000f;
 
-        Camera3D camera3D = new Camera3D();
+        Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
 
 
         public void Initilize()
         {
-            camera3D.Position = new System.Numerics.Vector3(0, 100, 100);
-            camera3D.Target = Vector3.Zero;
-            camera3D.Up = new Vector3(0, 0, 1);
-            camera3D.FovY = 65f;
-            camera3D.Projection = CameraProjection.Perspective;
+            viewCamera3D.Position = new System.Numerics.Vector3(0, 100, 100);
+            viewCamera3D.Target = Vector3.Zero;
+            viewCamera3D.Up = new Vector3(0, 0, 1);
+            viewCamera3D.FovY = 65f;
+            viewCamera3D.Projection = CameraProjection.Perspective;
 
             screenWidth = GeneralSettings.ScreenWidth;
             screenHeight = GeneralSettings.ScreenHeight;
@@ -47,7 +47,7 @@ namespace IceSaw2.EditorWindows
         public override void RenderUpdate()
         {
             //Render 3D
-            Raylib.BeginMode3D(camera3D);
+            Raylib.BeginMode3D(viewCamera3D);
             Rlgl.DisableBackfaceCulling();
 
 
@@ -57,7 +57,7 @@ namespace IceSaw2.EditorWindows
             {
                 var TempLocation = DataManager.trickySkyboxPrefabObjects[i].Position;
 
-                DataManager.trickySkyboxPrefabObjects[i].Position = camera3D.Position / BaseObject.WorldScale;
+                DataManager.trickySkyboxPrefabObjects[i].Position = viewCamera3D.Position / BaseObject.WorldScale;
                 DataManager.trickySkyboxPrefabObjects[i].Render();
                 DataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
             }
@@ -83,12 +83,12 @@ namespace IceSaw2.EditorWindows
                 // Movement
                 float currentSpeed = moveSpeed;
                 if (Raylib.IsKeyDown(KeyboardKey.LeftShift)) currentSpeed *= 2.0f;
-                if (Raylib.IsKeyDown(KeyboardKey.W)) camera3D.Position += forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.S)) camera3D.Position -= forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.D)) camera3D.Position -= right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.A)) camera3D.Position += right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.E)) camera3D.Position.Z += currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.Q)) camera3D.Position.Z -= currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.W)) viewCamera3D.Position += forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.S)) viewCamera3D.Position -= forward * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.D)) viewCamera3D.Position -= right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.A)) viewCamera3D.Position += right * currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.E)) viewCamera3D.Position.Z += currentSpeed;
+                if (Raylib.IsKeyDown(KeyboardKey.Q)) viewCamera3D.Position.Z -= currentSpeed;
 
                 float wheel = Raylib.GetMouseWheelMove();
                 if (wheel != 0)
@@ -98,7 +98,7 @@ namespace IceSaw2.EditorWindows
                     //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
                 }
 
-                camera3D.Target = camera3D.Position + forward;
+                viewCamera3D.Target = viewCamera3D.Position + forward;
             }
             if (Raylib.IsMouseButtonReleased(MouseButton.Right))
             {
@@ -162,7 +162,7 @@ namespace IceSaw2.EditorWindows
         //public override void LogicUpdate()
         //{
         //    //Update Camera
-        //    Raylib.UpdateCamera(ref camera3D, CameraMode.Free);
+        //    Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
         //}
 
 
