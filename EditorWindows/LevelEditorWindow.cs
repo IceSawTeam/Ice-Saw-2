@@ -34,8 +34,8 @@ namespace IceSaw2.EditorWindows
 
         public void Initilize()
         {
-            viewCamera3D.Position = new System.Numerics.Vector3(0, 100, 100);
-            viewCamera3D.Target = Vector3.Zero;
+            viewCamera3D.Position = new System.Numerics.Vector3(100, 100, 100);
+            viewCamera3D.Target = viewCamera3D.Position + new Vector3(0, 1, 0);
             viewCamera3D.Up = new Vector3(0, 0, 1);
             viewCamera3D.FovY = 65f;
             viewCamera3D.Projection = CameraProjection.Perspective;
