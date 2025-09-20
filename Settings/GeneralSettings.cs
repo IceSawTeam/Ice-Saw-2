@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace IceSaw2.Settings
 {
-    public static class GeneralSettings
+    public class GeneralSettings
     {
-        public static int ScreenWidth = 1280;
-        public static int ScreenHeight = 720;
+        public int ScreenWidth = 1280;
+        public int ScreenHeight = 720;
 
-        public static string LastLoad = "";
+        public string LastLoad = "";
     }
 }

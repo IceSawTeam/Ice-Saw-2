@@ -27,16 +27,19 @@ namespace IceSaw2.Manager
 
         static IMGuiFilePicker filePicker = new IMGuiFilePicker();
 
+        public GeneralSettings generalSettings = new GeneralSettings();
+        public HotkeySettings hotkeySettings = new HotkeySettings();
+
         public void Initalise()
         {
             instance = this;
-            filePicker = new IMGuiFilePicker(GeneralSettings.LastLoad);
+            filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
             materialEditorWindow.Initilize();
 
-            Raylib.InitWindow(GeneralSettings.ScreenWidth, GeneralSettings.ScreenHeight, "Ice Saw 2");
+            Raylib.InitWindow(generalSettings.ScreenWidth, generalSettings.ScreenHeight, "Ice Saw 2");
             rlImGui.Setup(true);
 
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
@@ -104,15 +107,15 @@ namespace IceSaw2.Manager
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(HotkeySettings.MaterialWindow))
+            if (Raylib.IsKeyPressed(hotkeySettings.MaterialWindow))
             {
                 windowMode = WindowMode.Materials;
             }
-            if (Raylib.IsKeyPressed(HotkeySettings.PrefabWindow))
+            if (Raylib.IsKeyPressed(hotkeySettings.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(HotkeySettings.LevelWindow))
+            if (Raylib.IsKeyPressed(hotkeySettings.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }

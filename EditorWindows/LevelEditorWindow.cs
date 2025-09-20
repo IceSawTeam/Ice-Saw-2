@@ -40,8 +40,8 @@ namespace IceSaw2.EditorWindows
             viewCamera3D.FovY = 65f;
             viewCamera3D.Projection = CameraProjection.Perspective;
 
-            screenWidth = GeneralSettings.ScreenWidth;
-            screenHeight = GeneralSettings.ScreenHeight;
+            screenWidth = WorldManager.instance.generalSettings.ScreenWidth;
+            screenHeight = WorldManager.instance.generalSettings.ScreenHeight;
         }
 
         public override void RenderUpdate()
@@ -120,7 +120,7 @@ namespace IceSaw2.EditorWindows
             //Update Camera
             //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
             // Viewport Camera
-            if (Raylib.IsMouseButtonDown(MouseButton.Right))
+            if (Raylib.IsMouseButtonDown(WorldManager.instance.hotkeySettings.ActivateCamera))
             {
                 Raylib.HideCursor();
 
@@ -137,13 +137,13 @@ namespace IceSaw2.EditorWindows
 
                 // Movement
                 float currentSpeed = moveSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.LeftShift)) currentSpeed *= 2.0f;
-                if (Raylib.IsKeyDown(KeyboardKey.W)) viewCamera3D.Position += forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.S)) viewCamera3D.Position -= forward * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.D)) viewCamera3D.Position -= right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.A)) viewCamera3D.Position += right * currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.E)) viewCamera3D.Position.Z += currentSpeed;
-                if (Raylib.IsKeyDown(KeyboardKey.Q)) viewCamera3D.Position.Z -= currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Boost)) currentSpeed *= 2.0f;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Forward)) viewCamera3D.Position += forward * currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Back)) viewCamera3D.Position -= forward * currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Right)) viewCamera3D.Position -= right * currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Left)) viewCamera3D.Position += right * currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Up)) viewCamera3D.Position.Z += currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Down)) viewCamera3D.Position.Z -= currentSpeed;
 
                 float wheel = Raylib.GetMouseWheelMove();
                 if (wheel != 0)
@@ -155,7 +155,7 @@ namespace IceSaw2.EditorWindows
 
                 viewCamera3D.Target = viewCamera3D.Position + forward;
             }
-            if (Raylib.IsMouseButtonReleased(MouseButton.Right))
+            if (Raylib.IsMouseButtonReleased(WorldManager.instance.hotkeySettings.ActivateCamera))
             {
                 Raylib.ShowCursor();
             }
