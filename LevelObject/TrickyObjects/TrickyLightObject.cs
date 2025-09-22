@@ -6,7 +6,7 @@ using IceSaw2.LevelObject;
 using System.Numerics;
 using Raylib_cs;
 
-public class LightObject : BaseObject
+public class TrickyLightObject : BaseObject
 {
     public override ObjectType Type
     {

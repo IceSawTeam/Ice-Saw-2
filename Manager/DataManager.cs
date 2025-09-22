@@ -27,7 +27,7 @@ namespace IceSaw2.Manager
         //Particle Prefabs
         //Particles
         //Camera
-        //Lights
+        public static List<TrickyLightObject> trickyLightObjects = new List<TrickyLightObject>();
 
         //Pathing Data
         //AIP RaceLine
@@ -183,6 +183,17 @@ namespace IceSaw2.Manager
                 Spline.LoadSpline(splineJsonHandler.Splines[i]);
 
                 trickySplineObjects.Add(Spline);
+            }
+
+            trickyLightObjects = new List<TrickyLightObject>();
+            LightJsonHandler lightJsonHandler = LightJsonHandler.Load(LoadPath + "\\lights.json");
+            for (int i = 0; i < lightJsonHandler.Lights.Count; i++)
+            {
+                var Light = new TrickyLightObject();
+
+                Light.LoadLight(lightJsonHandler.Lights[i]);
+
+                trickyLightObjects.Add(Light);
             }
 
             //Skybox
