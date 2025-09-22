@@ -37,7 +37,7 @@ namespace IceSaw2.Manager
 
         //Effect Data
         public static List<TrickyEffectSlotObject> trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
-        //Physics
+        public static List<TrickyPhysicsObject> trickyPhysicsObjects = new List<TrickyPhysicsObject>();
         public static List<TrickyFunctionHeader> trickyFunctionHeaders = new List<TrickyFunctionHeader>();
         public static List<TrickyEffectHeader> trickyEffectHeaders = new List<TrickyEffectHeader>();
 
@@ -116,6 +116,16 @@ namespace IceSaw2.Manager
                 NewEffectSlot.LoadEffectSlot(sSFJsonHandler.EffectSlots[i]);
 
                 trickyEffectSlotObjects.Add(NewEffectSlot);
+            }
+
+            trickyPhysicsObjects = new List<TrickyPhysicsObject>();
+            for (int i = 0; i < sSFJsonHandler.PhysicsHeaders.Count; i++)
+            {
+                var NewPhysics = new TrickyPhysicsObject();
+
+                NewPhysics.LoadPhysics(sSFJsonHandler.PhysicsHeaders[i]);
+
+                trickyPhysicsObjects.Add(NewPhysics);
             }
         }
 
@@ -318,6 +328,7 @@ namespace IceSaw2.Manager
             trickyEffectHeaders = new List<TrickyEffectHeader>();
             trickyFunctionHeaders = new List<TrickyFunctionHeader>();
             trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
+            trickyPhysicsObjects = new List<TrickyPhysicsObject>();
 
             for (int i = 0; i < worldTextureData.Count; i++)
             {

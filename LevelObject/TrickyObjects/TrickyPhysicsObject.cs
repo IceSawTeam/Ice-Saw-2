@@ -3,7 +3,7 @@ using SSXMultiTool.JsonFiles.Tricky;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PhysicsObject : BaseObject
+public class TrickyPhysicsObject : BaseObject
 {
     public override ObjectType Type
     {
