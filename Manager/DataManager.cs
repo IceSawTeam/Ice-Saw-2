@@ -26,7 +26,7 @@ namespace IceSaw2.Manager
         public static List<TrickySplineObject> trickySplineObjects = new List<TrickySplineObject>();
         //Particle Prefabs
         //Particles
-        //Camera
+        public static List<TrickyCameraObject> trickyCameraObjects = new List<TrickyCameraObject>();
         public static List<TrickyLightObject> trickyLightObjects = new List<TrickyLightObject>();
 
         //Pathing Data
@@ -261,6 +261,17 @@ namespace IceSaw2.Manager
 
                 trickyLightObjects.Add(Light);
             }
+
+            trickyCameraObjects = new List<TrickyCameraObject>();
+            CameraJSONHandler cameraJSONHandler = CameraJSONHandler.Load(LoadPath + "\\cameras.json");
+            for (int i = 0; i < cameraJSONHandler.Cameras.Count; i++)
+            {
+                var Camera = new TrickyCameraObject();
+
+                Camera.LoadCamera(cameraJSONHandler.Cameras[i]);
+
+                trickyCameraObjects.Add(Camera);
+            }
         }
 
         public static void UnloadProject()
@@ -278,6 +289,7 @@ namespace IceSaw2.Manager
             trickyPrefabObjects = new List<TrickyPrefabObject>();
             trickyInstanceObjects = new List<TrickyInstanceObject>();
             trickyLightObjects = new List<TrickyLightObject>();
+            trickyCameraObjects = new List<TrickyCameraObject>();
 
             trickyEffectHeaders = new List<TrickyEffectHeader>();
             trickyFunctionHeaders = new List<TrickyFunctionHeader>();
