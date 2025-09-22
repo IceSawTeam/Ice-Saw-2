@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 
-public class EffectSlotObject : BaseObject
+public class TrickyEffectSlotObject : BaseObject
 {
     public override ObjectType Type
     {

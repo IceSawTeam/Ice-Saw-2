@@ -36,7 +36,7 @@ namespace IceSaw2.Manager
         //SOP AI
 
         //Effect Data
-        //Effect Slots
+        public static List<TrickyEffectSlotObject> trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
         //Physics
         public static List<TrickyFunctionHeader> trickyFunctionHeaders = new List<TrickyFunctionHeader>();
         public static List<TrickyEffectHeader> trickyEffectHeaders = new List<TrickyEffectHeader>();
@@ -88,6 +88,16 @@ namespace IceSaw2.Manager
             //Effects
             SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(LoadPath + "\\SSFLogic.json");
 
+            trickyEffectHeaders = new List<TrickyEffectHeader>();
+            for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)
+            {
+                var NewEffect = new TrickyEffectHeader();
+
+                NewEffect.LoadEffectList(sSFJsonHandler.EffectHeaders[i]);
+
+                trickyEffectHeaders.Add(NewEffect);
+            }
+
             trickyFunctionHeaders = new List<TrickyFunctionHeader>();
             for (int i = 0; i < sSFJsonHandler.Functions.Count; i++)
             {
@@ -98,14 +108,14 @@ namespace IceSaw2.Manager
                 trickyFunctionHeaders.Add(NewEffect);
             }
 
-            trickyEffectHeaders = new List<TrickyEffectHeader>();
-            for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)
+            trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
+            for (int i = 0; i < sSFJsonHandler.EffectSlots.Count; i++)
             {
-                var NewEffect = new TrickyEffectHeader();
+                var NewEffectSlot = new TrickyEffectSlotObject();
 
-                NewEffect.LoadEffectList(sSFJsonHandler.EffectHeaders[i]);
+                NewEffectSlot.LoadEffectSlot(sSFJsonHandler.EffectSlots[i]);
 
-                trickyEffectHeaders.Add(NewEffect);
+                trickyEffectSlotObjects.Add(NewEffectSlot);
             }
         }
 
@@ -267,6 +277,11 @@ namespace IceSaw2.Manager
             trickyMaterialObject = new List<TrickyMaterialObject>();
             trickyPrefabObjects = new List<TrickyPrefabObject>();
             trickyInstanceObjects = new List<TrickyInstanceObject>();
+            trickyLightObjects = new List<TrickyLightObject>();
+
+            trickyEffectHeaders = new List<TrickyEffectHeader>();
+            trickyFunctionHeaders = new List<TrickyFunctionHeader>();
+            trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
 
             for (int i = 0; i < worldTextureData.Count; i++)
             {
