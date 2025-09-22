@@ -147,8 +147,7 @@ namespace IceSaw2.LevelObject
                 Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
                 Matrix4x4 rotation = QuaternionToMatrix(_rotation);
                 Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
-                TempMatrix4X4.Translation = _position;
-                //TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
+                TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
 
                 localMatrix4X4 = TempMatrix4X4;
             }
