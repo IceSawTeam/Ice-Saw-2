@@ -30,10 +30,12 @@ namespace IceSaw2.Manager
         public static List<TrickyLightObject> trickyLightObjects = new List<TrickyLightObject>();
 
         //Pathing Data
-        //AIP RaceLine
-        //AIP AI
-        //SOP Raceline
-        //SOP AI
+        public static List<int> AIPStartPos = new List<int>();
+        public static List<TrickyPathBObject> trickyAIPRaceLine = new List<TrickyPathBObject>();
+        public static List<TrickyPathAObject> trickyAIPAIPath = new List<TrickyPathAObject>();
+        public static List<int> SOPStartPos = new List<int>();
+        public static List<TrickyPathBObject> trickySOPRaceLine = new List<TrickyPathBObject>();
+        public static List<TrickyPathAObject> trickySOPAIPath = new List<TrickyPathAObject>();
 
         //Effect Data
         public static List<TrickyEffectSlotObject> trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
@@ -62,71 +64,9 @@ namespace IceSaw2.Manager
 
             LoadLevelObjects();
 
-            //Skybox
-            trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
-            MaterialJsonHandler matskyJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\Skybox\\materials.json");
-            for (int i = 0; i < matskyJsonHandler.Materials.Count; i++)
-            {
-                TrickyMaterialObject materialObject = new TrickyMaterialObject();
+            LoadEffects();
 
-                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], false);
-
-                trickySkyboxMaterialObject.Add(materialObject);
-            }
-
-            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
-            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\Skybox\\prefabs.json");
-            for (int i = 0; i < prefabSkyboxJsonHandler.Prefabs.Count; i++)
-            {
-                var NewPrefab = new TrickyPrefabObject();
-
-                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Prefabs[i], true);
-
-                trickySkyboxPrefabObjects.Add(NewPrefab);
-            }
-
-            //Effects
-            SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(LoadPath + "\\SSFLogic.json");
-
-            trickyEffectHeaders = new List<TrickyEffectHeader>();
-            for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)
-            {
-                var NewEffect = new TrickyEffectHeader();
-
-                NewEffect.LoadEffectList(sSFJsonHandler.EffectHeaders[i]);
-
-                trickyEffectHeaders.Add(NewEffect);
-            }
-
-            trickyFunctionHeaders = new List<TrickyFunctionHeader>();
-            for (int i = 0; i < sSFJsonHandler.Functions.Count; i++)
-            {
-                var NewEffect = new TrickyFunctionHeader();
-
-                NewEffect.LoadFunction(sSFJsonHandler.Functions[i]);
-
-                trickyFunctionHeaders.Add(NewEffect);
-            }
-
-            trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
-            for (int i = 0; i < sSFJsonHandler.EffectSlots.Count; i++)
-            {
-                var NewEffectSlot = new TrickyEffectSlotObject();
-
-                NewEffectSlot.LoadEffectSlot(sSFJsonHandler.EffectSlots[i]);
-
-                trickyEffectSlotObjects.Add(NewEffectSlot);
-            }
-
-            trickyPhysicsObjects = new List<TrickyPhysicsObject>();
-            for (int i = 0; i < sSFJsonHandler.PhysicsHeaders.Count; i++)
-            {
-                var NewPhysics = new TrickyPhysicsObject();
-
-                NewPhysics.LoadPhysics(sSFJsonHandler.PhysicsHeaders[i]);
-
-                trickyPhysicsObjects.Add(NewPhysics);
-            }
+            LoadSkybox();
         }
 
         public static void LoadTextureMesh()
@@ -306,6 +246,129 @@ namespace IceSaw2.Manager
             }
         }
 
+        public static void LoadPaths()
+        {
+            AIPSOPJsonHandler aIPSOPJsonHandler = AIPSOPJsonHandler.Load(LoadPath + "/AIP.json");
+
+            AIPStartPos = aIPSOPJsonHandler.StartPosList;
+
+            trickyAIPAIPath = new List<TrickyPathAObject>();
+            for (int i = 0; i < aIPSOPJsonHandler.AIPaths.Count; i++)
+            {
+                TrickyPathAObject trickyPathAObject = new TrickyPathAObject();
+
+                trickyPathAObject.LoadPathA(aIPSOPJsonHandler.AIPaths[i]);
+
+                trickyAIPAIPath.Add(trickyPathAObject);
+            }
+
+            trickyAIPRaceLine = new List<TrickyPathBObject>();
+            for (int i = 0; i < aIPSOPJsonHandler.RaceLines.Count; i++)
+            {
+                TrickyPathBObject trickyPathBObject = new TrickyPathBObject();
+
+                trickyPathBObject.LoadPathB(aIPSOPJsonHandler.RaceLines[i]);
+
+                trickyAIPRaceLine.Add(trickyPathBObject);
+            }
+
+            aIPSOPJsonHandler = AIPSOPJsonHandler.Load(LoadPath + "/SOP.json");
+
+            SOPStartPos = aIPSOPJsonHandler.StartPosList;
+
+            trickySOPAIPath = new List<TrickyPathAObject>();
+            for (int i = 0; i < aIPSOPJsonHandler.AIPaths.Count; i++)
+            {
+                TrickyPathAObject trickyPathAObject = new TrickyPathAObject();
+
+                trickyPathAObject.LoadPathA(aIPSOPJsonHandler.AIPaths[i]);
+
+                trickySOPAIPath.Add(trickyPathAObject);
+            }
+
+            trickySOPRaceLine = new List<TrickyPathBObject>();
+            for (int i = 0; i < aIPSOPJsonHandler.RaceLines.Count; i++)
+            {
+                TrickyPathBObject trickyPathBObject = new TrickyPathBObject();
+
+                trickyPathBObject.LoadPathB(aIPSOPJsonHandler.RaceLines[i]);
+
+                trickySOPRaceLine.Add(trickyPathBObject);
+            }
+        }
+
+        public static void LoadSkybox()
+        {
+            //Skybox
+            trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
+            MaterialJsonHandler matskyJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\Skybox\\materials.json");
+            for (int i = 0; i < matskyJsonHandler.Materials.Count; i++)
+            {
+                TrickyMaterialObject materialObject = new TrickyMaterialObject();
+
+                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], false);
+
+                trickySkyboxMaterialObject.Add(materialObject);
+            }
+
+            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
+            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\Skybox\\prefabs.json");
+            for (int i = 0; i < prefabSkyboxJsonHandler.Prefabs.Count; i++)
+            {
+                var NewPrefab = new TrickyPrefabObject();
+
+                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Prefabs[i], true);
+
+                trickySkyboxPrefabObjects.Add(NewPrefab);
+            }
+        }
+
+        public static void LoadEffects()
+        {
+            //Effects
+            SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(LoadPath + "\\SSFLogic.json");
+
+            trickyEffectHeaders = new List<TrickyEffectHeader>();
+            for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)
+            {
+                var NewEffect = new TrickyEffectHeader();
+
+                NewEffect.LoadEffectList(sSFJsonHandler.EffectHeaders[i]);
+
+                trickyEffectHeaders.Add(NewEffect);
+            }
+
+            trickyFunctionHeaders = new List<TrickyFunctionHeader>();
+            for (int i = 0; i < sSFJsonHandler.Functions.Count; i++)
+            {
+                var NewEffect = new TrickyFunctionHeader();
+
+                NewEffect.LoadFunction(sSFJsonHandler.Functions[i]);
+
+                trickyFunctionHeaders.Add(NewEffect);
+            }
+
+            trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
+            for (int i = 0; i < sSFJsonHandler.EffectSlots.Count; i++)
+            {
+                var NewEffectSlot = new TrickyEffectSlotObject();
+
+                NewEffectSlot.LoadEffectSlot(sSFJsonHandler.EffectSlots[i]);
+
+                trickyEffectSlotObjects.Add(NewEffectSlot);
+            }
+
+            trickyPhysicsObjects = new List<TrickyPhysicsObject>();
+            for (int i = 0; i < sSFJsonHandler.PhysicsHeaders.Count; i++)
+            {
+                var NewPhysics = new TrickyPhysicsObject();
+
+                NewPhysics.LoadPhysics(sSFJsonHandler.PhysicsHeaders[i]);
+
+                trickyPhysicsObjects.Add(NewPhysics);
+            }
+        }
+
         public static void UnloadProject()
         {
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
@@ -329,6 +392,12 @@ namespace IceSaw2.Manager
             trickyFunctionHeaders = new List<TrickyFunctionHeader>();
             trickyEffectSlotObjects = new List<TrickyEffectSlotObject>();
             trickyPhysicsObjects = new List<TrickyPhysicsObject>();
+
+            trickyAIPRaceLine = new List<TrickyPathBObject>();
+            trickyAIPAIPath = new List<TrickyPathAObject>();
+            trickySOPAIPath = new List<TrickyPathAObject>();
+            trickySOPRaceLine = new List<TrickyPathBObject>();
+
 
             for (int i = 0; i < worldTextureData.Count; i++)
             {
