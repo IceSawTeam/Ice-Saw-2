@@ -25,7 +25,7 @@ namespace IceSaw2.Manager
         public static List<TrickyInstanceObject> trickyInstanceObjects = new List<TrickyInstanceObject>();
         public static List<TrickySplineObject> trickySplineObjects = new List<TrickySplineObject>();
         public static List<TrickyParticlePrefabObject> trickyParticlePrefabObjects = new List<TrickyParticlePrefabObject>();
-        //Particles
+        public static List<TrickyPaticleInstanceObject> trickyPaticleInstanceObjects = new List<TrickyPaticleInstanceObject>();
         public static List<TrickyCameraObject> trickyCameraObjects = new List<TrickyCameraObject>();
         public static List<TrickyLightObject> trickyLightObjects = new List<TrickyLightObject>();
 
@@ -252,7 +252,7 @@ namespace IceSaw2.Manager
             }
 
             trickyLightObjects = new List<TrickyLightObject>();
-            LightJsonHandler lightJsonHandler = LightJsonHandler.Load(LoadPath + "\\lights.json");
+            LightJsonHandler lightJsonHandler = LightJsonHandler.Load(LoadPath + "\\Lights.json");
             for (int i = 0; i < lightJsonHandler.Lights.Count; i++)
             {
                 var Light = new TrickyLightObject();
@@ -263,7 +263,7 @@ namespace IceSaw2.Manager
             }
 
             trickyCameraObjects = new List<TrickyCameraObject>();
-            CameraJSONHandler cameraJSONHandler = CameraJSONHandler.Load(LoadPath + "\\cameras.json");
+            CameraJSONHandler cameraJSONHandler = CameraJSONHandler.Load(LoadPath + "\\Cameras.json");
             for (int i = 0; i < cameraJSONHandler.Cameras.Count; i++)
             {
                 var Camera = new TrickyCameraObject();
@@ -274,7 +274,7 @@ namespace IceSaw2.Manager
             }
 
             trickyParticlePrefabObjects = new List<TrickyParticlePrefabObject>();
-            ParticleModelJsonHandler particleModelJsonHandler = ParticleModelJsonHandler.Load(LoadPath + "\\particleprefab.json");
+            ParticleModelJsonHandler particleModelJsonHandler = ParticleModelJsonHandler.Load(LoadPath + "\\ParticlePrefabs.json");
             for (int i = 0; i < particleModelJsonHandler.ParticlePrefabs.Count; i++)
             {
                 var ParticlePrefab = new TrickyParticlePrefabObject();
@@ -282,6 +282,17 @@ namespace IceSaw2.Manager
                 ParticlePrefab.LoadParticle(particleModelJsonHandler.ParticlePrefabs[i]);
 
                 trickyParticlePrefabObjects.Add(ParticlePrefab);
+            }
+
+            trickyPaticleInstanceObjects = new List<TrickyPaticleInstanceObject>();
+            ParticleInstanceJsonHandler particleInstanceJsonHandler = ParticleInstanceJsonHandler.Load(LoadPath + "\\ParticleInstances.json");
+            for (int i = 0; i < particleInstanceJsonHandler.Particles.Count; i++)
+            {
+                var ParticleInstance = new TrickyPaticleInstanceObject();
+
+                ParticleInstance.LoadPaticleInstance(particleInstanceJsonHandler.Particles[i]);
+
+                trickyPaticleInstanceObjects.Add(ParticleInstance);
             }
         }
 
@@ -302,6 +313,7 @@ namespace IceSaw2.Manager
             trickyLightObjects = new List<TrickyLightObject>();
             trickyCameraObjects = new List<TrickyCameraObject>();
             trickyParticlePrefabObjects = new List<TrickyParticlePrefabObject>();
+            trickyPaticleInstanceObjects = new List<TrickyPaticleInstanceObject>();
 
             trickyEffectHeaders = new List<TrickyEffectHeader>();
             trickyFunctionHeaders = new List<TrickyFunctionHeader>();

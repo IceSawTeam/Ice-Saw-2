@@ -3,7 +3,7 @@ using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections;
 using System.Collections.Generic;
-public class PaticleInstanceObject : BaseObject
+public class TrickyPaticleInstanceObject : BaseObject
 {
     public override ObjectType Type
     {
