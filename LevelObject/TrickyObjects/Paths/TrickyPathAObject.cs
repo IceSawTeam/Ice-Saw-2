@@ -1,9 +1,10 @@
+using IceSaw2.LevelObject;
+using Raylib_cs;
+using SSXMultiTool.JsonFiles.Tricky;
+using SSXMultiTool.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
-using IceSaw2.LevelObject;
-using SSXMultiTool.JsonFiles.Tricky;
-using SSXMultiTool.Utilities;
 
 public class TrickyPathAObject : BaseObject
 {
@@ -145,6 +146,16 @@ public class TrickyPathAObject : BaseObject
                 VectorPoints.Add(PathPoints[i] - PathPoints[i - 1]);
             }
 
+        }
+    }
+
+    public override void Render()
+    {
+        Raylib.DrawLine3D(Position * WorldScale, (Position+ PathPoints[0]) * WorldScale, Color.Red);
+
+        for (int i = 0; i < PathPoints.Count; i++)
+        {
+            Raylib.DrawLine3D((Position + PathPoints[i]) * WorldScale, (Position + PathPoints[i + 1]) * WorldScale, Color.Blue);
         }
     }
 

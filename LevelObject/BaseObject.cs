@@ -140,7 +140,7 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        void UpdateMatrix(bool UpdateLocal = true)
+        private void UpdateMatrix(bool UpdateLocal = true)
         {
             if (UpdateLocal)
             {
