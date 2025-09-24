@@ -28,7 +28,7 @@ namespace IceSaw2.EditorWindows
 
         private float axisLineSize = 1000f;
 
-        Camera3D viewCamera3D = new Camera3D();
+        public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
 
 
@@ -87,7 +87,16 @@ namespace IceSaw2.EditorWindows
 
             //Render Wires
 
+            //Render Lights
+            for (int i = 0; i < DataManager.trickyLightObjects.Count; i++)
+            {
+                DataManager.trickyLightObjects[i].Render();
+            }
+
             Raylib.EndMode3D();
+
+
+            //Render UI
 
             float menuBarHeight = ImGui.GetFrameHeight(); // Typically height of main menu bar
 

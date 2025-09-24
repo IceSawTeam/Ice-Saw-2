@@ -5,6 +5,7 @@ using SSXMultiTool.Utilities;
 using IceSaw2.LevelObject;
 using System.Numerics;
 using Raylib_cs;
+using IceSaw2.Manager;
 
 public class TrickyLightObject : BaseObject
 {
@@ -70,6 +71,11 @@ public class TrickyLightObject : BaseObject
         NewLight.Hash = Hash;
 
         return NewLight;
+    }
+
+    public override void Render()
+    {
+        Raylib.DrawBillboard(WorldManager.instance.levelEditorWindow.viewCamera3D, WorldManager.instance.LightIcon, Position, 1f, Color.White);
     }
 
     public enum LightType

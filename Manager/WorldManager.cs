@@ -3,6 +3,7 @@ using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Settings;
+using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
@@ -30,9 +31,13 @@ namespace IceSaw2.Manager
         public GeneralSettings generalSettings = new GeneralSettings();
         public HotkeySettings hotkeySettings = new HotkeySettings();
 
+        //Icon List
+        public Texture2D LightIcon = new Texture2D();
+
         public void Initalise()
         {
             instance = this;
+            InitalizeAssets();
             filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
 
             levelEditorWindow.Initilize();
@@ -47,6 +52,11 @@ namespace IceSaw2.Manager
             Update();
 
             Raylib.CloseWindow();
+        }
+
+        public void InitalizeAssets()
+        {
+            LightIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("LightIcon.png"));
         }
 
         public void Update()
@@ -78,7 +88,6 @@ namespace IceSaw2.Manager
                 rlImGui.Begin();
                 Raylib.ClearBackground(Color.White);
                 Rlgl.DisableBackfaceCulling();
-                //Render();
 
                 if (windowMode == WindowMode.World)
                 {
