@@ -9,7 +9,7 @@ namespace IceSaw2.Utilities
     public static class LoadEmbededImage
     {
 
-        public static Image LoadEmbededImage(string Name)
+        public static Image LoadImage(string Name)
         {
             Assembly myAssembly = Assembly.GetExecutingAssembly();
 
@@ -30,7 +30,7 @@ namespace IceSaw2.Utilities
                     fixed (byte* unmanagedPointer = imageBytes)
                     {
                         // Now 'unmanagedPointer' points to the first element of 'managedByteArray'
-                        embeddedImage = Raylib.LoadImageFromMemory(GetSBytePointer("png"), unmanagedPointer, imageBytes.Length);
+                        embeddedImage = Raylib.LoadImageFromMemory(GetSBytePointer(".png"), unmanagedPointer, imageBytes.Length);
                     }
                 }
                 myStream.Dispose();
