@@ -9,10 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\CameraIcon.png" />
     <None Remove="Assets\LightIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\CameraIcon.png" />
     <EmbeddedResource Include="Assets\LightIcon.png" />
   </ItemGroup>
 

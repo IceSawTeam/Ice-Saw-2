@@ -38,7 +38,6 @@ namespace IceSaw2.Manager
         public void Initalise()
         {
             instance = this;
-            InitalizeAssets();
             filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
 
             levelEditorWindow.Initilize();
@@ -47,6 +46,7 @@ namespace IceSaw2.Manager
 
             Raylib.InitWindow(generalSettings.ScreenWidth, generalSettings.ScreenHeight, "Ice Saw 2");
             rlImGui.Setup(true);
+            InitalizeAssets();
 
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
 
