@@ -87,7 +87,7 @@ namespace IceSaw2.EditorWindows
 
             //Render Wires
 
-            //Render Lights
+            //Render Sprites
             for (int i = 0; i < DataManager.trickyLightObjects.Count; i++)
             {
                 DataManager.trickyLightObjects[i].Render();
@@ -96,6 +96,11 @@ namespace IceSaw2.EditorWindows
             for (int i = 0; i < DataManager.trickyCameraObjects.Count; i++)
             {
                 DataManager.trickyCameraObjects[i].Render();
+            }
+
+            for (int i = 0; i < DataManager.trickyPaticleInstanceObjects.Count; i++)
+            {
+                DataManager.trickyPaticleInstanceObjects[i].Render();
             }
 
             Raylib.EndMode3D();

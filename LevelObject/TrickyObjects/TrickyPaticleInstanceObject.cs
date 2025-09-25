@@ -1,8 +1,11 @@
 using IceSaw2.LevelObject;
+using IceSaw2.Manager;
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 public class TrickyPaticleInstanceObject : BaseObject
 {
     public override ObjectType Type
@@ -55,5 +58,13 @@ public class TrickyPaticleInstanceObject : BaseObject
         particleJson.UnknownInt12 = UnknownInt12;
 
         return particleJson;
+    }
+
+    public override void Render()
+    {
+        Rectangle sourceRec = new Rectangle(0, 0, WorldManager.instance.ParticleIcon.Width, WorldManager.instance.ParticleIcon.Height);
+        Vector2 size = new Vector2(1.0f, (float)WorldManager.instance.ParticleIcon.Height / WorldManager.instance.ParticleIcon.Width); // maintain aspect
+        Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
+        Raylib.DrawBillboardPro(WorldManager.instance.levelEditorWindow.viewCamera3D, WorldManager.instance.ParticleIcon, sourceRec, Position * WorldScale, new Vector3(0, 0, 1), size, origin, 0f, Color.White);
     }
 }
