@@ -80,12 +80,31 @@ namespace IceSaw2.EditorWindows
                 DataManager.trickyInstanceObjects[i].Render();
             }
 
+            //Render Wires
             for (int i = 0; i < DataManager.trickySplineObjects.Count; i++)
             {
                 DataManager.trickySplineObjects[i].Render();
             }
 
-            //Render Wires
+            for (int i = 0; i < DataManager.trickyAIPAIPath.Count; i++)
+            {
+                DataManager.trickyAIPAIPath[i].Render();
+            }
+
+            for (int i = 0; i < DataManager.trickyAIPRaceLine.Count; i++)
+            {
+                DataManager.trickyAIPRaceLine[i].Render();
+            }
+
+            for (int i = 0; i < DataManager.trickySOPAIPath.Count; i++)
+            {
+                DataManager.trickySOPAIPath[i].Render();
+            }
+
+            for (int i = 0; i < DataManager.trickySOPRaceLine.Count; i++)
+            {
+                DataManager.trickySOPRaceLine[i].Render();
+            }
 
             //Render Sprites
             for (int i = 0; i < DataManager.trickyLightObjects.Count; i++)
