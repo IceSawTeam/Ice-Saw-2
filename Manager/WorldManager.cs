@@ -34,6 +34,7 @@ namespace IceSaw2.Manager
         //Icon List
         public Texture2D LightIcon = new Texture2D();
         public Texture2D CameraIcon = new Texture2D();
+        public Texture2D ParticleIcon = new Texture2D();
 
         public void Initalise()
         {
@@ -59,6 +60,7 @@ namespace IceSaw2.Manager
         {
             LightIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("LightIcon.png"));
             CameraIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("CameraIcon.png"));
+            ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("ParticleIcon.png"));
         }
 
         public void Update()

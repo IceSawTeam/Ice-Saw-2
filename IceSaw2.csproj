@@ -11,11 +11,13 @@
   <ItemGroup>
     <None Remove="Assets\CameraIcon.png" />
     <None Remove="Assets\LightIcon.png" />
+    <None Remove="Assets\ParticleIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\CameraIcon.png" />
     <EmbeddedResource Include="Assets\LightIcon.png" />
+    <EmbeddedResource Include="Assets\ParticleIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
