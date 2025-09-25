@@ -64,6 +64,8 @@ namespace IceSaw2.Manager
 
             LoadLevelObjects();
 
+            LoadPaths();
+
             LoadEffects();
 
             LoadSkybox();

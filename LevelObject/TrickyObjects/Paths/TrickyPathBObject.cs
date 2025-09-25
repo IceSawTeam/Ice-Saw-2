@@ -159,7 +159,7 @@ public class TrickyPathBObject : BaseObject
     {
         Raylib.DrawLine3D(Position * WorldScale, (Position + PathPoints[0]) * WorldScale, Color.Red);
 
-        for (int i = 0; i < PathPoints.Count; i++)
+        for (int i = 0; i < PathPoints.Count-1; i++)
         {
             Raylib.DrawLine3D((Position + PathPoints[i]) * WorldScale, (Position + PathPoints[i + 1]) * WorldScale, Color.Blue);
         }
