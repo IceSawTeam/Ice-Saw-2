@@ -1,4 +1,6 @@
 using IceSaw2.LevelObject;
+using IceSaw2.Manager;
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections;
@@ -124,6 +126,11 @@ public class TrickyCameraObject : BaseObject
 
         return cameraInstance;
 
+    }
+
+    public override void Render()
+    {
+        Raylib.DrawBillboard(WorldManager.instance.levelEditorWindow.viewCamera3D, WorldManager.instance.CameraIcon, Position, 1f, Color.White);
     }
 
     public struct CameraAnimationHeader

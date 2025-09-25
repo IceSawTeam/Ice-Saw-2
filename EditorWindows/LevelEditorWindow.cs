@@ -93,6 +93,11 @@ namespace IceSaw2.EditorWindows
                 DataManager.trickyLightObjects[i].Render();
             }
 
+            for (int i = 0; i < DataManager.trickyCameraObjects.Count; i++)
+            {
+                DataManager.trickyCameraObjects[i].Render();
+            }
+
             Raylib.EndMode3D();
 
 
