@@ -159,16 +159,34 @@ namespace IceSaw2.LevelObject
             if (ModelID != -1)
             {
                 TrickyPrefab = DataManager.trickyPrefabObjects[ModelID];
+                GenerateRenderCache();
             }
         }
 
-        public override void Render()
+        List<RenderCache> renderCaches = new List<RenderCache>();
+
+        public void GenerateRenderCache()
         {
+            renderCaches = new List<RenderCache>();
             if (TrickyPrefab != null)
             {
                 TrickyPrefab.parent = this;
-                TrickyPrefab.Render();
+                renderCaches = TrickyPrefab.GenerateRenderCache();
                 TrickyPrefab.parent = null;
+            }
+        }
+        
+        public override void Render()
+        {
+            //if (TrickyPrefab != null)
+            //{
+            //    TrickyPrefab.parent = this;
+            //    TrickyPrefab.Render();
+            //    TrickyPrefab.parent = null;
+            //}
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
             }
         }
 

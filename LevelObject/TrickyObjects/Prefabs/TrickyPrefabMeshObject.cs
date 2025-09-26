@@ -99,6 +99,18 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
         }
 
+        public List<RenderCache> GenerateRenderCache()
+        {
+            List<RenderCache> cache = new List<RenderCache>();
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                cache.Add(((TrickyPrefabMaterialObject)children[i]).GenerateRenderCache());
+            }
+
+            return cache;
+        }
+
         [Serializable]
         public struct ObjectAnimation
         {

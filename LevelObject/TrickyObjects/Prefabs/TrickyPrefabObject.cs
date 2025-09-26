@@ -50,5 +50,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 trickyPrefabSubObjects[i].Render();
             }
         }
+
+        public List<RenderCache> GenerateRenderCache()
+        {
+            List<RenderCache> cache = new List<RenderCache>();
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                cache.AddRange(((TrickyPrefabMeshObject)children[i]).GenerateRenderCache());
+            }
+
+            return cache;
+        }
     }
 }

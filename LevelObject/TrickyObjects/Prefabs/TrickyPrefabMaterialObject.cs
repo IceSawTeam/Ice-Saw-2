@@ -54,5 +54,15 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
         }
+
+        public RenderCache GenerateRenderCache()
+        {
+            RenderCache cache = new RenderCache();
+
+            cache.baseObject = this;
+            cache.WorldMatrix = worldMatrix4x4;
+
+            return cache;
+        }
     }
 }
