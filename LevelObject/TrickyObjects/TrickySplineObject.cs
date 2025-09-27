@@ -101,14 +101,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 //{
                 //    Generated = false;
                 //}
-                curves.Add(TempSegment.Point1);
+                curves.Add(TempSegment.Point1*WorldScale);
                 for (int a = 1; a <= SEGMENT_COUNT; a++)
                 {
                     float t = a / (float)SEGMENT_COUNT;
                     Vector3 pixel = CalculateCubicBezierPoint(t, (TempSegment.Point1), (TempSegment.Point2), (TempSegment.Point3), (TempSegment.Point4));
-                    curves.Add(pixel);
+                    curves.Add(pixel * WorldScale);
                 }
-                curves.Add(TempSegment.Point4);
+                curves.Add(TempSegment.Point4 * WorldScale);
 
                 splineSegments[i] = TempSegment;
             }
@@ -116,10 +116,24 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public override void Render()
         {
-            for (int i = 0; i < curves.Count-1; i++)
+            Rlgl.Begin(DrawMode.Lines);
+            Rlgl.Color3f(1.0f, 0.0f, 0.0f);
+
+            for (int i = 0; i < curves.Count - 1; i++)
             {
-                Raylib.DrawLine3D(curves[i]* WorldScale, curves[i+1] * WorldScale, Color.Red);
+                Vector3 worldspace = curves[i];
+                Vector3 worldspace1 = curves[i + 1];
+
+                Rlgl.Vertex3f(worldspace.X, worldspace.Y, worldspace.Z);
+                Rlgl.Vertex3f(worldspace1.X, worldspace1.Y, worldspace1.Z);
             }
+
+            Rlgl.End();
+
+            //for (int i = 0; i < curves.Count - 1; i++)
+            //{
+            //    Raylib.DrawLine3D(curves[i], curves[i + 1], Color.Red);
+            //}
         }
 
         //Vector3 ConvertLocalPoint(Vector3 point)
