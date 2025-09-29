@@ -4,11 +4,10 @@ namespace IceSaw2
 {
     internal class Program
     {
-        public static WorldManager worldManager = new WorldManager();
-
         public static void Main()
         {
-            worldManager.Initalise();
+            WorldManager worldManager = new();
+            // Might use worldManager for something else here?
         }
     }
 }

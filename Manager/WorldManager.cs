@@ -1,42 +1,42 @@
 ﻿using IceSaw2.EditorWindows;
-using IceSaw2.LevelObject;
-using IceSaw2.LevelObject.Materials;
-using IceSaw2.LevelObject.TrickyObjects;
+// using IceSaw2.LevelObject;
+// using IceSaw2.LevelObject.Materials;
+// using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
-using SSXMultiTool.JsonFiles.Tricky;
-using System.Numerics;
+// using SSXMultiTool.JsonFiles.Tricky;
+// using System.Numerics;
 
 namespace IceSaw2.Manager
 {
     public class WorldManager
     {
-        public static WorldManager instance = new WorldManager();
+        public static WorldManager instance = new();
 
-        public LevelEditorWindow levelEditorWindow = new LevelEditorWindow();
-        public PrefabEditorWindow prefabEditorWindow = new PrefabEditorWindow();
-        public MaterialEditorWindow materialEditorWindow = new MaterialEditorWindow();
-        public TextureEditorWindow textureEditorWindow = new TextureEditorWindow();
+        public LevelEditorWindow levelEditorWindow = new();
+        public PrefabEditorWindow prefabEditorWindow = new();
+        public MaterialEditorWindow materialEditorWindow = new();
+        public TextureEditorWindow textureEditorWindow = new();
 
         public int heightScreen { get { return Raylib.GetScreenHeight(); } }
         public int widthScreen { get { return Raylib.GetScreenWidth(); } }
 
         public WindowMode windowMode = WindowMode.World;
 
-        static IMGuiFilePicker filePicker = new IMGuiFilePicker();
+        static IMGuiFilePicker filePicker = new();
 
-        public GeneralSettings generalSettings = new GeneralSettings();
-        public HotkeySettings hotkeySettings = new HotkeySettings();
+        public GeneralSettings generalSettings = new();
+        public HotkeySettings hotkeySettings = new();
 
         //Icon List
-        public Texture2D LightIcon = new Texture2D();
-        public Texture2D CameraIcon = new Texture2D();
-        public Texture2D ParticleIcon = new Texture2D();
+        public Texture2D LightIcon = new();
+        public Texture2D CameraIcon = new();
+        public Texture2D ParticleIcon = new();
 
-        public void Initalise()
+        public WorldManager()
         {
             instance = this;
             filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
@@ -48,12 +48,14 @@ namespace IceSaw2.Manager
             Raylib.InitWindow(generalSettings.ScreenWidth, generalSettings.ScreenHeight, "Ice Saw 2");
             rlImGui.Setup(true);
             InitalizeAssets();
-
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
-
             Update();
-
             Raylib.CloseWindow();
+        }
+
+        ~WorldManager()
+        {
+            // Cleanup before shutdown
         }
 
         public void InitalizeAssets()
@@ -68,24 +70,13 @@ namespace IceSaw2.Manager
             while (!Raylib.WindowShouldClose())
             {
                 //Logic Update
-
-                if (windowMode == WindowMode.World)
+                switch (windowMode)
                 {
-                    levelEditorWindow.LogicUpdate();
+                    case WindowMode.World: levelEditorWindow.LogicUpdate(); break;
+                    case WindowMode.Prefabs: prefabEditorWindow.LogicUpdate(); break;
+                    case WindowMode.Materials: materialEditorWindow.LogicUpdate(); break;
+                    case WindowMode.Textures: textureEditorWindow.LogicUpdate(); break;
                 }
-                if(windowMode == WindowMode.Prefabs)
-                {
-                    prefabEditorWindow.LogicUpdate();
-                }
-                if (windowMode == WindowMode.Materials)
-                {
-                    materialEditorWindow.LogicUpdate();
-                }
-                if (windowMode == WindowMode.Textures)
-                {
-                    textureEditorWindow.LogicUpdate();
-                }
-
                 UpdateLogic();
 
                 Raylib.BeginDrawing();
@@ -93,26 +84,16 @@ namespace IceSaw2.Manager
                 Raylib.ClearBackground(Color.White);
                 Rlgl.DisableBackfaceCulling();
 
-                if (windowMode == WindowMode.World)
+                switch (windowMode)
                 {
-                    levelEditorWindow.RenderUpdate();
+                    case WindowMode.World: levelEditorWindow.RenderUpdate(); break;
+                    case WindowMode.Prefabs: prefabEditorWindow.RenderUpdate(); break;
+                    case WindowMode.Materials: materialEditorWindow.RenderUpdate(); break;
+                    case WindowMode.Textures: textureEditorWindow.RenderUpdate(); break;
                 }
-                if (windowMode == WindowMode.Prefabs)
-                {
-                    prefabEditorWindow.RenderUpdate();
-                }
-                if (windowMode == WindowMode.Materials)
-                {
-                    materialEditorWindow.RenderUpdate();
-                }
-                if(windowMode == WindowMode.Textures)
-                {
-                    textureEditorWindow.RenderUpdate();
-                }
-
                 Render();
 
-                Raylib.DrawText("Beta Test", 12, widthScreen-20, 20, Color.Black);
+                Raylib.DrawText("Beta Test", 12, widthScreen - 20, 20, Color.Black);
                 rlImGui.End();
                 Raylib.EndDrawing();
             }
@@ -137,9 +118,7 @@ namespace IceSaw2.Manager
         public void Render()
         {
             Raylib.DrawFPS(widthScreen - 150, heightScreen - 30);
-
             filePicker.Render();
-
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -176,9 +155,9 @@ namespace IceSaw2.Manager
                     ImGui.EndMenu();
                 }
 
-                if(ImGui.BeginMenu("Window"))
+                if (ImGui.BeginMenu("Window"))
                 {
-                    if (ImGui.MenuItem("Level")) 
+                    if (ImGui.MenuItem("Level"))
                     {
                         windowMode = WindowMode.World;
                     }
@@ -186,7 +165,7 @@ namespace IceSaw2.Manager
                     {
                         windowMode = WindowMode.Prefabs;
                     }
-                    if (ImGui.MenuItem("Material")) 
+                    if (ImGui.MenuItem("Material"))
                     {
                         windowMode = WindowMode.Materials;
                     }
@@ -209,6 +188,8 @@ namespace IceSaw2.Manager
                 ImGui.EndMainMenuBar();
             }
         }
+
+
 
 
         public enum WindowMode

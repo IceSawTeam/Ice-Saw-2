@@ -52,7 +52,7 @@ namespace IceSaw2.Manager
         public static List<MeshData> worldMeshes = new List<MeshData>();
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
 
-        public static string LoadPath = "";
+        public static string? LoadPath = "";
 
         public static void LoadProject(string ConfigPath)
         {
