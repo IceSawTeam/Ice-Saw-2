@@ -168,20 +168,25 @@ public class TrickyPathAObject : BaseObject
 
     public override void Render()
     {
-        for (int i = 0; i < WorldPathPoints.Count - 1; i++)
-        {
-            Raylib.DrawLine3D(WorldPathPoints[i], WorldPathPoints[i+1], Color.Blue);
-        }
-
-        //Rlgl.Begin(DrawMode.Lines);
-        //Rlgl.Color3f(0f, 0.0f, 1.0f);
-
-        //for (int i = 0; i < WorldPathPoints.Count; i++)
+        //for (int i = 0; i < WorldPathPoints.Count - 1; i++)
         //{
-        //    Rlgl.Vertex3f(WorldPathPoints[i].X, WorldPathPoints[i].Y, WorldPathPoints[i].Z);
+        //    Raylib.DrawLine3D(WorldPathPoints[i], WorldPathPoints[i+1], Color.Blue);
         //}
 
-        //Rlgl.End();
+        Rlgl.PushMatrix();
+
+        Rlgl.Begin(DrawMode.Lines);
+        Rlgl.Color3f(0f, 0f, 1f);
+
+        for (int i = 0; i < WorldPathPoints.Count-1; i++)
+        {
+            Rlgl.Vertex3f(WorldPathPoints[i].X, WorldPathPoints[i].Y, WorldPathPoints[i].Z);
+            Rlgl.Vertex3f(WorldPathPoints[i + 1].X, WorldPathPoints[i + 1].Y, WorldPathPoints[i + 1].Z);
+        }
+
+        Rlgl.End();
+
+        Rlgl.PopMatrix();
     }
 
     [System.Serializable]
