@@ -21,6 +21,9 @@ public class TrickyPathBObject : BaseObject
 
     public List<PathEvent> PathEvents;
 
+    //For Rendering World Path Points
+    public List<Vector3> WorldPathPoints;
+
     public void LoadPathB(AIPSOPJsonHandler.PathB pathB)
     {
         Name = pathB.Name;
@@ -51,6 +54,20 @@ public class TrickyPathBObject : BaseObject
             NewStruct.EventEnd = pathB.PathEvents[i].EventEnd;
 
             PathEvents.Add(NewStruct);
+        }
+
+        GenerateWorldPathPoints();
+    }
+
+    public void GenerateWorldPathPoints()
+    {
+        WorldPathPoints = new List<Vector3>();
+
+        WorldPathPoints.Add(Position * WorldScale);
+
+        for (int i = 0; i < PathPoints.Count; i++)
+        {
+            WorldPathPoints.Add((PathPoints[i] + Position) * WorldScale);
         }
     }
 
@@ -157,12 +174,20 @@ public class TrickyPathBObject : BaseObject
 
     public override void Render()
     {
-        Raylib.DrawLine3D(Position * WorldScale, (Position + PathPoints[0]) * WorldScale, Color.Red);
-
-        for (int i = 0; i < PathPoints.Count-1; i++)
+        for (int i = 0; i < WorldPathPoints.Count - 1; i++)
         {
-            Raylib.DrawLine3D((Position + PathPoints[i]) * WorldScale, (Position + PathPoints[i + 1]) * WorldScale, Color.Blue);
+            Raylib.DrawLine3D(WorldPathPoints[i], WorldPathPoints[i + 1], Color.Blue);
         }
+
+        //Rlgl.Begin(DrawMode.Lines);
+        //Rlgl.Color3f(1f, 1f, 1f);
+
+        //for (int i = 0; i < WorldPathPoints.Count; i++)
+        //{
+        //    Rlgl.Vertex3f(WorldPathPoints[i].X, WorldPathPoints[i].Y, WorldPathPoints[i].Z);
+        //}
+
+        //Rlgl.End();
     }
 
     [System.Serializable]

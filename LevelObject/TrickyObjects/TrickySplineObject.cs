@@ -116,24 +116,25 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public override void Render()
         {
-            Rlgl.Begin(DrawMode.Lines);
-            Rlgl.Color3f(1.0f, 0.0f, 0.0f);
+            //Rlgl.PushMatrix();
+
+            //Rlgl.Begin(DrawMode.Lines);
+            //Rlgl.Color3f(1.0f, 0.0f, 0.0f);
+
+            //for (int i = 0; i < curves.Count; i++)
+            //{
+            //    Rlgl.Vertex3f(curves[i].X, curves[i].Y, curves[i].Z);
+            //}
+
+            //Rlgl.End();
+
+            //Rlgl.PopMatrix();
+
 
             for (int i = 0; i < curves.Count - 1; i++)
             {
-                Vector3 worldspace = curves[i];
-                Vector3 worldspace1 = curves[i + 1];
-
-                Rlgl.Vertex3f(worldspace.X, worldspace.Y, worldspace.Z);
-                Rlgl.Vertex3f(worldspace1.X, worldspace1.Y, worldspace1.Z);
+                Raylib.DrawLine3D(curves[i], curves[i + 1], Color.Red);
             }
-
-            Rlgl.End();
-
-            //for (int i = 0; i < curves.Count - 1; i++)
-            //{
-            //    Raylib.DrawLine3D(curves[i], curves[i + 1], Color.Red);
-            //}
         }
 
         //Vector3 ConvertLocalPoint(Vector3 point)
