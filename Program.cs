@@ -7,7 +7,14 @@ namespace IceSaw2
         public static void Main()
         {
             WorldManager worldManager = new();
-            // Might use worldManager for something else here?
+
+            Core engineCore = new();
+            while (engineCore.isRunning)
+            {
+                engineCore.InputProccessing();
+                engineCore.LogicProccessing();
+                engineCore.RenderProcessing();
+            }
         }
     }
 }
