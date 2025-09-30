@@ -3,6 +3,8 @@ This is the engine core. The main game loop runs here. All other modules
 or managers will be linked to Core.
 */
 
+using Raylib_cs;
+
 namespace IceSaw2
 {
     public class Core
@@ -22,7 +24,7 @@ namespace IceSaw2
 
         public bool isRunning = true;
         // Raylib already has a GetFrameTime function, maybe set this to it every frame for ease of use?
-        private float delta = 0;
+        private float delta { get { return Raylib.GetFrameTime(); } }
         public State currentState = State.MAIN_WINDOW;
 
 
