@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPatchObject : BaseObject
+    public class TrickyPatchObject : MeshBaseObject
     {
         public Vector4 LightMapPoint;
         public List<Vector2> UVPoints;

@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace IceSaw2.LevelObject.Materials
 {
-    public class TrickyMaterialObject : BaseObject
+    public class TrickyMaterialObject : MeshBaseObject
     {
         bool Skybox = false;
         public override ObjectType Type

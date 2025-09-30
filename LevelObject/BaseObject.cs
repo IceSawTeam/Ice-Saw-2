@@ -110,9 +110,6 @@ namespace IceSaw2.LevelObject
         public bool Visable = true;
         public bool Enabled = true;
 
-        public Material material;
-        public Mesh mesh;
-
 
         public virtual ObjectType Type
         {
@@ -131,24 +128,12 @@ namespace IceSaw2.LevelObject
 
         public virtual void Render()
         {
-            if (Visable && Enabled)
-            {
-                if (mesh.VertexCount != 0)
-                {
-                    Raylib.DrawMesh(mesh, material, worldMatrix4x4);
-                }
-            }
+
         }
 
         public virtual void Render(Matrix4x4 matrix4X4)
         {
-            if (Visable && Enabled)
-            {
-                if (mesh.VertexCount != 0)
-                {
-                    Raylib.DrawMesh(mesh, material, matrix4X4);
-                }
-            }
+
         }
 
         private void UpdateMatrix(bool UpdateLocal = true)
@@ -180,31 +165,6 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        //public List<RenderCache> GenerateRenderCache(int Parent = 0, int ID = 0, List<int> ParentIDList = null)
-        //{
-        //    List<RenderCache> renderCaches = new List<RenderCache>();
-
-        //    RenderCache renderCache = new RenderCache();
-
-        //    renderCache.ParentIDList = new List<int>();
-        //    renderCache.ID = ID;
-        //    renderCache.WorldMatrix = worldMatrix4x4;
-
-        //    if(Parent != 0)
-        //    {
-        //        renderCache.ParentIDList.AddRange(ParentIDList);
-        //        renderCache.ParentIDList.Add(Parent);
-        //    }
-
-        //    ParentIDList.Add(ID);
-
-        //    for (int i = 0; i < children.Count; i++)
-        //    {
-        //        renderCaches.AddRange(children[i].GenerateRenderCache(Parent + 1, i, ParentIDList));
-        //    }
-
-        //    return renderCaches;
-        //}
 
         public enum ObjectType
         {

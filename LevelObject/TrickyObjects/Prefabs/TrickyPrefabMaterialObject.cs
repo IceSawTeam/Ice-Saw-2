@@ -9,7 +9,7 @@ using IceSaw2.Manager;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabMaterialObject : BaseObject
+    public class TrickyPrefabMaterialObject : MeshBaseObject
     {
         bool Skybox;
 
