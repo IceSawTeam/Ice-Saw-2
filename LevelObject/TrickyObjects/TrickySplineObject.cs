@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickySplineObject : BaseObject
+    public class TrickySplineObject : LineBaseObject
     {
         public override ObjectType Type
         {
@@ -28,8 +28,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public List<SplineSegment> splineSegments = new List<SplineSegment>();
 
         int SEGMENT_COUNT = 7;
-
-        List<Vector3> curves = new List<Vector3>();
 
         public void LoadSpline(SplineJsonHandler.SplineJson spline)
         {
@@ -85,7 +83,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         //bool Generated = false;
         public void DrawCurve()
         {
-            curves = new List<Vector3>();
+            WorldLinePoints = new List<Vector3>();
             for (int i = 0; i < splineSegments.Count; i++)
             {
                 var TempSegment = splineSegments[i];
@@ -101,40 +99,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 //{
                 //    Generated = false;
                 //}
-                curves.Add(TempSegment.Point1*WorldScale);
+                WorldLinePoints.Add(TempSegment.Point1*WorldScale);
                 for (int a = 1; a <= SEGMENT_COUNT; a++)
                 {
                     float t = a / (float)SEGMENT_COUNT;
                     Vector3 pixel = CalculateCubicBezierPoint(t, (TempSegment.Point1), (TempSegment.Point2), (TempSegment.Point3), (TempSegment.Point4));
-                    curves.Add(pixel * WorldScale);
+                    WorldLinePoints.Add(pixel * WorldScale);
                 }
-                curves.Add(TempSegment.Point4 * WorldScale);
+                WorldLinePoints.Add(TempSegment.Point4 * WorldScale);
 
                 splineSegments[i] = TempSegment;
             }
-        }
-
-        public override void Render()
-        {
-            //for (int i = 0; i < curves.Count - 1; i++)
-            //{
-            //    Raylib.DrawLine3D(curves[i], curves[i + 1], Color.Red);
-            //}
-
-            Rlgl.PushMatrix();
-
-            Rlgl.Begin(DrawMode.Lines);
-            Rlgl.Color3f(1.0f, 0.0f, 0.0f);
-
-            for (int i = 0; i < curves.Count-1; i++)
-            {
-                Rlgl.Vertex3f(curves[i].X, curves[i].Y, curves[i].Z);
-                Rlgl.Vertex3f(curves[i+1].X, curves[i+1].Y, curves[i+1].Z);
-            }
-
-            Rlgl.End();
-
-            Rlgl.PopMatrix();
         }
 
         //Vector3 ConvertLocalPoint(Vector3 point)
