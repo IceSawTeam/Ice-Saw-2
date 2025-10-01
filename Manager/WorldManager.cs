@@ -39,6 +39,8 @@ namespace IceSaw2.Manager
         public WorldManager()
         {
             instance = this;
+            LoadSettings();
+
             filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
 
             levelEditorWindow.Initilize();
@@ -50,12 +52,36 @@ namespace IceSaw2.Manager
             InitalizeAssets();
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
             Update();
-            Raylib.CloseWindow();
+        }
+
+        public void LoadSettings()
+        {
+            string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
+            if(!Directory.Exists(SaveFolder))
+            {
+                Directory.CreateDirectory(SaveFolder);
+            }
+
+
+            generalSettings = GeneralSettings.Load(Path.Combine(SaveFolder,"Settings.json"));
+            hotkeySettings = HotkeySettings.Load(Path.Combine(SaveFolder, "Hotkeys.json"));
+
+            //Incase of version Change save back to latest version
+            SaveSettings();
+        }
+
+        public void SaveSettings()
+        {
+            string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
+            generalSettings.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
+            hotkeySettings.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
         }
 
         ~WorldManager()
         {
             // Cleanup before shutdown
+            DataManager.UnloadProject();
+            Raylib.CloseWindow();
         }
 
         public void InitalizeAssets()
@@ -128,6 +154,8 @@ namespace IceSaw2.Manager
                         filePicker.Show((selectedPath) =>
                         {
                             DataManager.LoadProject(selectedPath);
+                            WorldManager.instance.generalSettings.LastLoad = Path.GetDirectoryName(selectedPath);
+                            WorldManager.instance.SaveSettings();
                             // Do something with selectedPath
                         });
                         // Handle file open

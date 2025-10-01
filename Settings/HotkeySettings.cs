@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Raylib_cs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Raylib_cs;
 
 namespace IceSaw2.Settings
 {
@@ -29,5 +30,32 @@ namespace IceSaw2.Settings
         public KeyboardKey Boost = KeyboardKey.LeftShift;
 
         //Custom Hotkey Voids for Pressing 2 or more keys
+
+        public void CreateJson(string path, bool Inline = false)
+        {
+            var TempFormating = Formatting.None;
+            if (Inline)
+            {
+                TempFormating = Formatting.Indented;
+            }
+
+            var serializer = JsonConvert.SerializeObject(this, TempFormating);
+            File.WriteAllText(path, serializer);
+        }
+
+        public static HotkeySettings Load(string path)
+        {
+            string paths = path;
+            if (File.Exists(paths))
+            {
+                var stream = File.ReadAllText(paths);
+                var container = JsonConvert.DeserializeObject<HotkeySettings>(stream);
+                return container;
+            }
+            else
+            {
+                return new HotkeySettings();
+            }
+        }
     }
 }

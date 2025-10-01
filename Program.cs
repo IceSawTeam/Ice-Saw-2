@@ -8,13 +8,13 @@ namespace IceSaw2
         {
             WorldManager worldManager = new();
 
-            Core engineCore = new();
-            while (engineCore.isRunning)
-            {
-                engineCore.InputProccessing();
-                engineCore.LogicProccessing();
-                engineCore.RenderProcessing();
-            }
+            //Core engineCore = new();
+            //while (engineCore.isRunning)
+            //{
+            //    engineCore.InputProccessing();
+            //    engineCore.LogicProccessing();
+            //    engineCore.RenderProcessing();
+            //}
         }
     }
 }
