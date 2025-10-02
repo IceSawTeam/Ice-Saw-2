@@ -21,6 +21,8 @@ public class TrickyPathBObject : LineBaseObject
 
     public List<PathEvent> PathEvents;
 
+    public override Vector3 Colour => new Vector3(1, 1, 1);
+
     public void LoadPathB(AIPSOPJsonHandler.PathB pathB)
     {
         Name = pathB.Name;

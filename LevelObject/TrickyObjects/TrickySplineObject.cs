@@ -29,6 +29,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         int SEGMENT_COUNT = 7;
 
+        public override Vector3 Colour => new Vector3(1, 0, 0);
+
         public void LoadSpline(SplineJsonHandler.SplineJson spline)
         {
             Name = spline.SplineName;

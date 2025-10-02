@@ -14,7 +14,7 @@ namespace IceSaw2.Manager
 {
     public class WorldManager
     {
-        public static WorldManager instance = new();
+        public static WorldManager instance = null;
 
         public LevelEditorWindow levelEditorWindow = new();
         public PrefabEditorWindow prefabEditorWindow = new();

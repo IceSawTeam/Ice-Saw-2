@@ -20,6 +20,8 @@ public class TrickyPathAObject : LineBaseObject
 
     public List<PathEvent> PathEvents;
 
+    public override Vector3 Colour => new Vector3(0,0,1);
+
     public void LoadPathA(AIPSOPJsonHandler.PathA pathA)
     {
         Name = pathA.Name;
