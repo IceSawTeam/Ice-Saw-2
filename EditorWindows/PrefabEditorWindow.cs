@@ -89,6 +89,8 @@ namespace IceSaw2.EditorWindows
                 }
 
                 Raylib.BeginMode3D(camera3D);
+                Raylib.ClearBackground(new Color(51, 115, 195));
+
 
                 Raylib.DrawGrid(10, 1);
 
@@ -107,6 +109,8 @@ namespace IceSaw2.EditorWindows
                 }
 
                 Raylib.BeginMode3D(camera3D);
+                Raylib.ClearBackground(new Color(51, 115, 195));
+
 
                 Raylib.DrawGrid(10, 1);
 

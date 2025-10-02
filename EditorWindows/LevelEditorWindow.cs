@@ -50,6 +50,7 @@ namespace IceSaw2.EditorWindows
         {
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
+            Raylib.ClearBackground(new Color(51, 115, 195));
             Rlgl.DisableBackfaceCulling();
 
 
