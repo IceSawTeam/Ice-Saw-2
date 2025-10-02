@@ -18,6 +18,8 @@ namespace IceSaw2.EditorWindows
 {
     public class LevelEditorWindow : BaseEditorWindow
     {
+        private const float BOOST_MULTIPLIER = 2.0f;
+
         private float yaw = 0.0f;
         private float pitch = 0.0f;
         private float mouseSensitivity = 0.003f;
@@ -34,7 +36,7 @@ namespace IceSaw2.EditorWindows
 
         public void Initilize()
         {
-            viewCamera3D.Position = new System.Numerics.Vector3(100, 100, 100);
+            viewCamera3D.Position = new Vector3(0f, 0f, 0.1f);
             viewCamera3D.Target = viewCamera3D.Position + new Vector3(0, 1, 0);
             viewCamera3D.Up = new Vector3(0, 0, 1);
             viewCamera3D.FovY = 65f;
@@ -172,16 +174,20 @@ namespace IceSaw2.EditorWindows
 
                 Vector3 forward = new Vector3(MathF.Cos(pitch) * MathF.Sin(yaw), MathF.Cos(pitch) * MathF.Cos(yaw), MathF.Sin(pitch));
                 Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
+                Vector3 up = Raymath.Vector3CrossProduct(forward, right);
 
                 // Movement
+                Vector3 newPosition = new Vector3(0, 0, 0);
+                // Vector3 newPosition = Raymath.Vector3Zero();
                 float currentSpeed = moveSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Boost)) currentSpeed *= 2.0f;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Forward)) viewCamera3D.Position += forward * currentSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Back)) viewCamera3D.Position -= forward * currentSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Right)) viewCamera3D.Position -= right * currentSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Left)) viewCamera3D.Position += right * currentSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Up)) viewCamera3D.Position.Z += currentSpeed;
-                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Down)) viewCamera3D.Position.Z -= currentSpeed;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Boost)) currentSpeed *= BOOST_MULTIPLIER;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Forward)) newPosition += forward;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Back)) newPosition -= forward;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Right)) newPosition -= right;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Left)) newPosition += right;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Up)) newPosition += up;
+                if (Raylib.IsKeyDown(WorldManager.instance.hotkeySettings.Down)) newPosition -= up;
+                viewCamera3D.Position += Raymath.Vector3Normalize(newPosition) * currentSpeed;
 
                 float wheel = Raylib.GetMouseWheelMove();
                 if (wheel != 0)
@@ -190,7 +196,6 @@ namespace IceSaw2.EditorWindows
                     moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
                     //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
                 }
-
                 viewCamera3D.Target = viewCamera3D.Position + forward;
             }
             if (Raylib.IsMouseButtonReleased(WorldManager.instance.hotkeySettings.ActivateCamera))
