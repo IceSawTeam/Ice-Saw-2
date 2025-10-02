@@ -52,7 +52,7 @@ namespace IceSaw2.Manager
         public static List<MeshData> worldMeshes = new List<MeshData>();
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
 
-        public static string? LoadPath = "";
+        public static string LoadPath = "";
 
         public static void LoadProject(string ConfigPath)
         {
@@ -75,7 +75,7 @@ namespace IceSaw2.Manager
         {
             //Texture Data
             worldTextureData = new List<TextureData>();
-            string[] TextureFiles = Directory.GetFiles(LoadPath + "\\Textures", "*.png", SearchOption.AllDirectories);
+            string[] TextureFiles = Directory.GetFiles(Path.Combine(LoadPath,"Textures"), "*.png", SearchOption.AllDirectories);
             for (int i = 0; i < TextureFiles.Length; i++)
             {
                 TextureData textureData = new TextureData();
@@ -89,7 +89,7 @@ namespace IceSaw2.Manager
             }
 
             lightmapTexture2Ds = new List<TextureData>();
-            string[] LightmapFiles = Directory.GetFiles(LoadPath + "\\Lightmaps", "*.png", SearchOption.AllDirectories);
+            string[] LightmapFiles = Directory.GetFiles(Path.Combine(LoadPath, "Lightmaps"), "*.png", SearchOption.AllDirectories);
             for (int i = 0; i < LightmapFiles.Length; i++)
             {
                 TextureData textureData = new TextureData();
@@ -103,7 +103,7 @@ namespace IceSaw2.Manager
             }
 
             skyboxTexture2Ds = new List<TextureData>();
-            string[] SkyboxFiles = Directory.GetFiles(LoadPath + "\\Skybox\\Textures", "*.png", SearchOption.AllDirectories);
+            string[] SkyboxFiles = Directory.GetFiles(Path.Combine(LoadPath, "Skybox", "Textures"), "*.png", SearchOption.AllDirectories);
             for (int i = 0; i < SkyboxFiles.Length; i++)
             {
                 TextureData textureData = new TextureData();
@@ -117,7 +117,7 @@ namespace IceSaw2.Manager
             }
 
             worldMeshes = new List<MeshData>();
-            string[] MeshFiles = Directory.GetFiles(LoadPath + "\\Models\\", "*.obj", SearchOption.AllDirectories);
+            string[] MeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Models"), "*.obj", SearchOption.AllDirectories);
             for (int i = 0; i < MeshFiles.Length; i++)
             {
                 var TempMesh = new MeshData();
@@ -131,7 +131,7 @@ namespace IceSaw2.Manager
             }
 
             skyboxMeshes = new List<MeshData>();
-            string[] SkyboxMeshFiles = Directory.GetFiles(LoadPath + "\\Skybox\\Models\\", "*.obj", SearchOption.AllDirectories);
+            string[] SkyboxMeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Skybox", "Models"), "*.obj", SearchOption.AllDirectories);
             for (int i = 0; i < SkyboxMeshFiles.Length; i++)
             {
                 var TempMesh = new MeshData();
@@ -149,7 +149,7 @@ namespace IceSaw2.Manager
         {
             //Object Data
             trickyPatchObjects = new List<TrickyPatchObject>();
-            PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(LoadPath + "\\patches.json");
+            PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(Path.Combine(LoadPath, "Patches.json"));
             for (int i = 0; i < jsonHandler.Patches.Count; i++)
             {
                 TrickyPatchObject patchObject = new TrickyPatchObject();
@@ -160,7 +160,7 @@ namespace IceSaw2.Manager
             }
 
             trickyMaterialObject = new List<TrickyMaterialObject>();
-            MaterialJsonHandler matJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\materials.json");
+            MaterialJsonHandler matJsonHandler = MaterialJsonHandler.Load(Path.Combine(LoadPath, "Materials.json"));
             for (int i = 0; i < matJsonHandler.Materials.Count; i++)
             {
                 TrickyMaterialObject materialObject = new TrickyMaterialObject();
@@ -171,7 +171,7 @@ namespace IceSaw2.Manager
             }
 
             trickyPrefabObjects = new List<TrickyPrefabObject>();
-            PrefabJsonHandler prefabJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\prefabs.json");
+            PrefabJsonHandler prefabJsonHandler = PrefabJsonHandler.Load(Path.Combine(LoadPath, "Prefabs.json"));
             for (int i = 0; i < prefabJsonHandler.Prefabs.Count; i++)
             {
                 var NewPrefab = new TrickyPrefabObject();
@@ -182,7 +182,7 @@ namespace IceSaw2.Manager
             }
 
             trickyInstanceObjects = new List<TrickyInstanceObject>();
-            InstanceJsonHandler instanceJsonHandler = InstanceJsonHandler.Load(LoadPath + "\\instances.json");
+            InstanceJsonHandler instanceJsonHandler = InstanceJsonHandler.Load(Path.Combine(LoadPath, "Instances.json"));
             for (int i = 0; i < instanceJsonHandler.Instances.Count; i++)
             {
                 var Instance = new TrickyInstanceObject();
@@ -193,7 +193,7 @@ namespace IceSaw2.Manager
             }
 
             trickySplineObjects = new List<TrickySplineObject>();
-            SplineJsonHandler splineJsonHandler = SplineJsonHandler.Load(LoadPath + "\\splines.json");
+            SplineJsonHandler splineJsonHandler = SplineJsonHandler.Load(Path.Combine(LoadPath, "Splines.json"));
             for (int i = 0; i < splineJsonHandler.Splines.Count; i++)
             {
                 var Spline = new TrickySplineObject();
@@ -204,7 +204,7 @@ namespace IceSaw2.Manager
             }
 
             trickyLightObjects = new List<TrickyLightObject>();
-            LightJsonHandler lightJsonHandler = LightJsonHandler.Load(LoadPath + "\\Lights.json");
+            LightJsonHandler lightJsonHandler = LightJsonHandler.Load(Path.Combine(LoadPath, "Lights.json"));
             for (int i = 0; i < lightJsonHandler.Lights.Count; i++)
             {
                 var Light = new TrickyLightObject();
@@ -215,7 +215,7 @@ namespace IceSaw2.Manager
             }
 
             trickyCameraObjects = new List<TrickyCameraObject>();
-            CameraJSONHandler cameraJSONHandler = CameraJSONHandler.Load(LoadPath + "\\Cameras.json");
+            CameraJSONHandler cameraJSONHandler = CameraJSONHandler.Load(Path.Combine(LoadPath, "Cameras.json"));
             for (int i = 0; i < cameraJSONHandler.Cameras.Count; i++)
             {
                 var Camera = new TrickyCameraObject();
@@ -226,7 +226,7 @@ namespace IceSaw2.Manager
             }
 
             trickyParticlePrefabObjects = new List<TrickyParticlePrefabObject>();
-            ParticleModelJsonHandler particleModelJsonHandler = ParticleModelJsonHandler.Load(LoadPath + "\\ParticlePrefabs.json");
+            ParticleModelJsonHandler particleModelJsonHandler = ParticleModelJsonHandler.Load(Path.Combine(LoadPath, "ParticlePrefabs.json"));
             for (int i = 0; i < particleModelJsonHandler.ParticlePrefabs.Count; i++)
             {
                 var ParticlePrefab = new TrickyParticlePrefabObject();
@@ -237,7 +237,7 @@ namespace IceSaw2.Manager
             }
 
             trickyPaticleInstanceObjects = new List<TrickyPaticleInstanceObject>();
-            ParticleInstanceJsonHandler particleInstanceJsonHandler = ParticleInstanceJsonHandler.Load(LoadPath + "\\ParticleInstances.json");
+            ParticleInstanceJsonHandler particleInstanceJsonHandler = ParticleInstanceJsonHandler.Load(Path.Combine(LoadPath, "ParticleInstances.json"));
             for (int i = 0; i < particleInstanceJsonHandler.Particles.Count; i++)
             {
                 var ParticleInstance = new TrickyPaticleInstanceObject();
@@ -250,7 +250,7 @@ namespace IceSaw2.Manager
 
         public static void LoadPaths()
         {
-            AIPSOPJsonHandler aIPSOPJsonHandler = AIPSOPJsonHandler.Load(LoadPath + "/AIP.json");
+            AIPSOPJsonHandler aIPSOPJsonHandler = AIPSOPJsonHandler.Load(Path.Combine(LoadPath, "AIP.json"));
 
             AIPStartPos = aIPSOPJsonHandler.StartPosList;
 
@@ -274,7 +274,7 @@ namespace IceSaw2.Manager
                 trickyAIPRaceLine.Add(trickyPathBObject);
             }
 
-            aIPSOPJsonHandler = AIPSOPJsonHandler.Load(LoadPath + "/SOP.json");
+            aIPSOPJsonHandler = AIPSOPJsonHandler.Load(Path.Combine(LoadPath, "SOP.json"));
 
             SOPStartPos = aIPSOPJsonHandler.StartPosList;
 
@@ -303,7 +303,7 @@ namespace IceSaw2.Manager
         {
             //Skybox
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
-            MaterialJsonHandler matskyJsonHandler = MaterialJsonHandler.Load(LoadPath + "\\Skybox\\materials.json");
+            MaterialJsonHandler matskyJsonHandler = MaterialJsonHandler.Load(Path.Combine(LoadPath, "Skybox", "Materials.json"));
             for (int i = 0; i < matskyJsonHandler.Materials.Count; i++)
             {
                 TrickyMaterialObject materialObject = new TrickyMaterialObject();
@@ -314,7 +314,7 @@ namespace IceSaw2.Manager
             }
 
             trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
-            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(LoadPath + "\\Skybox\\prefabs.json");
+            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(Path.Combine(LoadPath, "Skybox", "Prefabs.json"));
             for (int i = 0; i < prefabSkyboxJsonHandler.Prefabs.Count; i++)
             {
                 var NewPrefab = new TrickyPrefabObject();
@@ -328,7 +328,7 @@ namespace IceSaw2.Manager
         public static void LoadEffects()
         {
             //Effects
-            SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(LoadPath + "\\SSFLogic.json");
+            SSFJsonHandler sSFJsonHandler = SSFJsonHandler.Load(Path.Combine(LoadPath,"SSFLogic.json"));
 
             trickyEffectHeaders = new List<TrickyEffectHeader>();
             for (int i = 0; i < sSFJsonHandler.EffectHeaders.Count; i++)

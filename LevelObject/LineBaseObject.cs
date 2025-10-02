@@ -12,6 +12,8 @@ namespace IceSaw2.LevelObject
     {
         public List<Vector3> WorldLinePoints = new List<Vector3>();
 
+        public virtual Vector3 Colour { get; }
+
         public override void Render()
         {
             //for (int i = 0; i < WorldPathPoints.Count - 1; i++)
@@ -22,7 +24,7 @@ namespace IceSaw2.LevelObject
             Rlgl.PushMatrix();
 
             Rlgl.Begin(DrawMode.Lines);
-            Rlgl.Color3f(0f, 0f, 0f);
+            Rlgl.Color3f(Colour.X, Colour.Y, Colour.Z);
 
             for (int i = 0; i < WorldLinePoints.Count - 1; i++)
             {
