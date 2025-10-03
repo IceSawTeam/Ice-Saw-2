@@ -1,5 +1,6 @@
 ﻿using IceSaw2.LevelObject.Materials;
 using IceSaw2.Manager;
+using IceSaw2.Utilities;
 using Raylib_cs;
 using System;
 using System.Collections.Generic;
@@ -57,34 +58,7 @@ namespace IceSaw2.EditorWindows
             Raylib.BeginMode3D(camera3D);
             Raylib.ClearBackground(new Color(120, 120, 120));
 
-            {
-                Rlgl.PushMatrix();
-                Rlgl.Rotatef(90, 1, 0, 0);
-                int slices = 10;
-                float spacing = 1;
-                int halfSlices = slices / 2;
-                Rlgl.Begin(DrawMode.Lines);
-                for (int i = -halfSlices; i <= halfSlices; i++)
-                {
-                    if (i == 0)
-                    {
-                        Rlgl.Color3f(0.2f, 0.2f, 0.2f);
-                    }
-                    else
-                    {
-                        Rlgl.Color3f(0.2f, 0.2f, 0.2f);
-                    }
-
-                    Rlgl.Vertex3f((float)i*spacing, 0.0f, (float)-halfSlices*spacing);
-                    Rlgl.Vertex3f((float)i*spacing, 0.0f, (float)halfSlices*spacing);
-
-                    Rlgl.Vertex3f((float)-halfSlices*spacing, 0.0f, (float)i*spacing);
-                    Rlgl.Vertex3f((float)halfSlices*spacing, 0.0f, (float)i*spacing);
-                }
-                Rlgl.End();
-            }
-            Rlgl.PopMatrix();
-
+            RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Vector3(0.2f, 0.2f, 0.2f));
 
             if (DataManager.trickyMaterialObject.Count != 0)
             {
