@@ -10,9 +10,11 @@ namespace IceSaw2.Utilities
             Rlgl.Rotatef(90, 1, 0, 0);
             int halfSlices = Slices / 2;
             Rlgl.Begin(DrawMode.Lines);
+            var V3Color = Raylib.ColorNormalize(Color);
+
             for (int i = -halfSlices; i <= halfSlices; i++)
             {
-                Rlgl.Color3f(Color.R / 255.0f, Color.G / 255.0f, Color.B / 255.0f);
+                Rlgl.Color3f(V3Color.X, V3Color.Y, V3Color.Z);
                 Rlgl.Vertex3f((float)i * Spacing, 0.0f, (float)-halfSlices * Spacing);
                 Rlgl.Vertex3f((float)i * Spacing, 0.0f, (float)halfSlices * Spacing);
 
