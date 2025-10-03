@@ -1,14 +1,7 @@
-﻿using IceSaw2.LevelObject.TrickyObjects;
-using IceSaw2.Manager;
+﻿using IceSaw2.Manager;
 using IceSaw2.Utilities;
 using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static IceSaw2.Manager.WorldManager;
 
 namespace IceSaw2.EditorWindows
 {
@@ -92,7 +85,7 @@ namespace IceSaw2.EditorWindows
                 Raylib.BeginMode3D(camera3D);
                 Raylib.ClearBackground(new Color(120, 120, 120));
 
-                RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Vector3(0.2f, 0.2f, 0.2f));
+                RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Color(51, 51, 51));
 
                 if (DataManager.trickyPrefabObjects.Count != 0)
                 {
