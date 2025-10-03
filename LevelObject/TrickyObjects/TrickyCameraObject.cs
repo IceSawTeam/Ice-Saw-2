@@ -1,5 +1,5 @@
 using IceSaw2.LevelObject;
-using IceSaw2.Manager;
+using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
@@ -130,10 +130,10 @@ public class TrickyCameraObject : BaseObject
 
     public override void Render()
     {
-        Rectangle sourceRec = new Rectangle(0, 0, WorldManager.instance.CameraIcon.Width, WorldManager.instance.CameraIcon.Height);
-        Vector2 size = new Vector2(1.0f, (float)WorldManager.instance.CameraIcon.Height / WorldManager.instance.CameraIcon.Width); // maintain aspect
+        Rectangle sourceRec = new Rectangle(0, 0, TrickyWorldManager.instance.CameraIcon.Width, TrickyWorldManager.instance.CameraIcon.Height);
+        Vector2 size = new Vector2(1.0f, (float)TrickyWorldManager.instance.CameraIcon.Height / TrickyWorldManager.instance.CameraIcon.Width); // maintain aspect
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(WorldManager.instance.levelEditorWindow.viewCamera3D, WorldManager.instance.CameraIcon, sourceRec, Position * WorldScale, new Vector3(0, 0, 1), size, origin, 0f, Color.White);
+        Raylib.DrawBillboardPro(TrickyWorldManager.instance.levelEditorWindow.viewCamera3D, TrickyWorldManager.instance.CameraIcon, sourceRec, Position * WorldScale, new Vector3(0, 0, 1), size, origin, 0f, Color.White);
     }
 
     public struct CameraAnimationHeader

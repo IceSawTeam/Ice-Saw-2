@@ -9,9 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IceSaw2.Manager
+namespace IceSaw2.Manager.Tricky
 {
-    public static class DataManager
+    public static class TrickyDataManager
     {
         //Skybox Data
         public static List<TrickyMaterialObject> trickySkyboxMaterialObject = new List<TrickyMaterialObject>();

@@ -1,4 +1,6 @@
 ﻿using IceSaw2.EditorWindows;
+
+
 // using IceSaw2.LevelObject;
 // using IceSaw2.LevelObject.Materials;
 // using IceSaw2.LevelObject.TrickyObjects;
@@ -10,77 +12,44 @@ using rlImGui_cs;
 // using SSXMultiTool.JsonFiles.Tricky;
 // using System.Numerics;
 
-namespace IceSaw2.Manager
+namespace IceSaw2.Manager.Tricky
 {
-    public class WorldManager
+    public class TrickyWorldManager
     {
-        public static WorldManager instance = null;
+        public static TrickyWorldManager instance = null;
 
         public LevelEditorWindow levelEditorWindow = new();
         public PrefabEditorWindow prefabEditorWindow = new();
         public MaterialEditorWindow materialEditorWindow = new();
         public TextureEditorWindow textureEditorWindow = new();
 
-        public int heightScreen { get { return Raylib.GetScreenHeight(); } }
-        public int widthScreen { get { return Raylib.GetScreenWidth(); } }
-
         public WindowMode windowMode = WindowMode.World;
 
         static IMGuiFilePicker filePicker = new();
-
-        public GeneralSettings generalSettings = new();
-        public HotkeySettings hotkeySettings = new();
 
         //Icon List
         public Texture2D LightIcon = new();
         public Texture2D CameraIcon = new();
         public Texture2D ParticleIcon = new();
 
-        public WorldManager()
+        public TrickyWorldManager()
         {
             instance = this;
-            LoadSettings();
 
-            filePicker = new IMGuiFilePicker(generalSettings.LastLoad);
+            filePicker = new IMGuiFilePicker(Core.instance.generalSettings.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
             materialEditorWindow.Initilize();
 
-            Raylib.InitWindow(generalSettings.ScreenWidth, generalSettings.ScreenHeight, "Ice Saw 2");
-            rlImGui.Setup(true);
             InitalizeAssets();
-            Raylib.SetWindowState(ConfigFlags.ResizableWindow);
-            Update();
         }
 
-        public void LoadSettings()
-        {
-            string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
-            if(!Directory.Exists(SaveFolder))
-            {
-                Directory.CreateDirectory(SaveFolder);
-            }
 
-
-            generalSettings = GeneralSettings.Load(Path.Combine(SaveFolder,"Settings.json"));
-            hotkeySettings = HotkeySettings.Load(Path.Combine(SaveFolder, "Hotkeys.json"));
-
-            //Incase of version Change save back to latest version
-            SaveSettings();
-        }
-
-        public void SaveSettings()
-        {
-            string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
-            generalSettings.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
-            hotkeySettings.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
-        }
-
-        ~WorldManager()
+        ~TrickyWorldManager()
         {
             // Cleanup before shutdown
-            DataManager.UnloadProject();
+            TrickyDataManager.UnloadProject();
             Raylib.CloseWindow();
         }
 
@@ -91,59 +60,25 @@ namespace IceSaw2.Manager
             ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("ParticleIcon.png"));
         }
 
-        public void Update()
-        {
-            while (!Raylib.WindowShouldClose())
-            {
-                //Logic Update
-                switch (windowMode)
-                {
-                    case WindowMode.World: levelEditorWindow.LogicUpdate(); break;
-                    case WindowMode.Prefabs: prefabEditorWindow.LogicUpdate(); break;
-                    case WindowMode.Materials: materialEditorWindow.LogicUpdate(); break;
-                    case WindowMode.Textures: textureEditorWindow.LogicUpdate(); break;
-                }
-                UpdateLogic();
-
-                Raylib.BeginDrawing();
-                rlImGui.Begin();
-                Raylib.ClearBackground(new Color(120,120,120));
-                Rlgl.DisableBackfaceCulling();
-
-                switch (windowMode)
-                {
-                    case WindowMode.World: levelEditorWindow.RenderUpdate(); break;
-                    case WindowMode.Prefabs: prefabEditorWindow.RenderUpdate(); break;
-                    case WindowMode.Materials: materialEditorWindow.RenderUpdate(); break;
-                    case WindowMode.Textures: textureEditorWindow.RenderUpdate(); break;
-                }
-                Render();
-
-                Raylib.DrawText("Beta Test", 12, widthScreen - 20, 20, Color.Black);
-                rlImGui.End();
-                Raylib.EndDrawing();
-            }
-        }
-
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(hotkeySettings.MaterialWindow))
+            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.MaterialWindow))
             {
                 windowMode = WindowMode.Materials;
             }
-            if (Raylib.IsKeyPressed(hotkeySettings.PrefabWindow))
+            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(hotkeySettings.LevelWindow))
+            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }
         }
 
-        public void Render()
+        public void UpdateRender()
         {
-            Raylib.DrawFPS(widthScreen - 150, heightScreen - 30);
+            Raylib.DrawFPS(Core.instance.widthScreen - 150, Core.instance.heightScreen - 30);
             filePicker.Render();
             if (ImGui.BeginMainMenuBar())
             {
@@ -153,9 +88,9 @@ namespace IceSaw2.Manager
                     {
                         filePicker.Show((selectedPath) =>
                         {
-                            DataManager.LoadProject(selectedPath);
-                            WorldManager.instance.generalSettings.LastLoad = Path.GetDirectoryName(selectedPath);
-                            WorldManager.instance.SaveSettings();
+                            TrickyDataManager.LoadProject(selectedPath);
+                            Core.instance.generalSettings.LastLoad = Path.GetDirectoryName(selectedPath);
+                            Core.instance.SaveSettings();
                             // Do something with selectedPath
                         });
                         // Handle file open

@@ -1,4 +1,4 @@
-﻿using IceSaw2.Manager;
+﻿using IceSaw2.Manager.Tricky;
 using NURBS;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
@@ -81,8 +81,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             int degreeU = 3;
             int degreeV = 3;
 
-            int resolutionU = WorldManager.instance.generalSettings.PatchResolution; //7;
-            int resolutionV = WorldManager.instance.generalSettings.PatchResolution; //7; ()
+            int resolutionU = Core.instance.generalSettings.PatchResolution; //7;
+            int resolutionV = Core.instance.generalSettings.PatchResolution; //7; ()
 
             surface = new NURBS.Surface(cps, degreeU, degreeV);
 
@@ -111,7 +111,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             Raylib.UploadMesh(ref mesh, false);
             MeshLoaded = true;
 
-            var Texture = DataManager.ReturnTexture(TexturePath, false);
+            var Texture = TrickyDataManager.ReturnTexture(TexturePath, false);
 
             material = Raylib.LoadMaterialDefault();
 

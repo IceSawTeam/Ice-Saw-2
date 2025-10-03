@@ -6,9 +6,9 @@ namespace IceSaw2
     {
         public static void Main()
         {
-            WorldManager worldManager = new();
+            //WorldManager worldManager = new();
 
-            //Core engineCore = new();
+            Core engineCore = new();
             //while (engineCore.isRunning)
             //{
             //    engineCore.InputProccessing();

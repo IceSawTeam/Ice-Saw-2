@@ -1,5 +1,5 @@
 using IceSaw2.LevelObject;
-using IceSaw2.Manager;
+using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Collections;
@@ -85,7 +85,7 @@ namespace IceSaw2.LevelObject.Materials
         {
             mesh = Raylib.GenMeshCube(2000, 1000, 2000);
 
-            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, Skybox);
+            Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
 
             material = Raylib.LoadMaterialDefault();
 

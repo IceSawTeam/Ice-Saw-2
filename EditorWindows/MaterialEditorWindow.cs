@@ -1,4 +1,4 @@
-﻿using IceSaw2.Manager;
+﻿using IceSaw2.Manager.Tricky;
 using IceSaw2.Utilities;
 using Raylib_cs;
 using System.Numerics;
@@ -26,14 +26,14 @@ namespace IceSaw2.EditorWindows
                 MaterialSelection -= 1;
                 if (MaterialSelection == -1)
                 {
-                    MaterialSelection = DataManager.trickyMaterialObject.Count - 1;
+                    MaterialSelection = TrickyDataManager.trickyMaterialObject.Count - 1;
                 }
             }
 
             if (Raylib.IsKeyPressed(KeyboardKey.Right))
             {
                 MaterialSelection += 1;
-                if (MaterialSelection == DataManager.trickyMaterialObject.Count)
+                if (MaterialSelection == TrickyDataManager.trickyMaterialObject.Count)
                 {
                     MaterialSelection = 0;
                 }
@@ -44,18 +44,18 @@ namespace IceSaw2.EditorWindows
 
         public override void RenderUpdate()
         {
-            if (DataManager.trickyMaterialObject.Count != 0)
+            if (TrickyDataManager.trickyMaterialObject.Count != 0)
             {
-                Raylib.DrawText(DataManager.trickyMaterialObject[MaterialSelection].Name, 12, 30, 20, Color.Black);
+                Raylib.DrawText(TrickyDataManager.trickyMaterialObject[MaterialSelection].Name, 12, 30, 20, Color.Black);
             }
 
             Raylib.BeginMode3D(camera3D);
 
             RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Color(51, 51, 51));
 
-            if (DataManager.trickyMaterialObject.Count != 0)
+            if (TrickyDataManager.trickyMaterialObject.Count != 0)
             {
-                DataManager.trickyMaterialObject[MaterialSelection].Render();
+                TrickyDataManager.trickyMaterialObject[MaterialSelection].Render();
             }
 
             Raylib.EndMode3D();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static IceSaw2.Manager.WorldManager;
+using static IceSaw2.Manager.Tricky.TrickyWorldManager;
 
 namespace IceSaw2.JsonFiles
 {

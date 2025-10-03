@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Numerics;
-using IceSaw2.Manager;
+using IceSaw2.Manager.Tricky;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -35,20 +35,20 @@ namespace IceSaw2.LevelObject.TrickyObjects
             //Have it pull mesh and material from trickyMaterial and mesh instead
 
 
-            mesh = DataManager.ReturnMesh(MeshPath, Skybox);
+            mesh = TrickyDataManager.ReturnMesh(MeshPath, Skybox);
 
             var TexturePath = ""; 
             
             if(!Skybox)
             {
-                TexturePath = DataManager.trickyMaterialObject[MaterialIndex].TexturePath;
+                TexturePath = TrickyDataManager.trickyMaterialObject[MaterialIndex].TexturePath;
             }
             else
             {
-                TexturePath = DataManager.trickySkyboxMaterialObject[MaterialIndex].TexturePath;
+                TexturePath = TrickyDataManager.trickySkyboxMaterialObject[MaterialIndex].TexturePath;
             }
 
-            Texture2D ReturnTexture = DataManager.ReturnTexture(TexturePath, Skybox);
+            Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
 
             material = Raylib.LoadMaterialDefault();
 

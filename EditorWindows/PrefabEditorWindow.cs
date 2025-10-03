@@ -1,4 +1,4 @@
-﻿using IceSaw2.Manager;
+﻿using IceSaw2.Manager.Tricky;
 using IceSaw2.Utilities;
 using Raylib_cs;
 using System.Numerics;
@@ -31,14 +31,14 @@ namespace IceSaw2.EditorWindows
                     PrefabSelection -= 1;
                     if (PrefabSelection == -1)
                     {
-                        PrefabSelection = DataManager.trickyPrefabObjects.Count - 1;
+                        PrefabSelection = TrickyDataManager.trickyPrefabObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
                     PrefabSelection += 1;
-                    if (PrefabSelection == DataManager.trickyPrefabObjects.Count)
+                    if (PrefabSelection == TrickyDataManager.trickyPrefabObjects.Count)
                     {
                         PrefabSelection = 0;
                     }
@@ -51,14 +51,14 @@ namespace IceSaw2.EditorWindows
                     SkyboxSelection -= 1;
                     if (SkyboxSelection == -1)
                     {
-                        SkyboxSelection = DataManager.trickySkyboxPrefabObjects.Count - 1;
+                        SkyboxSelection = TrickyDataManager.trickySkyboxPrefabObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
                     SkyboxSelection += 1;
-                    if (SkyboxSelection == DataManager.trickySkyboxPrefabObjects.Count)
+                    if (SkyboxSelection == TrickyDataManager.trickySkyboxPrefabObjects.Count)
                     {
                         SkyboxSelection = 0;
                     }
@@ -77,27 +77,27 @@ namespace IceSaw2.EditorWindows
         {
             if (!Skybox)
             {
-                if (DataManager.trickyPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickyPrefabObjects.Count != 0)
                 {
-                    Raylib.DrawText(DataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Color(51, 51, 51));
 
-                if (DataManager.trickyPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickyPrefabObjects.Count != 0)
                 {
-                    DataManager.trickyPrefabObjects[PrefabSelection].Render();
+                    TrickyDataManager.trickyPrefabObjects[PrefabSelection].Render();
                 }
 
                 Raylib.EndMode3D();
             }
             else
             {
-                if (DataManager.trickySkyboxPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
                 {
-                    Raylib.DrawText(DataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 30, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 30, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
@@ -106,9 +106,9 @@ namespace IceSaw2.EditorWindows
 
                 Raylib.DrawGrid(10, 1);
 
-                if (DataManager.trickySkyboxPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
                 {
-                    DataManager.trickySkyboxPrefabObjects[SkyboxSelection].Render();
+                    TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Render();
                 }
 
                 Raylib.EndMode3D();
