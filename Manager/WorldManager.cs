@@ -107,7 +107,7 @@ namespace IceSaw2.Manager
 
                 Raylib.BeginDrawing();
                 rlImGui.Begin();
-                Raylib.ClearBackground(Color.White);
+                Raylib.ClearBackground(new Color(120,120,120));
                 Rlgl.DisableBackfaceCulling();
 
                 switch (windowMode)

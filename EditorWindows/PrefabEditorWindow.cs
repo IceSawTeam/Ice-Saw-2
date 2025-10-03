@@ -83,7 +83,6 @@ namespace IceSaw2.EditorWindows
                 }
 
                 Raylib.BeginMode3D(camera3D);
-                Raylib.ClearBackground(new Color(120, 120, 120));
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Color(51, 51, 51));
 
