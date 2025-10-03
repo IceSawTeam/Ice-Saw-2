@@ -1,4 +1,4 @@
-﻿using IceSaw2.Manager;
+﻿using Raylib_cs;
 
 namespace IceSaw2
 {
@@ -9,12 +9,12 @@ namespace IceSaw2
             //WorldManager worldManager = new();
 
             Core engineCore = new();
-            //while (engineCore.isRunning)
-            //{
-            //    engineCore.InputProccessing();
-            //    engineCore.LogicProccessing();
-            //    engineCore.RenderProcessing();
-            //}
+            while (engineCore.isRunning && !Raylib.WindowShouldClose())
+            {
+                engineCore.InputProccessing();
+                engineCore.LogicProccessing();
+                engineCore.RenderProcessing();
+            }
         }
     }
 }
