@@ -13,7 +13,7 @@ namespace IceSaw2.LevelObject
 
         public string Name = "Null";
 
-        private BaseObject? _parent = null;
+        private BaseObject _parent = null;
         public BaseObject parent
         {
             get
@@ -141,14 +141,28 @@ namespace IceSaw2.LevelObject
 
         public void AddChild(BaseObject baseObject)
         {
-            _children.Add(baseObject);
+            if (baseObject.parent!=this)
+            {
+                baseObject.parent = this;
+            }
+            else
+            {
+                _children.Add(baseObject);
+            }
         }
 
         public void RemoveChild(BaseObject baseObject)
         {
             if (_children.Contains(baseObject))
             {
-                _children.Remove(baseObject);
+                if(parent==baseObject)
+                {
+                    parent = null;
+                }
+                else
+                {
+                    _children.Remove(baseObject);
+                }
             }
         }
 
@@ -190,6 +204,7 @@ namespace IceSaw2.LevelObject
             if (VisableHierarchy)
             {
                 var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+
                 if (Children.Count == 0)
                     flags |= ImGuiTreeNodeFlags.Leaf;
 
