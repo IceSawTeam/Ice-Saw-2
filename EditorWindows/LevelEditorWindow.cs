@@ -1,18 +1,8 @@
 ﻿using IceSaw2.LevelObject;
-using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
-using IceSaw2.Settings;
 using ImGuiNET;
 using Raylib_cs;
-using rlImGui_cs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static IceSaw2.Manager.Tricky.TrickyWorldManager;
 
 namespace IceSaw2.EditorWindows
 {
@@ -143,9 +133,23 @@ namespace IceSaw2.EditorWindows
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
 
-            ImGui.Text("Sidebar content below main menu bar.");
-            //ImGui.Separator();
-            //ImGui.Button("Click Me");
+            bool nodeOpen = ImGui.TreeNodeEx("Patches");
+
+            // Handle selection or context menu if needed
+            if (ImGui.IsItemClicked())
+            {
+                Console.WriteLine($"Selected: Patches");
+            }
+
+            if (nodeOpen)
+            {
+                for (global::System.Int32 i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
+                {
+                    ImGui.TreeNodeEx(TrickyDataManager.trickyPatchObjects[i].Name, ImGuiTreeNodeFlags.Leaf);
+                    ImGui.TreePop();
+                }
+                ImGui.TreePop();
+            }
 
             // Add your sidebar content here
 

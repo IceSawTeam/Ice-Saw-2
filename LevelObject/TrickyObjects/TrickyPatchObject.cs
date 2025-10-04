@@ -2,13 +2,7 @@
 using NURBS;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -29,6 +23,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
         {
+            Name = patchJson.PatchName;
+
             LightMapPoint = new Vector4(patchJson.LightMapPoint[0], patchJson.LightMapPoint[1], patchJson.LightMapPoint[2], patchJson.LightMapPoint[3]);
 
             UVPoints = new List<Vector2>();
