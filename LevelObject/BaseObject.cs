@@ -178,7 +178,7 @@ namespace IceSaw2.LevelObject
                 if (children.Count == 0)
                     flags |= ImGuiTreeNodeFlags.Leaf;
 
-                bool nodeOpen = ImGui.TreeNodeEx(Name, flags);
+                bool nodeOpen = ImGui.TreeNodeEx(Name + "###" + ID, flags);
 
                 // Handle selection or context menu if needed
                 if (ImGui.IsItemClicked())
