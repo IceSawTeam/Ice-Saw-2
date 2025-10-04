@@ -15,8 +15,8 @@ namespace IceSaw2.EditorWindows
         private float mouseSensitivity = 0.003f;
         private float moveSpeed = 0.1f;
         private const float moveSpeedStep = 0.008f;
-        private int screenWidth;
-        private int screenHeight;
+        private int screenWidth { get { return Raylib.GetScreenWidth(); } }
+        private int screenHeight { get { return Raylib.GetScreenHeight(); } }
 
         private float axisLineSize = 1000f;
 
@@ -32,8 +32,6 @@ namespace IceSaw2.EditorWindows
             viewCamera3D.FovY = 65f;
             viewCamera3D.Projection = CameraProjection.Perspective;
 
-            screenWidth = Settings.General.Instance.data.ScreenWidth;
-            screenHeight = Settings.General.Instance.data.ScreenHeight;
         }
 
         public override void RenderUpdate()
@@ -41,7 +39,6 @@ namespace IceSaw2.EditorWindows
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
             Rlgl.DisableBackfaceCulling();
-
 
             Rlgl.DisableDepthMask();
             //Render Skybox
@@ -125,7 +122,7 @@ namespace IceSaw2.EditorWindows
 
             // Position and size sidebar *below* the main menu bar
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Raylib.GetScreenHeight() - menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, screenHeight - menuBarHeight), ImGuiCond.Always);
 
             // Optional: remove decorations
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
