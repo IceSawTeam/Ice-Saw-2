@@ -70,7 +70,6 @@ namespace IceSaw2.EditorWindows
             Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
             //Render Objects
-
             for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
             {
                 TrickyDataManager.trickyPatchObjects[i].Render();
@@ -135,7 +134,7 @@ namespace IceSaw2.EditorWindows
 
             // Position and size sidebar *below* the main menu bar
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Settings.Manager.Instance.General.ScreenHeight - menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Raylib.GetScreenHeight() - menuBarHeight), ImGuiCond.Always);
 
             // Optional: remove decorations
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
