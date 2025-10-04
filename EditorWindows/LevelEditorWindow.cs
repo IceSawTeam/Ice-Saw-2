@@ -15,8 +15,8 @@ namespace IceSaw2.EditorWindows
         private float mouseSensitivity = 0.003f;
         private float moveSpeed = 0.1f;
         private const float moveSpeedStep = 0.008f;
-        private int screenWidth;
-        private int screenHeight;
+        private int screenWidth { get { return Raylib.GetScreenWidth(); } }
+        private int screenHeight { get { return Raylib.GetScreenHeight(); } }
 
         private float axisLineSize = 1000f;
 
@@ -32,8 +32,6 @@ namespace IceSaw2.EditorWindows
             viewCamera3D.FovY = 65f;
             viewCamera3D.Projection = CameraProjection.Perspective;
 
-            screenWidth = Core.instance.generalSettings.ScreenWidth;
-            screenHeight = Core.instance.generalSettings.ScreenHeight;
         }
 
         public override void RenderUpdate()
@@ -41,7 +39,6 @@ namespace IceSaw2.EditorWindows
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
             Rlgl.DisableBackfaceCulling();
-
 
             Rlgl.DisableDepthMask();
             //Render Skybox
@@ -61,7 +58,6 @@ namespace IceSaw2.EditorWindows
             Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
             //Render Objects
-
             for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
             {
                 TrickyDataManager.trickyPatchObjects[i].Render();
@@ -126,7 +122,7 @@ namespace IceSaw2.EditorWindows
 
             // Position and size sidebar *below* the main menu bar
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Core.instance.heightScreen - menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, screenHeight - menuBarHeight), ImGuiCond.Always);
 
             // Optional: remove decorations
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
@@ -149,7 +145,7 @@ namespace IceSaw2.EditorWindows
             //Update Camera
             //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
             // Viewport Camera
-            if (Raylib.IsMouseButtonDown(Core.instance.hotkeySettings.ActivateCamera))
+            if (Raylib.IsMouseButtonDown(Settings.Hotkey.Instance.data.ActivateCamera))
             {
                 Raylib.HideCursor();
 
@@ -169,13 +165,13 @@ namespace IceSaw2.EditorWindows
                 Vector3 newPosition = new Vector3(0, 0, 0);
                 // Vector3 newPosition = Raymath.Vector3Zero();
                 float currentSpeed = moveSpeed;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Boost)) currentSpeed *= BOOST_MULTIPLIER;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Forward)) newPosition += forward;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Back)) newPosition -= forward;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Right)) newPosition -= right;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Left)) newPosition += right;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Up)) newPosition += up;
-                if (Raylib.IsKeyDown(Core.instance.hotkeySettings.Down)) newPosition -= up;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Boost)) currentSpeed *= BOOST_MULTIPLIER;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Forward)) newPosition += forward;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Back)) newPosition -= forward;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Right)) newPosition -= right;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Left)) newPosition += right;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Up)) newPosition += up;
+                if (Raylib.IsKeyDown(Settings.Hotkey.Instance.data.Down)) newPosition -= up;
                 viewCamera3D.Position += Raymath.Vector3Normalize(newPosition) * currentSpeed;
 
                 float wheel = Raylib.GetMouseWheelMove();
@@ -187,7 +183,7 @@ namespace IceSaw2.EditorWindows
                 }
                 viewCamera3D.Target = viewCamera3D.Position + forward;
             }
-            if (Raylib.IsMouseButtonReleased(Core.instance.hotkeySettings.ActivateCamera))
+            if (Raylib.IsMouseButtonReleased(Settings.Hotkey.Instance.data.ActivateCamera))
             {
                 Raylib.ShowCursor();
             }

@@ -77,8 +77,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             int degreeU = 3;
             int degreeV = 3;
 
-            int resolutionU = Core.instance.generalSettings.PatchResolution; //7;
-            int resolutionV = Core.instance.generalSettings.PatchResolution; //7; ()
+            int resolutionU = Settings.General.Instance.data.PatchResolution; //7;
+            int resolutionV = Settings.General.Instance.data.PatchResolution; //7; ()
 
             surface = new NURBS.Surface(cps, degreeU, degreeV);
 
