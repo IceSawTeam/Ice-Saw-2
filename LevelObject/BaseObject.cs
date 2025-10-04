@@ -20,17 +20,19 @@ namespace IceSaw2.LevelObject
             { return _parent; }
             set
             {
-                if(_parent!=null)
+                var PrevParent = _parent;
+
+                _parent = value;
+
+                if (PrevParent != null)
                 {
-                    _parent.RemoveChild(this);
+                    PrevParent.RemoveChild(this);
                 }
 
                 if(value!=null)
                 {
                     value.AddChild(this);
                 }
-
-                _parent = value;
 
                 UpdateMatrix(false);
             }
