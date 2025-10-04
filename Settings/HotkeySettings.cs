@@ -1,26 +1,21 @@
 ﻿using Newtonsoft.Json;
 using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+
 
 namespace IceSaw2.Settings
 {
     public class HotkeySettings
     {
-        //Convert to use a list so we can have multi hotkeys
+        //TODO: Convert to use a list so we can have multi hotkeys
         //General
         public KeyboardKey LevelWindow = KeyboardKey.L;
         public KeyboardKey MaterialWindow = KeyboardKey.M;
         public KeyboardKey PrefabWindow = KeyboardKey.P;
-
         public KeyboardKey OpenProject = KeyboardKey.F;
 
-        //Level Viewer
+        // Camera movement
         public MouseButton ActivateCamera = MouseButton.Right;
-
         public KeyboardKey Forward = KeyboardKey.W;
         public KeyboardKey Back = KeyboardKey.S;
         public KeyboardKey Left = KeyboardKey.A;
@@ -29,33 +24,26 @@ namespace IceSaw2.Settings
         public KeyboardKey Down = KeyboardKey.Q;
         public KeyboardKey Boost = KeyboardKey.LeftShift;
 
-        //Custom Hotkey Voids for Pressing 2 or more keys
 
-        public void CreateJson(string path, bool Inline = false)
+        public void CreateJson(string path, bool pretty = false)
         {
-            var TempFormating = Formatting.None;
-            if (Inline)
-            {
-                TempFormating = Formatting.Indented;
-            }
-
+            var TempFormating = pretty ? Formatting.Indented : Formatting.None;
             var serializer = JsonConvert.SerializeObject(this, TempFormating);
             File.WriteAllText(path, serializer);
         }
 
+
         public static HotkeySettings Load(string path)
         {
-            string paths = path;
-            if (File.Exists(paths))
+            string loadPath = path;
+            if (File.Exists(loadPath))
             {
-                var stream = File.ReadAllText(paths);
-                var container = JsonConvert.DeserializeObject<HotkeySettings>(stream);
-                return container ?? new HotkeySettings();
+                string stream = File.ReadAllText(loadPath);
+                HotkeySettings? container = JsonConvert.DeserializeObject<HotkeySettings>(stream);
+                Debug.Assert(container != null, "Container is null");
+                return container;
             }
-            else
-            {
-                return new HotkeySettings();
-            }
+            return new HotkeySettings();
         }
     }
 }

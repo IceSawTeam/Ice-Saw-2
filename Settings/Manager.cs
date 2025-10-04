@@ -1,6 +1,5 @@
 /*
     Manages and centralizes all settings classes.
-
     This is a singleton. It's Instance can be accessed anywhere.
 */
 
@@ -35,8 +34,8 @@ namespace IceSaw2.Settings
         public void SaveSettings()
         {
             string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
-            General.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
-            Hotkey.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
+            General.CreateJson(Path.Combine(SaveFolder, "Settings.json"), true);
+            Hotkey.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"), true);
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SSXMultiTool.JsonFiles.Tricky;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+
 
 namespace IceSaw2.Settings
 {
@@ -12,36 +8,27 @@ namespace IceSaw2.Settings
     {
         public int ScreenWidth = 1280;
         public int ScreenHeight = 720;
-
         public string LastLoad = "";
-
         public int PatchResolution = 7;
 
-        public void CreateJson(string path, bool Inline = false)
+        public void CreateJson(string path, bool pretty = false)
         {
-            var TempFormating = Formatting.None;
-            if (Inline)
-            {
-                TempFormating = Formatting.Indented;
-            }
-
+            var TempFormating = pretty? Formatting.Indented : Formatting.None;
             var serializer = JsonConvert.SerializeObject(this, TempFormating);
             File.WriteAllText(path, serializer);
         }
 
         public static GeneralSettings Load(string path)
         {
-            string paths = path;
-            if (File.Exists(paths))
+            string loadPath = path;
+            if (File.Exists(loadPath))
             {
-                var stream = File.ReadAllText(paths);
-                var container = JsonConvert.DeserializeObject<GeneralSettings>(stream);
+                string stream = File.ReadAllText(loadPath);
+                GeneralSettings? container = JsonConvert.DeserializeObject<GeneralSettings>(stream);
+                Debug.Assert(container != null, "Container is null");
                 return container;
             }
-            else
-            {
-                return new GeneralSettings();
-            }
+            return new GeneralSettings();
         }
     }
 }
