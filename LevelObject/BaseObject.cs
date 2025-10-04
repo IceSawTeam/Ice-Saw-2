@@ -1,21 +1,19 @@
-﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ImGuiNET;
+using Raylib_cs;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static Raylib_cs.Raymath;
 
 namespace IceSaw2.LevelObject
 {
     public class BaseObject
     {
+        public int ID;
+        private static int IDCount = 0;
+
         public static float WorldScale = 0.001f;
 
         public string Name = "Null";
 
-        private BaseObject _parent;
+        private BaseObject? _parent = null;
         public BaseObject parent
         {
             get
@@ -78,11 +76,11 @@ namespace IceSaw2.LevelObject
         {
             get
             {
-                return QuaternionToEuler(Rotation);
+                return Raymath.QuaternionToEuler(Rotation);
             }
             set
             {
-                Rotation = QuaternionFromEuler(value.Z, value.Y, value.X);
+                Rotation = Raymath.QuaternionFromEuler(value.Z, value.Y, value.X);
             }
         }
 
@@ -109,6 +107,7 @@ namespace IceSaw2.LevelObject
 
         public bool Visable = true;
         public bool Enabled = true;
+        public bool VisableHierarchy = true;
 
 
         public virtual ObjectType Type
@@ -118,6 +117,8 @@ namespace IceSaw2.LevelObject
 
         public BaseObject()
         {
+            ID = IDCount;
+            IDCount++;
             UpdateMatrix();
         }
 
@@ -140,10 +141,14 @@ namespace IceSaw2.LevelObject
         {
             if (UpdateLocal)
             {
-                Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
-                Matrix4x4 rotation = QuaternionToMatrix(_rotation);
-                Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
-                TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
+                Matrix4x4 scale = Raymath.MatrixScale(_scale.X, _scale.Y, _scale.Z);
+                Matrix4x4 rotation = Raymath.QuaternionToMatrix(_rotation);
+                Matrix4x4 TempMatrix4X4 = Raymath.MatrixMultiply(scale, rotation);
+                TempMatrix4X4.M14 = _position.X;
+                TempMatrix4X4.M24 = _position.Y;
+                TempMatrix4X4.M34 = _position.Z;
+
+                //TempMatrix4X4 = Raymath.MatrixMultiply(TempMatrix4X4, Raymath.MatrixTranslate(_position.X, _position.Y, _position.Z));
 
                 localMatrix4X4 = TempMatrix4X4;
             }
@@ -151,17 +156,44 @@ namespace IceSaw2.LevelObject
             //Check Parent
             if (_parent == null)
             {
-                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
+                worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, Raymath.MatrixScale(WorldScale, WorldScale, WorldScale));
             }
             else
             {
-                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
+                worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
             }
 
             //Update Children
             for (global::System.Int32 i = 0; i < children.Count; i++)
             {
                 children[i].UpdateMatrix(false);
+            }
+        }
+
+        public void HierarchyRender()
+        {
+            if (VisableHierarchy)
+            {
+                var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+                if (children.Count == 0)
+                    flags |= ImGuiTreeNodeFlags.Leaf;
+
+                bool nodeOpen = ImGui.TreeNodeEx(Name, flags);
+
+                // Handle selection or context menu if needed
+                if (ImGui.IsItemClicked())
+                {
+                    Console.WriteLine($"Selected: Patches");
+                }
+
+                if (nodeOpen)
+                {
+                    for (global::System.Int32 i = 0; i < children.Count; i++)
+                    {
+                        children[i].HierarchyRender();
+                    }
+                    ImGui.TreePop();
+                }
             }
         }
 

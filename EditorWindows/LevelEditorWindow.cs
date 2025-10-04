@@ -133,22 +133,9 @@ namespace IceSaw2.EditorWindows
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
 
-            bool nodeOpen = ImGui.TreeNodeEx("Patches");
-
-            // Handle selection or context menu if needed
-            if (ImGui.IsItemClicked())
+            for (int i = 0; i < TrickyDataManager.trickyInstanceObjects.Count; i++)
             {
-                Console.WriteLine($"Selected: Patches");
-            }
-
-            if (nodeOpen)
-            {
-                for (global::System.Int32 i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
-                {
-                    ImGui.TreeNodeEx(TrickyDataManager.trickyPatchObjects[i].Name, ImGuiTreeNodeFlags.Leaf);
-                    ImGui.TreePop();
-                }
-                ImGui.TreePop();
+                TrickyDataManager.trickyInstanceObjects[i].HierarchyRender();
             }
 
             // Add your sidebar content here
