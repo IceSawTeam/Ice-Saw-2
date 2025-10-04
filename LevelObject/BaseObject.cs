@@ -1,44 +1,46 @@
-﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ImGuiNET;
+using Raylib_cs;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static Raylib_cs.Raymath;
 
 namespace IceSaw2.LevelObject
 {
     public class BaseObject
     {
+        public int ID;
+        private static int IDCount = 0;
+
         public static float WorldScale = 0.001f;
 
         public string Name = "Null";
 
-        private BaseObject _parent;
+        private BaseObject _parent = null;
         public BaseObject parent
         {
             get
             { return _parent; }
             set
             {
-                if(_parent!=null)
+                var PrevParent = _parent;
+
+                _parent = value;
+
+                if (PrevParent != null)
                 {
-                    _parent.children.Remove(this);
+                    PrevParent.RemoveChild(this);
                 }
 
                 if(value!=null)
                 {
-                    value.children.Add(this);
+                    value.AddChild(this);
                 }
-
-                _parent = value;
 
                 UpdateMatrix(false);
             }
         }
 
-        public List<BaseObject> children = new List<BaseObject>();
+        private List<BaseObject> _children = new List<BaseObject>();
+
+        public IReadOnlyList<BaseObject> Children => _children.AsReadOnly();
 
         private Vector3 _position = Vector3.Zero;
         public Vector3 Position
@@ -78,11 +80,11 @@ namespace IceSaw2.LevelObject
         {
             get
             {
-                return QuaternionToEuler(Rotation);
+                return Raymath.QuaternionToEuler(Rotation);
             }
             set
             {
-                Rotation = QuaternionFromEuler(value.Z, value.Y, value.X);
+                Rotation = Raymath.QuaternionFromEuler(value.Z, value.Y, value.X);
             }
         }
 
@@ -109,6 +111,7 @@ namespace IceSaw2.LevelObject
 
         public bool Visable = true;
         public bool Enabled = true;
+        public bool VisableHierarchy = true;
 
 
         public virtual ObjectType Type
@@ -118,6 +121,8 @@ namespace IceSaw2.LevelObject
 
         public BaseObject()
         {
+            ID = IDCount;
+            IDCount++;
             UpdateMatrix();
         }
 
@@ -136,14 +141,45 @@ namespace IceSaw2.LevelObject
 
         }
 
+        public void AddChild(BaseObject baseObject)
+        {
+            if (baseObject.parent!=this)
+            {
+                baseObject.parent = this;
+            }
+            else
+            {
+                _children.Add(baseObject);
+            }
+        }
+
+        public void RemoveChild(BaseObject baseObject)
+        {
+            if (_children.Contains(baseObject))
+            {
+                if(parent==baseObject)
+                {
+                    parent = null;
+                }
+                else
+                {
+                    _children.Remove(baseObject);
+                }
+            }
+        }
+
         private void UpdateMatrix(bool UpdateLocal = true)
         {
             if (UpdateLocal)
             {
-                Matrix4x4 scale = MatrixScale(_scale.X, _scale.Y, _scale.Z);
-                Matrix4x4 rotation = QuaternionToMatrix(_rotation);
-                Matrix4x4 TempMatrix4X4 = MatrixMultiply(scale, rotation);
-                TempMatrix4X4 = MatrixMultiply(TempMatrix4X4, MatrixTranslate(_position.X, _position.Y, _position.Z));
+                Matrix4x4 scale = Raymath.MatrixScale(_scale.X, _scale.Y, _scale.Z);
+                Matrix4x4 rotation = Raymath.QuaternionToMatrix(_rotation);
+                Matrix4x4 TempMatrix4X4 = Raymath.MatrixMultiply(scale, rotation);
+                TempMatrix4X4.M14 = _position.X;
+                TempMatrix4X4.M24 = _position.Y;
+                TempMatrix4X4.M34 = _position.Z;
+
+                //TempMatrix4X4 = Raymath.MatrixMultiply(TempMatrix4X4, Raymath.MatrixTranslate(_position.X, _position.Y, _position.Z));
 
                 localMatrix4X4 = TempMatrix4X4;
             }
@@ -151,17 +187,45 @@ namespace IceSaw2.LevelObject
             //Check Parent
             if (_parent == null)
             {
-                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, MatrixScale(WorldScale, WorldScale, WorldScale));
+                worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, Raymath.MatrixScale(WorldScale, WorldScale, WorldScale));
             }
             else
             {
-                worldMatrix4x4 = MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
+                worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
             }
 
             //Update Children
-            for (global::System.Int32 i = 0; i < children.Count; i++)
+            for (global::System.Int32 i = 0; i < Children.Count; i++)
             {
-                children[i].UpdateMatrix(false);
+                Children[i].UpdateMatrix(false);
+            }
+        }
+
+        public void HierarchyRender()
+        {
+            if (VisableHierarchy)
+            {
+                var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+
+                if (Children.Count == 0)
+                    flags |= ImGuiTreeNodeFlags.Leaf;
+
+                bool nodeOpen = ImGui.TreeNodeEx(Name + "###" + ID, flags);
+
+                // Handle selection or context menu if needed
+                if (ImGui.IsItemClicked())
+                {
+                    Console.WriteLine($"Selected: " + Name + "###" + ID);
+                }
+
+                if (nodeOpen)
+                {
+                    for (global::System.Int32 i = 0; i < Children.Count; i++)
+                    {
+                        Children[i].HierarchyRender();
+                    }
+                    ImGui.TreePop();
+                }
             }
         }
 

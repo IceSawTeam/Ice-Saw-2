@@ -51,6 +51,8 @@ namespace IceSaw2.Manager.Tricky
         public static List<MeshData> worldMeshes = new List<MeshData>();
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
 
+        public static List<BaseObject> LevelNodeTree = new List<BaseObject>();
+
         public static string LoadPath = "";
 
         public static void LoadProject(string ConfigPath)
@@ -68,6 +70,8 @@ namespace IceSaw2.Manager.Tricky
             LoadEffects();
 
             LoadSkybox();
+
+            LoadTreeNode();
         }
 
         public static void LoadTextureMesh()
@@ -157,6 +161,7 @@ namespace IceSaw2.Manager.Tricky
 
                 trickyPatchObjects.Add(patchObject);
             }
+
 
             trickyMaterialObject = new List<TrickyMaterialObject>();
             MaterialJsonHandler matJsonHandler = MaterialJsonHandler.Load(Path.Combine(LoadPath, "Materials.json"));
@@ -370,8 +375,115 @@ namespace IceSaw2.Manager.Tricky
             }
         }
 
+        public static void LoadTreeNode()
+        {
+            //Attempt to load JSON First if none do base load
+
+            BaseObject baseObject = new BaseObject();
+            baseObject.Name = "Patches";
+
+            for (int i = 0; i < trickyPatchObjects.Count; i++)
+            {
+                baseObject.AddChild(trickyPatchObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Instances";
+
+            for (int i = 0; i < trickyInstanceObjects.Count; i++)
+            {
+                baseObject.AddChild(trickyInstanceObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Splines";
+
+            for (int i = 0; i < trickySplineObjects.Count; i++)
+            {
+                baseObject.AddChild(trickySplineObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Lights";
+
+            for (int i = 0; i < trickyLightObjects.Count; i++)
+            {
+                baseObject.AddChild(trickyLightObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Cameras";
+
+            for (int i = 0; i < trickyCameraObjects.Count; i++)
+            {
+                baseObject.AddChild(trickyCameraObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Particle Instances";
+
+            for (int i = 0; i < trickyPaticleInstanceObjects.Count; i++)
+            {
+                baseObject.AddChild(trickyPaticleInstanceObjects[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "General Race Line";
+
+            for (int i = 0; i < trickyAIPRaceLine.Count; i++)
+            {
+                baseObject.AddChild(trickyAIPRaceLine[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "General AI Path";
+
+            for (int i = 0; i < trickyAIPAIPath.Count; i++)
+            {
+                baseObject.AddChild(trickyAIPAIPath[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Showoff Race Line";
+
+            for (int i = 0; i < trickySOPRaceLine.Count; i++)
+            {
+                baseObject.AddChild(trickySOPRaceLine[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+
+            baseObject = new BaseObject();
+            baseObject.Name = "Showoff AI Path";
+
+            for (int i = 0; i < trickySOPAIPath.Count; i++)
+            {
+                baseObject.AddChild(trickySOPAIPath[i]);
+            }
+
+            LevelNodeTree.Add(baseObject);
+        }
+
         public static void UnloadProject()
         {
+            TrickyDataManager.LevelNodeTree = new List<BaseObject>();
+
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
             trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
 
@@ -444,7 +556,7 @@ namespace IceSaw2.Manager.Tricky
                         return worldTextureData[i].texture2D;
                     }
                 }
-                return worldTextureData[0].texture2D;
+                return TrickyWorldManager.instance.ErrorTexture;
             }
             else
             {
@@ -455,7 +567,7 @@ namespace IceSaw2.Manager.Tricky
                         return skyboxTexture2Ds[i].texture2D;
                     }
                 }
-                return skyboxTexture2Ds[0].texture2D;
+                return TrickyWorldManager.instance.ErrorTexture;
             }
         }
 

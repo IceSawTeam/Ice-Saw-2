@@ -16,7 +16,7 @@ namespace IceSaw2
 
         public bool IsVisible => isOpen;
 
-        public IMGuiFilePicker(string startPath = null)
+        public IMGuiFilePicker(string startPath = "")
         {
             if(startPath=="")
             {

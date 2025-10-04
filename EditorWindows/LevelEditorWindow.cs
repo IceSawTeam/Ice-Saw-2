@@ -1,17 +1,8 @@
 ﻿using IceSaw2.LevelObject;
-using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using ImGuiNET;
 using Raylib_cs;
-using rlImGui_cs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using static IceSaw2.Manager.Tricky.TrickyWorldManager;
 
 namespace IceSaw2.EditorWindows
 {
@@ -141,16 +132,15 @@ namespace IceSaw2.EditorWindows
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
 
-            ImGui.Text("Sidebar content below main menu bar.");
-            //ImGui.Separator();
-            //ImGui.Button("Click Me");
+            for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
+            {
+                TrickyDataManager.LevelNodeTree[i].HierarchyRender();
+            }
 
             // Add your sidebar content here
 
             ImGui.End();
             ImGui.PopStyleVar(2);
-
-            //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
 
         public override void LogicUpdate()

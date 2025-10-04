@@ -1,15 +1,8 @@
 ﻿using IceSaw2.EditorWindows;
-
-
-// using IceSaw2.LevelObject;
-// using IceSaw2.LevelObject.Materials;
-// using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
-// using SSXMultiTool.JsonFiles.Tricky;
-// using System.Numerics;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -30,6 +23,8 @@ namespace IceSaw2.Manager.Tricky
         public Texture2D LightIcon = new();
         public Texture2D CameraIcon = new();
         public Texture2D ParticleIcon = new();
+
+        public Texture2D ErrorTexture = new();
 
         public TrickyWorldManager()
         {
@@ -57,6 +52,8 @@ namespace IceSaw2.Manager.Tricky
             LightIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("LightIcon.png"));
             CameraIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("CameraIcon.png"));
             ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("ParticleIcon.png"));
+
+            ErrorTexture = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("Error.png"));
         }
 
         public void UpdateLogic()

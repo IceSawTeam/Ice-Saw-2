@@ -41,7 +41,7 @@ namespace IceSaw2.LevelObject
         public float U0;
         public float PlayerBounceAmmount;
         public int U2;
-        public bool Visable;
+        public bool InstanceVisable;
         public bool PlayerCollision;
         public bool PlayerBounce;
         public bool Unknown241;
@@ -138,7 +138,7 @@ namespace IceSaw2.LevelObject
             U0 = instance.U0;
             PlayerBounceAmmount = instance.PlayerBounceAmmount;
             U2 = instance.U2;
-            Visable = instance.Visable;
+            InstanceVisable = instance.Visable;
             PlayerCollision = instance.PlayerCollision;
             PlayerBounce = instance.PlayerBounce;
             Unknown241 = instance.Unknown241;
@@ -163,6 +163,7 @@ namespace IceSaw2.LevelObject
             }
         }
 
+        #region Rendering
         List<RenderCache> renderCaches = new List<RenderCache>();
 
         public void GenerateRenderCache()
@@ -178,17 +179,12 @@ namespace IceSaw2.LevelObject
         
         public override void Render()
         {
-            //if (TrickyPrefab != null)
-            //{
-            //    TrickyPrefab.parent = this;
-            //    TrickyPrefab.Render();
-            //    TrickyPrefab.parent = null;
-            //}
             for (int i = 0; i < renderCaches.Count; i++)
             {
                 renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
             }
         }
+        #endregion
 
         [System.Serializable]
         public struct SoundData
