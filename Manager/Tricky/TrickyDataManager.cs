@@ -440,7 +440,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree.Add(baseObject);
 
             baseObject = new BaseObject();
-            baseObject.Name = "AIP Race Line";
+            baseObject.Name = "General Race Line";
 
             for (int i = 0; i < trickyAIPRaceLine.Count; i++)
             {
@@ -450,7 +450,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree.Add(baseObject);
 
             baseObject = new BaseObject();
-            baseObject.Name = "AIP AI Path";
+            baseObject.Name = "General AI Path";
 
             for (int i = 0; i < trickyAIPAIPath.Count; i++)
             {
@@ -460,7 +460,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree.Add(baseObject);
 
             baseObject = new BaseObject();
-            baseObject.Name = "SOP Race Line";
+            baseObject.Name = "Showoff Race Line";
 
             for (int i = 0; i < trickySOPRaceLine.Count; i++)
             {
@@ -470,7 +470,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree.Add(baseObject);
 
             baseObject = new BaseObject();
-            baseObject.Name = "SOP AI Path";
+            baseObject.Name = "Showoff AI Path";
 
             for (int i = 0; i < trickySOPAIPath.Count; i++)
             {
@@ -556,7 +556,7 @@ namespace IceSaw2.Manager.Tricky
                         return worldTextureData[i].texture2D;
                     }
                 }
-                return worldTextureData[0].texture2D;
+                return TrickyWorldManager.instance.ErrorTexture;
             }
             else
             {
@@ -567,7 +567,7 @@ namespace IceSaw2.Manager.Tricky
                         return skyboxTexture2Ds[i].texture2D;
                     }
                 }
-                return skyboxTexture2Ds[0].texture2D;
+                return TrickyWorldManager.instance.ErrorTexture;
             }
         }
 

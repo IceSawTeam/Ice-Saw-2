@@ -142,8 +142,6 @@ namespace IceSaw2.EditorWindows
 
             ImGui.End();
             ImGui.PopStyleVar(2);
-
-            //Raylib.DrawTexture(skyboxTexture2Ds[0], 100, 100, Color.White);
         }
 
         public override void LogicUpdate()

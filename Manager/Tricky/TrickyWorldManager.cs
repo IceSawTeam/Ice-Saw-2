@@ -25,6 +25,8 @@ namespace IceSaw2.Manager.Tricky
         public Texture2D CameraIcon = new();
         public Texture2D ParticleIcon = new();
 
+        public Texture2D ErrorTexture = new();
+
         public TrickyWorldManager()
         {
             instance = this;
@@ -51,6 +53,8 @@ namespace IceSaw2.Manager.Tricky
             LightIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("LightIcon.png"));
             CameraIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("CameraIcon.png"));
             ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("ParticleIcon.png"));
+
+            ErrorTexture = Raylib.LoadTextureFromImage(LoadEmbededImage.LoadImage("Error.png"));
         }
 
         public void UpdateLogic()
