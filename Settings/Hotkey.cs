@@ -51,11 +51,9 @@ namespace IceSaw2.Settings
         
         public void Save()
         {
-            const bool PRETTY = true;
             string saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
             string savePath = Path.Combine(saveFolder, "Hotkeys.json");
-            var tempFormating = PRETTY ? Formatting.Indented : Formatting.None;
-            var serializer = JsonConvert.SerializeObject(data, tempFormating);
+            var serializer = JsonConvert.SerializeObject(data, Formatting.Indented);
             File.WriteAllText(savePath, serializer);
         }
 
