@@ -50,7 +50,7 @@ namespace IceSaw2.Settings
             {
                 var stream = File.ReadAllText(paths);
                 var container = JsonConvert.DeserializeObject<HotkeySettings>(stream);
-                return container;
+                return container ?? new HotkeySettings();
             }
             else
             {

@@ -90,7 +90,7 @@ namespace IceSaw2.Manager.Tricky
                         {
                             TrickyDataManager.LoadProject(selectedPath);
                             Settings.Manager.Instance.General.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
-                            Settings.Manager.SaveSettings();
+                            Settings.Manager.Instance.SaveSettings();
                             // Do something with selectedPath
                         });
                         // Handle file open

@@ -35,7 +35,7 @@ namespace IceSaw2
 
         public Core()
         {
-            Settings.Manager.LoadSettings();
+            Settings.Manager.Instance.LoadSettings();
             Raylib.InitWindow(Settings.Manager.Instance.General.ScreenWidth,
                               Settings.Manager.Instance.General.ScreenHeight,
                               "Ice Saw 2");

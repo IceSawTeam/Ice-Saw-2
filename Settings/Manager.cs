@@ -16,7 +16,7 @@ namespace IceSaw2.Settings
         public HotkeySettings Hotkey = new();
 
 
-        public static void LoadSettings()
+        public void LoadSettings()
         {
             string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
             if (!Directory.Exists(SaveFolder))
@@ -24,19 +24,19 @@ namespace IceSaw2.Settings
                 Directory.CreateDirectory(SaveFolder);
             }
 
-            Instance.General = GeneralSettings.Load(Path.Combine(SaveFolder, "Settings.json"));
-            Instance.Hotkey = HotkeySettings.Load(Path.Combine(SaveFolder, "Hotkeys.json"));
+            General = GeneralSettings.Load(Path.Combine(SaveFolder, "Settings.json"));
+            Hotkey = HotkeySettings.Load(Path.Combine(SaveFolder, "Hotkeys.json"));
 
             //Incase of version Change save back to latest version
             SaveSettings();
         }
 
 
-        public static void SaveSettings()
+        public void SaveSettings()
         {
             string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
-            Instance.General.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
-            Instance.Hotkey.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
+            General.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
+            Hotkey.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
         }
     }
 }
