@@ -35,9 +35,10 @@ namespace IceSaw2
 
         public Core()
         {
-            Settings.Manager.Instance.LoadSettings();
-            Raylib.InitWindow(Settings.Manager.Instance.General.ScreenWidth,
-                              Settings.Manager.Instance.General.ScreenHeight,
+            Settings.General.Instance.Load();
+            Settings.Hotkey.Instance.Load();
+            Raylib.InitWindow(Settings.General.Instance.data.ScreenWidth,
+                              Settings.General.Instance.data.ScreenHeight,
                               "Ice Saw 2");
             Raylib.SetTargetFPS(MAX_FPS);
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);

@@ -4,7 +4,6 @@
 // using IceSaw2.LevelObject;
 // using IceSaw2.LevelObject.Materials;
 // using IceSaw2.LevelObject.TrickyObjects;
-using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
@@ -36,7 +35,7 @@ namespace IceSaw2.Manager.Tricky
         {
             instance = this;
 
-            filePicker = new IMGuiFilePicker(Settings.Manager.Instance.General.LastLoad);
+            filePicker = new IMGuiFilePicker(Settings.General.Instance.data.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
@@ -62,15 +61,15 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.MaterialWindow))
+            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.MaterialWindow))
             {
                 windowMode = WindowMode.Materials;
             }
-            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.PrefabWindow))
+            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.LevelWindow))
+            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }
@@ -89,8 +88,9 @@ namespace IceSaw2.Manager.Tricky
                         filePicker.Show((selectedPath) =>
                         {
                             TrickyDataManager.LoadProject(selectedPath);
-                            Settings.Manager.Instance.General.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
-                            Settings.Manager.Instance.SaveSettings();
+                            Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                            Settings.General.Instance.Save();
+                            Settings.Hotkey.Instance.Save();
                             // Do something with selectedPath
                         });
                         // Handle file open
