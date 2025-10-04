@@ -1,16 +1,9 @@
 ﻿using IceSaw2.EditorWindows;
-
-
-// using IceSaw2.LevelObject;
-// using IceSaw2.LevelObject.Materials;
-// using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
-// using SSXMultiTool.JsonFiles.Tricky;
-// using System.Numerics;
 
 namespace IceSaw2.Manager.Tricky
 {

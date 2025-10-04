@@ -133,9 +133,9 @@ namespace IceSaw2.EditorWindows
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
 
-            for (int i = 0; i < TrickyDataManager.trickyInstanceObjects.Count; i++)
+            for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
             {
-                TrickyDataManager.trickyInstanceObjects[i].HierarchyRender();
+                TrickyDataManager.LevelNodeTree[i].HierarchyRender();
             }
 
             // Add your sidebar content here
