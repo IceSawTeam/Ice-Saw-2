@@ -6,8 +6,6 @@ namespace IceSaw2
     {
         public static void Main()
         {
-            //WorldManager worldManager = new();
-
             Core engineCore = new();
             while (engineCore.isRunning && !Raylib.WindowShouldClose())
             {

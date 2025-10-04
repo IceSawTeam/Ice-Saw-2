@@ -1,30 +1,19 @@
+/*
+    Manages and centralizes all settings classes.
+
+    This is a singleton. It's Instance can be accessed anywhere.
+*/
 
 namespace IceSaw2.Settings
 {
     public class Manager
     {
-        private static Manager? _instance;
-        public static Manager Instance
-        {
-            get
-            {
-                return _instance ?? throw new InvalidOperationException("Settings manager not initialized");
-            }
-        }
         private Manager() { }
-        public static void Init()
-        {
-            if (_instance != null)
-                throw new InvalidOperationException("Settings manager already initialized");
-            _instance = new Manager();
+        private static readonly Manager _instance = new();
+        public static Manager Instance {get{return _instance;}}
 
-            Instance.General = new();
-            Instance.Hotkey = new();
-
-        }
-
-        public GeneralSettings? General;
-        public HotkeySettings? Hotkey;
+        public GeneralSettings General = new();
+        public HotkeySettings Hotkey = new();
 
 
         public static void LoadSettings()
@@ -46,8 +35,8 @@ namespace IceSaw2.Settings
         public static void SaveSettings()
         {
             string SaveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
-            Instance.General?.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
-            Instance.Hotkey?.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
+            Instance.General.CreateJson(Path.Combine(SaveFolder, "Settings.json"));
+            Instance.Hotkey.CreateJson(Path.Combine(SaveFolder, "Hotkeys.json"));
         }
     }
 }

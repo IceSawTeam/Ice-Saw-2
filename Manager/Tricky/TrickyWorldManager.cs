@@ -36,7 +36,7 @@ namespace IceSaw2.Manager.Tricky
         {
             instance = this;
 
-            filePicker = new IMGuiFilePicker(Core.instance.generalSettings.LastLoad);
+            filePicker = new IMGuiFilePicker(Settings.Manager.Instance.General.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
@@ -62,15 +62,15 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.MaterialWindow))
+            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.MaterialWindow))
             {
                 windowMode = WindowMode.Materials;
             }
-            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.PrefabWindow))
+            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(Core.instance.hotkeySettings.LevelWindow))
+            if (Raylib.IsKeyPressed(Settings.Manager.Instance.Hotkey.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }
@@ -78,7 +78,7 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateRender()
         {
-            Raylib.DrawFPS(Core.instance.widthScreen - 150, Core.instance.heightScreen - 30);
+            Raylib.DrawFPS(Raylib.GetScreenWidth() - 150, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
             if (ImGui.BeginMainMenuBar())
             {
@@ -89,8 +89,8 @@ namespace IceSaw2.Manager.Tricky
                         filePicker.Show((selectedPath) =>
                         {
                             TrickyDataManager.LoadProject(selectedPath);
-                            Core.instance.generalSettings.LastLoad = Path.GetDirectoryName(selectedPath);
-                            Core.instance.SaveSettings();
+                            Settings.Manager.Instance.General.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                            Settings.Manager.SaveSettings();
                             // Do something with selectedPath
                         });
                         // Handle file open

@@ -6,7 +6,6 @@
 */
 
 using IceSaw2.Manager.Tricky;
-using IceSaw2.Settings;
 using Raylib_cs;
 using rlImGui_cs;
 
@@ -28,23 +27,17 @@ namespace IceSaw2
         public const int MAX_FPS = 60;
 
         public bool isRunning = true;
-        private static float delta { get { return Raylib.GetFrameTime(); } }
         // public State currentState = State.MAIN_WINDOW;
-        public int heightScreen { get { return Raylib.GetScreenHeight(); } }
-        public int widthScreen { get { return Raylib.GetScreenWidth(); } }
-        public static Core? instance = null;
 
         //--------------------- Manager/Module/System declarations here -------------------------
         public static TrickyWorldManager? worldManager = null;
-        public SettingsManager settingsManager = new();
 
 
         public Core()
         {
-            instance = this;
-            settingsManager.LoadSettings();
-            Raylib.InitWindow(settingsManager.generalSettings.ScreenWidth,
-                              settingsManager.generalSettings.ScreenHeight,
+            Settings.Manager.LoadSettings();
+            Raylib.InitWindow(Settings.Manager.Instance.General.ScreenWidth,
+                              Settings.Manager.Instance.General.ScreenHeight,
                               "Ice Saw 2");
             Raylib.SetTargetFPS(MAX_FPS);
             Raylib.SetWindowState(ConfigFlags.ResizableWindow);
@@ -116,7 +109,7 @@ namespace IceSaw2
                 worldManager.UpdateRender();
              }
 
-            Raylib.DrawText("Beta Test", 12, widthScreen - 20, 20, Color.Black);
+            Raylib.DrawText("Beta Test", 12, Raylib.GetScreenWidth() - 20, 20, Color.Black);
             rlImGui.End();
             Raylib.EndDrawing();
         }
