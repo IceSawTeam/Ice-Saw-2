@@ -22,12 +22,12 @@ namespace IceSaw2.LevelObject
             {
                 if(_parent!=null)
                 {
-                    _parent.children.Remove(this);
+                    _parent.RemoveChild(this);
                 }
 
                 if(value!=null)
                 {
-                    value.children.Add(this);
+                    value.AddChild(this);
                 }
 
                 _parent = value;
@@ -36,7 +36,9 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        public List<BaseObject> children = new List<BaseObject>();
+        private List<BaseObject> _children = new List<BaseObject>();
+
+        public IReadOnlyList<BaseObject> Children => _children.AsReadOnly();
 
         private Vector3 _position = Vector3.Zero;
         public Vector3 Position
@@ -137,6 +139,19 @@ namespace IceSaw2.LevelObject
 
         }
 
+        public void AddChild(BaseObject baseObject)
+        {
+            _children.Add(baseObject);
+        }
+
+        public void RemoveChild(BaseObject baseObject)
+        {
+            if (_children.Contains(baseObject))
+            {
+                _children.Remove(baseObject);
+            }
+        }
+
         private void UpdateMatrix(bool UpdateLocal = true)
         {
             if (UpdateLocal)
@@ -164,9 +179,9 @@ namespace IceSaw2.LevelObject
             }
 
             //Update Children
-            for (global::System.Int32 i = 0; i < children.Count; i++)
+            for (global::System.Int32 i = 0; i < Children.Count; i++)
             {
-                children[i].UpdateMatrix(false);
+                Children[i].UpdateMatrix(false);
             }
         }
 
@@ -175,7 +190,7 @@ namespace IceSaw2.LevelObject
             if (VisableHierarchy)
             {
                 var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
-                if (children.Count == 0)
+                if (Children.Count == 0)
                     flags |= ImGuiTreeNodeFlags.Leaf;
 
                 bool nodeOpen = ImGui.TreeNodeEx(Name + "###" + ID, flags);
@@ -183,14 +198,14 @@ namespace IceSaw2.LevelObject
                 // Handle selection or context menu if needed
                 if (ImGui.IsItemClicked())
                 {
-                    Console.WriteLine($"Selected: Patches");
+                    Console.WriteLine($"Selected: " + Name + "###" + ID);
                 }
 
                 if (nodeOpen)
                 {
-                    for (global::System.Int32 i = 0; i < children.Count; i++)
+                    for (global::System.Int32 i = 0; i < Children.Count; i++)
                     {
-                        children[i].HierarchyRender();
+                        Children[i].HierarchyRender();
                     }
                     ImGui.TreePop();
                 }
