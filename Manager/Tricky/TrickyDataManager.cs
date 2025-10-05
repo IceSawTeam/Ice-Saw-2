@@ -482,7 +482,7 @@ namespace IceSaw2.Manager.Tricky
 
         public static void UnloadProject()
         {
-            TrickyDataManager.LevelNodeTree = new List<BaseObject>();
+            LevelNodeTree = new List<BaseObject>();
 
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
             trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();

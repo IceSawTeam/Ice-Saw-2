@@ -2,6 +2,7 @@
 using NURBS;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
+using SSXMultiTool.Utilities;
 using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
@@ -112,6 +113,40 @@ namespace IceSaw2.LevelObject.TrickyObjects
             material = Raylib.LoadMaterialDefault();
 
             Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, Texture);
+        }
+
+        public PatchesJsonHandler.PatchJson SavePatch()
+        {
+            PatchesJsonHandler.PatchJson patch = new PatchesJsonHandler.PatchJson();
+            patch.PatchName = Name;
+            patch.LightMapPoint = JsonUtil.Vector4ToArray(LightMapPoint);
+
+            patch.UVPoints = new float[4, 2];
+
+            for (int i = 0; i < UVPoints.Count; i++)
+            {
+                patch.UVPoints[i, 0] = UVPoints[i].X;
+                patch.UVPoints[i, 1] = UVPoints[i].Y;
+            }
+
+            patch.Points = new float[16, 3];
+
+            for (int y = 0; y < 4; y++)
+            {
+                for (global::System.Int32 x = 0; x < 4; x++)
+                {
+                    patch.Points[y * 4 + x, 0] = WorldPoints[y, x].X;
+                    patch.Points[y * 4 + x, 1] = WorldPoints[y, x].Y;
+                    patch.Points[y * 4 + x, 2] = WorldPoints[y, x].Z;
+                }
+            }
+
+            patch.SurfaceType = (int)SurfaceType;
+            patch.TrickOnlyPatch = TrickOnlyPatch;
+            patch.TexturePath = TexturePath;
+            patch.LightmapID = LightmapID;
+
+            return patch;
         }
 
         public List<Vector2> PointCorrection(List<Vector2> NewList)
