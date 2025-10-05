@@ -46,6 +46,14 @@ public class TrickyEffectSlotObject : BaseObject
 
         TempEffectslot.EffectSlotName = Name;
 
+        TempEffectslot.PersistantEffectSlot = PersistantEffectSlotIndex;
+        TempEffectslot.CollisionEffectSlot = CollisionEffectSlotIndex;
+        TempEffectslot.Slot3 = Slot3Index;
+        TempEffectslot.Slot4 = Slot4Index;
+        TempEffectslot.EffectTriggerSlot = EffectTriggerSlotIndex;
+        TempEffectslot.Slot6 = Slot6Index;
+        TempEffectslot.Slot7 = Slot7Index;
+
         //if (PersistantEffectSlot != null)
         //{
         //    TempEffectslot.PersistantEffectSlot = TrickyLevelManager.Instance.dataManager.GetEffectHeaderID(PersistantEffectSlot);

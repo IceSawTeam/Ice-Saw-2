@@ -67,6 +67,50 @@ namespace IceSaw2.LevelObject.TrickyObjects
             DrawCurve();
         }
 
+        public SplineJsonHandler.SplineJson GenerateSpline()
+        {
+            SplineJsonHandler.SplineJson spline = new SplineJsonHandler.SplineJson();
+
+            spline.SplineName = transform.name;
+
+            spline.U0 = U0;
+            spline.U1 = U1;
+            spline.SplineStyle = SplineStyle;
+            spline.Segments = new List<SplineJsonHandler.SegmentJson>();
+
+            for (int i = 0; i < splineSegments.Count; i++)
+            {
+                SplineJsonHandler.SegmentJson Segment = new SplineJsonHandler.SegmentJson();
+
+                Segment.Points = new float[4, 3];
+
+                Segment.Points[0, 0] = splineSegments[i].Point1.X;
+                Segment.Points[0, 1] = splineSegments[i].Point1.Y;
+                Segment.Points[0, 2] = splineSegments[i].Point1.Z;
+
+                Segment.Points[1, 0] = splineSegments[i].Point2.X;
+                Segment.Points[1, 1] = splineSegments[i].Point2.Y;
+                Segment.Points[1, 2] = splineSegments[i].Point2.Z;
+
+                Segment.Points[2, 0] = splineSegments[i].Point3.X;
+                Segment.Points[2, 1] = splineSegments[i].Point3.Y;
+                Segment.Points[2, 2] = splineSegments[i].Point3.Z;
+
+                Segment.Points[3, 0] = splineSegments[i].Point4.X;
+                Segment.Points[3, 1] = splineSegments[i].Point4.Y;
+                Segment.Points[3, 2] = splineSegments[i].Point4.Z;
+
+                Segment.U0 = splineSegments[i].U0;
+                Segment.U1 = splineSegments[i].U1;
+                Segment.U2 = splineSegments[i].U2;
+                Segment.U3 = splineSegments[i].U3;
+
+                spline.Segments.Add(Segment);
+            }
+
+            return spline;
+        }
+
         public Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
         {
             float u = 1 - t;
@@ -82,7 +126,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             return p;
         }
-        //bool Generated = false;
         public void DrawCurve()
         {
             WorldLinePoints = new List<Vector3>();
