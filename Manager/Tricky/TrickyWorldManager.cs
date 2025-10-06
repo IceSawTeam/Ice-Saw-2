@@ -57,15 +57,15 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.LogicWindow))
+            if (Raylib.IsKeyPressed(Settings.KeyBinding.Instance.data.LogicWindow))
             {
                 windowMode = WindowMode.Logic;
             }
-            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.PrefabWindow))
+            if (Raylib.IsKeyPressed(Settings.KeyBinding.Instance.data.PrefabWindow))
             {
                 windowMode = WindowMode.Prefabs;
             }
-            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.LevelWindow))
+            if (Raylib.IsKeyPressed(Settings.KeyBinding.Instance.data.LevelWindow))
             {
                 windowMode = WindowMode.World;
             }
@@ -86,7 +86,7 @@ namespace IceSaw2.Manager.Tricky
                             TrickyDataManager.LoadProject(selectedPath);
                             Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
                             Settings.General.Instance.Save();
-                            Settings.Hotkey.Instance.Save();
+                            Settings.KeyBinding.Instance.Save();
                             // Do something with selectedPath
                         });
                         // Handle file open

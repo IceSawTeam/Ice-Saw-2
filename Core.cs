@@ -15,7 +15,7 @@ namespace IceSaw2
 {
     public class Core
     {
-        public const int MAX_FPS = 60;
+        public const int MaxFps = 60;
 
         public bool isRunning = true;
 
@@ -26,11 +26,11 @@ namespace IceSaw2
         public Core()
         {
             Raylib.InitWindow(1280, 720, "Ice Saw 2");
-            Raylib.SetTargetFPS(MAX_FPS);
+            Raylib.SetTargetFPS(MaxFps);
 
             // Load settings
             Settings.General.Instance.Load();
-            Settings.Hotkey.Instance.Load();
+            Settings.KeyBinding.Instance.Load();
             ConfigFlags windowFlags = ConfigFlags.ResizableWindow;
             if (Settings.General.Instance.data.isMaximized) windowFlags |= ConfigFlags.MaximizedWindow;
             Raylib.SetWindowPosition((int)Settings.General.Instance.data.windowPositionX,
@@ -49,7 +49,7 @@ namespace IceSaw2
         public void Exiting()
         {
             Settings.General.Instance.Save();
-            Settings.Hotkey.Instance.Save();
+            Settings.KeyBinding.Instance.Save();
             rlImGui.Shutdown();
             Raylib.CloseWindow();
         }
