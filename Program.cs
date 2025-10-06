@@ -13,6 +13,7 @@ namespace IceSaw2
                 engineCore.LogicProccessing();
                 engineCore.RenderProcessing();
             }
+            engineCore.Exiting();
         }
     }
 }

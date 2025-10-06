@@ -4,6 +4,8 @@
     subsystems should have a state of their own for more specialized states.
     There should be no implementation methods defined here for any of the systems.
 */
+#pragma warning disable IDE0079
+#pragma warning disable CA1822
 
 using IceSaw2.Manager.Tricky;
 using Raylib_cs;
@@ -13,21 +15,9 @@ namespace IceSaw2
 {
     public class Core
     {
-        // public enum State
-        // {
-        //    MAIN_WINDOW,
-        //    OPENING_FILE,
-        //    CONTROLLING_CAMERA,
-        //    USING_XFORM_GIZMO,
-        //    ADDING_ENTITIY,
-        //    MOVING_HIERARCHY_ENTITY,
-        //    PATCH_EDITING_SAC_MODE,
-        //    OTHER,
-        // }
         public const int MAX_FPS = 60;
 
         public bool isRunning = true;
-        // public State currentState = State.MAIN_WINDOW;
 
         //--------------------- Manager/Module/System declarations here -------------------------
         public static TrickyWorldManager? worldManager = null;
@@ -35,27 +25,35 @@ namespace IceSaw2
 
         public Core()
         {
+            Raylib.InitWindow(1280, 720, "Ice Saw 2");
+            Raylib.SetTargetFPS(MAX_FPS);
+
+            // Load settings
             Settings.General.Instance.Load();
             Settings.Hotkey.Instance.Load();
-            Raylib.InitWindow(Settings.General.Instance.data.ScreenWidth,
-                              Settings.General.Instance.data.ScreenHeight,
-                              "Ice Saw 2");
-            Raylib.SetTargetFPS(MAX_FPS);
-            Raylib.SetWindowState(ConfigFlags.ResizableWindow);
+            ConfigFlags windowFlags = ConfigFlags.ResizableWindow;
+            if (Settings.General.Instance.data.isMaximized) windowFlags |= ConfigFlags.MaximizedWindow;
+            Raylib.SetWindowPosition((int)Settings.General.Instance.data.windowPositionX,
+                                 (int)Settings.General.Instance.data.windowPositionY);
+            Raylib.SetWindowSize((int)Settings.General.Instance.data.windowWidth,
+                                 (int)Settings.General.Instance.data.windowHeight);
+            Raylib.SetWindowState(windowFlags);
+
             rlImGui.Setup(true);
 
             //--------------------- Manager/Module/System initializations here -------------------------
             worldManager = new TrickyWorldManager();
         }
 
-        ~Core()
+
+        public void Exiting()
         {
-            // Close managers
-            // Clear cache
+            Settings.General.Instance.Save();
+            Settings.Hotkey.Instance.Save();
             rlImGui.Shutdown();
             Raylib.CloseWindow();
         }
-
+        
 
         public void InputProccessing()
         {

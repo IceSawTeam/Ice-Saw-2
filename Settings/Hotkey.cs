@@ -2,6 +2,12 @@
 using Raylib_cs;
 using System.Diagnostics;
 
+// TODO:
+// - Add Window position, size, and if maximized to the general settings. This means I
+// have to load settings after initializing the raylib window.
+// - Settings should only hold keybindings, not input checking. 
+// - Re-Save settings before shutdown.
+
 
 namespace IceSaw2.Settings
 {
@@ -48,7 +54,7 @@ namespace IceSaw2.Settings
             Instance.Save();
             return;
         }
-        
+
         public void Save()
         {
             string saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
