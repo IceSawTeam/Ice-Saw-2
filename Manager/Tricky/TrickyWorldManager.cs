@@ -13,7 +13,6 @@ namespace IceSaw2.Manager.Tricky
         public LevelEditorWindow levelEditorWindow = new();
         public PrefabEditorWindow prefabEditorWindow = new();
         public MaterialEditorWindow materialEditorWindow = new();
-        public TextureEditorWindow textureEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
 
@@ -115,27 +114,6 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.EndMenu();
                 }
 
-                if (ImGui.BeginMenu("Window"))
-                {
-                    if (ImGui.MenuItem("Level"))
-                    {
-                        windowMode = WindowMode.World;
-                    }
-                    if (ImGui.MenuItem("Prefab"))
-                    {
-                        windowMode = WindowMode.Prefabs;
-                    }
-                    if (ImGui.MenuItem("Material"))
-                    {
-                        windowMode = WindowMode.Materials;
-                    }
-                    if (ImGui.MenuItem("Texture"))
-                    {
-                        windowMode = WindowMode.Textures;
-                    }
-                    ImGui.EndMenu();
-                }
-
                 if (ImGui.BeginMenu("Help"))
                 {
                     if (ImGui.MenuItem("About"))
@@ -143,6 +121,21 @@ namespace IceSaw2.Manager.Tricky
                         // Show About modal
                     }
                     ImGui.EndMenu();
+                }
+
+                ImGui.SameLine(Raylib.GetScreenWidth()-185);
+
+                if (ImGui.MenuItem("Level", "", windowMode==WindowMode.World))
+                {
+                    windowMode = WindowMode.World;
+                }
+                if (ImGui.MenuItem("Prefab", "" , windowMode == WindowMode.Prefabs))
+                {
+                    windowMode = WindowMode.Prefabs;
+                }
+                if (ImGui.MenuItem("Material", "", windowMode == WindowMode.Materials))
+                {
+                    windowMode = WindowMode.Materials;
                 }
 
                 ImGui.EndMainMenuBar();
@@ -156,8 +149,7 @@ namespace IceSaw2.Manager.Tricky
         {
             World,
             Materials,
-            Prefabs,
-            Textures
+            Prefabs
         }
 
     }

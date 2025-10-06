@@ -1,5 +1,6 @@
 ﻿using IceSaw2.Manager.Tricky;
 using IceSaw2.Utilities;
+using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
 
@@ -12,6 +13,11 @@ namespace IceSaw2.EditorWindows
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
         int SkyboxSelection = 0;
+
+        // Store selected tab index persistently
+        int selectedTab = 0; // Make this a field or property in your UI state
+
+        string[] tabs = { "Prefabs", "Skybox Prefabs" };
 
         public void Initilize()
         {
@@ -79,12 +85,12 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickyPrefabObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 30, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 60, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
 
-                RaylibCustomGrid.DrawBasic3DGrid(10, 1, new Color(51, 51, 51));
+                RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
                 if (TrickyDataManager.trickyPrefabObjects.Count != 0)
                 {
@@ -97,14 +103,12 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 30, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 60, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
-                Raylib.ClearBackground(new Color(51, 115, 195));
 
-
-                Raylib.DrawGrid(10, 1);
+                RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
                 if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
                 {
@@ -113,6 +117,47 @@ namespace IceSaw2.EditorWindows
 
                 Raylib.EndMode3D();
             }
+
+            // Calculate position below main menu bar
+            float yOffset = ImGui.GetFrameHeight(); // Main menu height
+
+            ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, yOffset), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(ImGui.GetIO().DisplaySize.X, yOffset-20));
+
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new System.Numerics.Vector2(8, 9));
+
+            ImGui.Begin("TabStrip", ImGuiWindowFlags.NoTitleBar |
+                                     ImGuiWindowFlags.NoResize |
+                                     ImGuiWindowFlags.NoMove |
+                                     ImGuiWindowFlags.NoScrollbar |
+                                     ImGuiWindowFlags.NoSavedSettings |
+                                     ImGuiWindowFlags.NoCollapse);
+
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                if (i > 0) ImGui.SameLine();
+
+                bool isSelected = (selectedTab == i);
+
+                if (ImGui.Selectable(tabs[i], isSelected, ImGuiSelectableFlags.None, new System.Numerics.Vector2(120, 0)))
+                {
+                    selectedTab = i;
+
+                    if(selectedTab>=1)
+                    {
+                        Skybox = true;
+                    }
+                    else
+                    {
+                        Skybox = false;
+                    }
+                }
+            }
+
+            ImGui.End();
+            ImGui.PopStyleVar(3);
         }
     }
 }

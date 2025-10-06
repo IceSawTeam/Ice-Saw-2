@@ -71,7 +71,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             SplineJsonHandler.SplineJson spline = new SplineJsonHandler.SplineJson();
 
-            spline.SplineName = transform.name;
+            spline.SplineName = Name;
 
             spline.U0 = U0;
             spline.U1 = U1;
