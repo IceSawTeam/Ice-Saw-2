@@ -79,7 +79,7 @@ namespace IceSaw2
                 {
                     case TrickyWorldManager.WindowMode.World: worldManager.levelEditorWindow.LogicUpdate(); break;
                     case TrickyWorldManager.WindowMode.Prefabs: worldManager.prefabEditorWindow.LogicUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Materials: worldManager.materialEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: worldManager.logicEditorWindow.LogicUpdate(); break;
                 }
                 worldManager.UpdateLogic();
             }
@@ -103,7 +103,7 @@ namespace IceSaw2
                 {
                     case TrickyWorldManager.WindowMode.World: worldManager.levelEditorWindow.RenderUpdate(); break;
                     case TrickyWorldManager.WindowMode.Prefabs: worldManager.prefabEditorWindow.RenderUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Materials: worldManager.materialEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: worldManager.logicEditorWindow.RenderUpdate(); break;
                 }
                 worldManager.UpdateRender();
              }

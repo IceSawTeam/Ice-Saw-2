@@ -17,7 +17,7 @@ namespace IceSaw2.EditorWindows
         // Store selected tab index persistently
         int selectedTab = 0; // Make this a field or property in your UI state
 
-        string[] tabs = { "Prefabs", "Skybox Prefabs" };
+        string[] tabs = { "Prefabs", "Materials", "Skybox Prefabs", "Skybox Materials" };
 
         public void Initilize()
         {
@@ -145,7 +145,7 @@ namespace IceSaw2.EditorWindows
                 {
                     selectedTab = i;
 
-                    if(selectedTab>=1)
+                    if(selectedTab>=2)
                     {
                         Skybox = true;
                     }

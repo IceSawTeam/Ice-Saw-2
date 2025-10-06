@@ -17,7 +17,7 @@ namespace IceSaw2.Settings
             //TODO: Convert to use a list so we can have multi hotkeys
             //General
             public KeyboardKey LevelWindow = KeyboardKey.L;
-            public KeyboardKey MaterialWindow = KeyboardKey.M;
+            public KeyboardKey LogicWindow = KeyboardKey.M;
             public KeyboardKey PrefabWindow = KeyboardKey.P;
             public KeyboardKey OpenProject = KeyboardKey.F;
 

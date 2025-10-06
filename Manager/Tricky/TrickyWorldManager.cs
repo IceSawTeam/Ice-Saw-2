@@ -12,7 +12,7 @@ namespace IceSaw2.Manager.Tricky
 
         public LevelEditorWindow levelEditorWindow = new();
         public PrefabEditorWindow prefabEditorWindow = new();
-        public MaterialEditorWindow materialEditorWindow = new();
+        public LogicEditorWindow logicEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
 
@@ -33,7 +33,7 @@ namespace IceSaw2.Manager.Tricky
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
-            materialEditorWindow.Initilize();
+            //logicEditorWindow.Initilize();
 
             InitalizeAssets();
         }
@@ -57,9 +57,9 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.MaterialWindow))
+            if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.LogicWindow))
             {
-                windowMode = WindowMode.Materials;
+                windowMode = WindowMode.Logic;
             }
             if (Raylib.IsKeyPressed(Settings.Hotkey.Instance.data.PrefabWindow))
             {
@@ -123,7 +123,7 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.EndMenu();
                 }
 
-                ImGui.SameLine(Raylib.GetScreenWidth()-185);
+                ImGui.SameLine(Raylib.GetScreenWidth()-170);
 
                 if (ImGui.MenuItem("Level", "", windowMode==WindowMode.World))
                 {
@@ -133,9 +133,9 @@ namespace IceSaw2.Manager.Tricky
                 {
                     windowMode = WindowMode.Prefabs;
                 }
-                if (ImGui.MenuItem("Material", "", windowMode == WindowMode.Materials))
+                if (ImGui.MenuItem("Logic", "", windowMode == WindowMode.Logic))
                 {
-                    windowMode = WindowMode.Materials;
+                    windowMode = WindowMode.Logic;
                 }
 
                 ImGui.EndMainMenuBar();
@@ -148,8 +148,8 @@ namespace IceSaw2.Manager.Tricky
         public enum WindowMode
         {
             World,
-            Materials,
-            Prefabs
+            Prefabs,
+            Logic
         }
 
     }
