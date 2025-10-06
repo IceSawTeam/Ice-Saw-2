@@ -6,9 +6,10 @@ using System.Numerics;
 
 namespace IceSaw2.EditorWindows
 {
-    public class PrefabEditorWindow : BaseEditorWindow
+    public class ModelsEditorWindow : BaseEditorWindow
     {
         bool Skybox;
+        bool Material;
 
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
@@ -17,7 +18,7 @@ namespace IceSaw2.EditorWindows
         // Store selected tab index persistently
         int selectedTab = 0; // Make this a field or property in your UI state
 
-        string[] tabs = { "Prefabs", "Materials", "Skybox Prefabs", "Skybox Materials" };
+        string[] tabs = { "Models", "Materials", "Skybox Models", "Skybox Materials" };
 
         public void Initilize()
         {
@@ -37,14 +38,14 @@ namespace IceSaw2.EditorWindows
                     PrefabSelection -= 1;
                     if (PrefabSelection == -1)
                     {
-                        PrefabSelection = TrickyDataManager.trickyPrefabObjects.Count - 1;
+                        PrefabSelection = TrickyDataManager.trickyModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
                     PrefabSelection += 1;
-                    if (PrefabSelection == TrickyDataManager.trickyPrefabObjects.Count)
+                    if (PrefabSelection == TrickyDataManager.trickyModelObjects.Count)
                     {
                         PrefabSelection = 0;
                     }
@@ -83,18 +84,18 @@ namespace IceSaw2.EditorWindows
         {
             if (!Skybox)
             {
-                if (TrickyDataManager.trickyPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickyPrefabObjects[PrefabSelection].Name, 12, 60, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickyModelObjects[PrefabSelection].Name, 12, 60, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
-                if (TrickyDataManager.trickyPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickyPrefabObjects[PrefabSelection].Render();
+                    TrickyDataManager.trickyModelObjects[PrefabSelection].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -152,6 +153,15 @@ namespace IceSaw2.EditorWindows
                     else
                     {
                         Skybox = false;
+                    }
+
+                    if(selectedTab==1 && selectedTab == 3)
+                    {
+                        Material = true;
+                    }
+                    else
+                    {
+                        Material = false;
                     }
                 }
             }

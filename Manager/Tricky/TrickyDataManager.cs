@@ -15,12 +15,12 @@ namespace IceSaw2.Manager.Tricky
     {
         //Skybox Data
         public static List<TrickyMaterialObject> trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
-        public static List<TrickyPrefabObject> trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
+        public static List<TrickyModelObject> trickySkyboxPrefabObjects = new List<TrickyModelObject>();
 
         //Object Data
         public static List<TrickyPatchObject> trickyPatchObjects = new List<TrickyPatchObject>();
         public static List<TrickyMaterialObject> trickyMaterialObject = new List<TrickyMaterialObject>();
-        public static List<TrickyPrefabObject> trickyPrefabObjects = new List<TrickyPrefabObject>();
+        public static List<TrickyModelObject> trickyModelObjects = new List<TrickyModelObject>();
         public static List<TrickyInstanceObject> trickyInstanceObjects = new List<TrickyInstanceObject>();
         public static List<TrickySplineObject> trickySplineObjects = new List<TrickySplineObject>();
         public static List<TrickyParticlePrefabObject> trickyParticlePrefabObjects = new List<TrickyParticlePrefabObject>();
@@ -120,7 +120,7 @@ namespace IceSaw2.Manager.Tricky
             }
 
             worldMeshes = new List<MeshData>();
-            string[] MeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Models"), "*.obj", SearchOption.AllDirectories);
+            string[] MeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Meshes"), "*.obj", SearchOption.AllDirectories);
             for (int i = 0; i < MeshFiles.Length; i++)
             {
                 var TempMesh = new MeshData();
@@ -134,7 +134,7 @@ namespace IceSaw2.Manager.Tricky
             }
 
             skyboxMeshes = new List<MeshData>();
-            string[] SkyboxMeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Skybox", "Models"), "*.obj", SearchOption.AllDirectories);
+            string[] SkyboxMeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Skybox", "Meshes"), "*.obj", SearchOption.AllDirectories);
             for (int i = 0; i < SkyboxMeshFiles.Length; i++)
             {
                 var TempMesh = new MeshData();
@@ -174,15 +174,15 @@ namespace IceSaw2.Manager.Tricky
                 trickyMaterialObject.Add(materialObject);
             }
 
-            trickyPrefabObjects = new List<TrickyPrefabObject>();
-            PrefabJsonHandler prefabJsonHandler = PrefabJsonHandler.Load(Path.Combine(LoadPath, "Prefabs.json"));
-            for (int i = 0; i < prefabJsonHandler.Prefabs.Count; i++)
+            trickyModelObjects = new List<TrickyModelObject>();
+            ModelJsonHandler prefabJsonHandler = ModelJsonHandler.Load(Path.Combine(LoadPath, "Models.json"));
+            for (int i = 0; i < prefabJsonHandler.Models.Count; i++)
             {
-                var NewPrefab = new TrickyPrefabObject();
+                var NewPrefab = new TrickyModelObject();
 
-                NewPrefab.LoadPrefab(prefabJsonHandler.Prefabs[i]);
+                NewPrefab.LoadPrefab(prefabJsonHandler.Models[i]);
 
-                trickyPrefabObjects.Add(NewPrefab);
+                trickyModelObjects.Add(NewPrefab);
             }
 
             trickyInstanceObjects = new List<TrickyInstanceObject>();
@@ -317,13 +317,13 @@ namespace IceSaw2.Manager.Tricky
                 trickySkyboxMaterialObject.Add(materialObject);
             }
 
-            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
-            PrefabJsonHandler prefabSkyboxJsonHandler = PrefabJsonHandler.Load(Path.Combine(LoadPath, "Skybox", "Prefabs.json"));
-            for (int i = 0; i < prefabSkyboxJsonHandler.Prefabs.Count; i++)
+            trickySkyboxPrefabObjects = new List<TrickyModelObject>();
+            ModelJsonHandler prefabSkyboxJsonHandler = ModelJsonHandler.Load(Path.Combine(LoadPath, "Skybox", "Models.json"));
+            for (int i = 0; i < prefabSkyboxJsonHandler.Models.Count; i++)
             {
-                var NewPrefab = new TrickyPrefabObject();
+                var NewPrefab = new TrickyModelObject();
 
-                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Prefabs[i], true);
+                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Models[i], true);
 
                 trickySkyboxPrefabObjects.Add(NewPrefab);
             }
@@ -485,7 +485,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree = new List<BaseObject>();
 
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
-            trickySkyboxPrefabObjects = new List<TrickyPrefabObject>();
+            trickySkyboxPrefabObjects = new List<TrickyModelObject>();
 
             for (int i = 0; i < trickyPatchObjects.Count; i++)
             {
@@ -494,7 +494,7 @@ namespace IceSaw2.Manager.Tricky
 
             trickyPatchObjects = new List<TrickyPatchObject>();
             trickyMaterialObject = new List<TrickyMaterialObject>();
-            trickyPrefabObjects = new List<TrickyPrefabObject>();
+            trickyModelObjects = new List<TrickyModelObject>();
             trickyInstanceObjects = new List<TrickyInstanceObject>();
             trickyLightObjects = new List<TrickyLightObject>();
             trickyCameraObjects = new List<TrickyCameraObject>();

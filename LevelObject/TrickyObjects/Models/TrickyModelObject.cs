@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabObject : BaseObject
+    public class TrickyModelObject : BaseObject
     {
         bool Skybox;
 
@@ -19,9 +19,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public int Unknown3;
         public float AnimTime;
 
-        public List<TrickyPrefabMeshObject> trickyPrefabSubObjects = new List<TrickyPrefabMeshObject>();
+        public List<TrickyModelMeshObject> trickyPrefabSubObjects = new List<TrickyModelMeshObject>();
 
-        public void LoadPrefab(PrefabJsonHandler.PrefabJson prefabJson, bool skybox = false)
+        public void LoadPrefab(ModelJsonHandler.ModelJson prefabJson, bool skybox = false)
         {
             Skybox = skybox;
 
@@ -29,15 +29,15 @@ namespace IceSaw2.LevelObject.TrickyObjects
             Unknown3 = prefabJson.Unknown3;
             AnimTime = prefabJson.AnimTime;
 
-            trickyPrefabSubObjects = new List<TrickyPrefabMeshObject>();
+            trickyPrefabSubObjects = new List<TrickyModelMeshObject>();
 
-            for (int i = 0; i < prefabJson.PrefabObjects.Count; i++)
+            for (int i = 0; i < prefabJson.ModelObjects.Count; i++)
             {
-                var TrickyPrefabMeshObject = new TrickyPrefabMeshObject();
+                var TrickyPrefabMeshObject = new TrickyModelMeshObject();
 
                 TrickyPrefabMeshObject.parent = this;
 
-                TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.PrefabObjects[i], Skybox);
+                TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.ModelObjects[i], Skybox);
 
                 trickyPrefabSubObjects.Add(TrickyPrefabMeshObject);
             }
@@ -57,7 +57,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             for (int i = 0; i < Children.Count; i++)
             {
-                cache.AddRange(((TrickyPrefabMeshObject)Children[i]).GenerateRenderCache());
+                cache.AddRange(((TrickyModelMeshObject)Children[i]).GenerateRenderCache());
             }
 
             return cache;

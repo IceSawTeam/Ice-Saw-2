@@ -9,7 +9,7 @@ using IceSaw2.Manager.Tricky;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabMaterialObject : MeshBaseObject
+    public class TrickyModelMaterialObject : MeshBaseObject
     {
         bool Skybox;
 
@@ -20,7 +20,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public string MeshPath;
         public int MaterialIndex;
-        public void LoadPrefabMaterialObject(PrefabJsonHandler.MeshHeader objectHeader, bool skybox)
+        public void LoadPrefabMaterialObject(ModelJsonHandler.MeshHeader objectHeader, bool skybox)
         {
             Skybox = skybox;
 

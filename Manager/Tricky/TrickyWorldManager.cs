@@ -11,7 +11,7 @@ namespace IceSaw2.Manager.Tricky
         public static TrickyWorldManager instance = null;
 
         public LevelEditorWindow levelEditorWindow = new();
-        public PrefabEditorWindow prefabEditorWindow = new();
+        public ModelsEditorWindow prefabEditorWindow = new();
         public LogicEditorWindow logicEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
@@ -129,7 +129,7 @@ namespace IceSaw2.Manager.Tricky
                 {
                     windowMode = WindowMode.World;
                 }
-                if (ImGui.MenuItem("Prefab", "" , windowMode == WindowMode.Prefabs))
+                if (ImGui.MenuItem("Models", "" , windowMode == WindowMode.Prefabs))
                 {
                     windowMode = WindowMode.Prefabs;
                 }

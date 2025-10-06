@@ -77,7 +77,7 @@ namespace IceSaw2.LevelObject
         //[OnChangedCall("SetLightingColour")]
         public Vector4 AmbentLightColour;
 
-        public TrickyPrefabObject TrickyPrefab;
+        public TrickyModelObject TrickyPrefab;
 
         public void LoadInstance(InstanceJsonHandler.InstanceJson instance)
         {
@@ -159,7 +159,7 @@ namespace IceSaw2.LevelObject
         {
             if (ModelID != -1)
             {
-                TrickyPrefab = TrickyDataManager.trickyPrefabObjects[ModelID];
+                TrickyPrefab = TrickyDataManager.trickyModelObjects[ModelID];
                 GenerateRenderCache();
             }
         }

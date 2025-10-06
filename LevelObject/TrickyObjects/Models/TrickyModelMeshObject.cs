@@ -5,7 +5,7 @@ using SSXMultiTool.JsonFiles.Tricky;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPrefabMeshObject : BaseObject
+    public class TrickyModelMeshObject : BaseObject
     {
         bool Skybox;
 
@@ -17,8 +17,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeAnimation;
         public bool IncludeMatrix;
 
-        public List<TrickyPrefabMaterialObject> trickyPrefabMaterialObjects = new List<TrickyPrefabMaterialObject>();
-        public void LoadPrefabMeshObject(PrefabJsonHandler.ObjectHeader objectHeader, bool skybox)
+        public List<TrickyModelMaterialObject> trickyPrefabMaterialObjects = new List<TrickyModelMaterialObject>();
+        public void LoadPrefabMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
             Skybox = skybox;
 
@@ -67,12 +67,12 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Rotation = JsonUtil.ArrayToQuaternion(objectHeader.Rotation);
             }
 
-            trickyPrefabMaterialObjects = new List<TrickyPrefabMaterialObject>();
+            trickyPrefabMaterialObjects = new List<TrickyModelMaterialObject>();
 
             //Load MeshHeaders
             for (int i = 0; i < objectHeader.MeshData.Count; i++)
             {
-                var TrickyPrefabMaterialObject = new TrickyPrefabMaterialObject();
+                var TrickyPrefabMaterialObject = new TrickyModelMaterialObject();
 
                 TrickyPrefabMaterialObject.parent = this;
 
@@ -105,7 +105,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             for (int i = 0; i < Children.Count; i++)
             {
-                cache.Add(((TrickyPrefabMaterialObject)Children[i]).GenerateRenderCache());
+                cache.Add(((TrickyModelMaterialObject)Children[i]).GenerateRenderCache());
             }
 
             return cache;
