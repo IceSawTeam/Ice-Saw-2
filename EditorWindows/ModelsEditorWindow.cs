@@ -119,6 +119,8 @@ namespace IceSaw2.EditorWindows
                 Raylib.EndMode3D();
             }
 
+
+            #region Secondary Top Bar
             // Calculate position below main menu bar
             float yOffset = ImGui.GetFrameHeight(); // Main menu height
 
@@ -155,7 +157,7 @@ namespace IceSaw2.EditorWindows
                         Skybox = false;
                     }
 
-                    if(selectedTab==1 && selectedTab == 3)
+                    if(selectedTab==1 || selectedTab == 3)
                     {
                         Material = true;
                     }
@@ -168,6 +170,63 @@ namespace IceSaw2.EditorWindows
 
             ImGui.End();
             ImGui.PopStyleVar(3);
+            #endregion
+
+            //Render UI
+
+            float menuBarHeight = ImGui.GetFrameHeight()+32; // Typically height of main menu bar
+
+            // Sidebar dimensions
+            int sidebarWidth = 300;
+
+            // Position and size sidebar *below* the main menu bar
+            ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Raylib.GetScreenHeight() - menuBarHeight), ImGuiCond.Always);
+
+            // Optional: remove decorations
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
+
+            if(!Skybox)
+            {
+                if (Material)
+                {
+                    for (int i = 0; i < TrickyDataManager.trickyMaterialObject.Count; i++)
+                    {
+                        TrickyDataManager.trickyMaterialObject[i].HierarchyRender();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
+                    {
+                        TrickyDataManager.trickyModelObjects[i].HierarchyRender();
+                    }
+                }
+            }
+            else
+            {
+                if (Material)
+                {
+                    for (int i = 0; i < TrickyDataManager.trickySkyboxMaterialObject.Count; i++)
+                    {
+                        TrickyDataManager.trickySkyboxMaterialObject[i].HierarchyRender();
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)
+                    {
+                        TrickyDataManager.trickySkyboxPrefabObjects[i].HierarchyRender();
+                    }
+                }
+            }
+
+                // Add your sidebar content here
+
+            ImGui.End();
+            ImGui.PopStyleVar(2);
         }
     }
 }
