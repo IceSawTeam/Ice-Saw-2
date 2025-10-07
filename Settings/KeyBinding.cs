@@ -40,38 +40,33 @@ namespace IceSaw2.Settings
 
         public struct InputAction
         {
-            public Type inputTag = typeof(KeyboardKey);
-            public KeyboardKey key;
-            public MouseButton button;
-
-            public InputAction(KeyboardKey key)
+            public List<object> inputs = []; // Holds Keyboardkey or MouseButton
+            public InputAction(params object[] inputs)
             {
-                inputTag = typeof(KeyboardKey);
-                this.key = key;
-            }
-
-            public InputAction(MouseButton button)
-            {
-                inputTag = typeof(MouseButton);
-                this.button = button;
+                foreach (object i in inputs)
+                {
+                    Debug.Assert(i.GetType() == typeof(KeyboardKey) || i.GetType() == typeof(MouseButton),
+                                 "Input action is not a KeyboardKey or MouseButton ");
+                    this.inputs.Add(i);
+                }
             }
         }
 
-        public Dictionary<InputActionType, List<InputAction>> ActionMap = new()
+        public Dictionary<InputActionType, InputAction> ActionMap = new()
         {
-            { InputActionType.CameraMoveLeft, [new InputAction(KeyboardKey.A)] },
-            { InputActionType.CameraMoveRight, [new InputAction(KeyboardKey.D)] },
-            { InputActionType.CameraMoveForward, [new InputAction(KeyboardKey.W)] },
-            { InputActionType.CameraMoveBack, [new InputAction(KeyboardKey.S)] },
-            { InputActionType.CameraMoveUp, [new InputAction(KeyboardKey.E)] },
-            { InputActionType.CameraMoveDown, [new InputAction(KeyboardKey.Q)] },
-            { InputActionType.CameraBoost, [new InputAction(MouseButton.Left)] },
-            { InputActionType.CameraActivate, [new InputAction(MouseButton.Right)] },
-            { InputActionType.LevelSwitch, [new InputAction(KeyboardKey.L)] },
-            { InputActionType.ModelsSwitch, [new InputAction(KeyboardKey.P)] },
-            { InputActionType.LogicSwitch, [new InputAction(KeyboardKey.M)] },
-            { InputActionType.Save, [new InputAction(KeyboardKey.LeftControl), new InputAction(KeyboardKey.S)] },
-            { InputActionType.Exit, [new InputAction(KeyboardKey.E)] },
+            { InputActionType.CameraMoveLeft, new InputAction(KeyboardKey.A) },
+            { InputActionType.CameraMoveRight, new InputAction(KeyboardKey.D) },
+            { InputActionType.CameraMoveForward, new InputAction(KeyboardKey.W) },
+            { InputActionType.CameraMoveBack, new InputAction(KeyboardKey.S) },
+            { InputActionType.CameraMoveUp, new InputAction(KeyboardKey.E) },
+            { InputActionType.CameraMoveDown, new InputAction(KeyboardKey.Q) },
+            { InputActionType.CameraBoost, new InputAction(MouseButton.Left) },
+            { InputActionType.CameraActivate, new InputAction(MouseButton.Right) },
+            { InputActionType.LevelSwitch, new InputAction(KeyboardKey.L) },
+            { InputActionType.ModelsSwitch, new InputAction(KeyboardKey.P) },
+            { InputActionType.LogicSwitch, new InputAction(KeyboardKey.M) },
+            { InputActionType.Save, new InputAction(KeyboardKey.LeftControl, KeyboardKey.S) },
+            { InputActionType.Exit, new InputAction(KeyboardKey.E) },
         };
 
 
