@@ -35,6 +35,7 @@ namespace SSXMultiTool.JsonFiles.SSXOG
             {
                 var stream = File.ReadAllText(paths);
                 var container = JsonConvert.DeserializeObject<SplinesJsonHandler>(stream);
+                if (container == null) return new SplinesJsonHandler();
                 return container;
             }
             else

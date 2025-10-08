@@ -50,7 +50,7 @@ namespace IceSaw2.LevelObject
         public InstanceSurfaceType SurfaceType;
 
         public int CollsionMode;
-        public string[] CollsionModelPaths;
+        public string[] CollsionModelPaths = [];
 
         int EffectSlotIndex;
         //public EffectSlotObject EffectSlotObject;
@@ -77,7 +77,7 @@ namespace IceSaw2.LevelObject
         //[OnChangedCall("SetLightingColour")]
         public Vector4 AmbentLightColour;
 
-        public TrickyModelObject TrickyPrefab;
+        public TrickyModelObject? TrickyPrefab;
 
         public void LoadInstance(InstanceJsonHandler.InstanceJson instance)
         {
@@ -113,9 +113,9 @@ namespace IceSaw2.LevelObject
             Hash = instance.Hash;
             IncludeSound = instance.IncludeSound;
 
-            if (IncludeSound)
+            if (IncludeSound && instance.Sounds.HasValue)
             {
-                SoundData soundData = new SoundData();
+                SoundData soundData = new();
                 var TempSound = instance.Sounds.Value;
                 soundData.CollisonSound = TempSound.CollisonSound;
 

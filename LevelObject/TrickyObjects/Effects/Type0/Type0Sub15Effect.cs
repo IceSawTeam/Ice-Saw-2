@@ -1,6 +1,5 @@
 using SSXMultiTool.JsonFiles.Tricky;
-using System.Collections;
-using System.Collections.Generic;
+
 
 public class Type0Sub15Effect : EffectBase
 {
@@ -22,6 +21,9 @@ public class Type0Sub15Effect : EffectBase
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (!effect.type0.HasValue) return;
+        if (!effect.type0.Value.type0Sub15.HasValue) return;
+
         Unknown1 = effect.type0.Value.type0Sub15.Value.U0;
         Unknown2 = effect.type0.Value.type0Sub15.Value.U1;
         Unknown3 = effect.type0.Value.type0Sub15.Value.U2;
@@ -31,21 +33,24 @@ public class Type0Sub15Effect : EffectBase
 
     public override SSFJsonHandler.Effect SaveEffect()
     {
-        var NewEffect = new SSFJsonHandler.Effect();
+        var NewEffect = new SSFJsonHandler.Effect
+        {
+            MainType = EffectType
+        };
 
-        NewEffect.MainType = EffectType;
+        var NewType0Effect = new SSFJsonHandler.Type0
+        {
+            SubType = SubEffectType
+        };
 
-        var NewType0Effect = new SSFJsonHandler.Type0();
-
-        NewType0Effect.SubType = SubEffectType;
-
-        var NewType0Sub0Effect = new SSFJsonHandler.Type0Sub15();
-
-        NewType0Sub0Effect.U0 = Unknown1;
-        NewType0Sub0Effect.U1 = Unknown2;
-        NewType0Sub0Effect.U2 = Unknown3;
-        NewType0Sub0Effect.U3 = Unknown4;
-        NewType0Sub0Effect.U4 = Unknown5;
+        var NewType0Sub0Effect = new SSFJsonHandler.Type0Sub15
+        {
+            U0 = Unknown1,
+            U1 = Unknown2,
+            U2 = Unknown3,
+            U3 = Unknown4,
+            U4 = Unknown5
+        };
 
         NewType0Effect.type0Sub15 = NewType0Sub0Effect;
 

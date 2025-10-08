@@ -17,16 +17,16 @@ public class TrickyCameraObject : BaseObject
     public int CameraType;
     public float FocalLength;
     public float AspectRatio;
-    public float[] Aperture;
-    public float[] ClipPlane;
-    public float[] IntrestPoint;
-    public float[] UpVector;
+    public float[]? Aperture;
+    public float[]? ClipPlane;
+    public float[]? IntrestPoint;
+    public float[]? UpVector;
     public float AnimTime;
 
-    public float[] InitialPosition;
-    public float[] InitalRotation;
+    public float[]? InitialPosition;
+    public float[]? InitalRotation;
     public float U0; //Big ?
-    public List<CameraAnimationHeader> AnimationHeaders;
+    public List<CameraAnimationHeader> AnimationHeaders = [];
 
     public int Hash;
 
@@ -80,26 +80,33 @@ public class TrickyCameraObject : BaseObject
 
     public CameraJSONHandler.CameraInstance GenerateCamera()
     {
-        CameraJSONHandler.CameraInstance cameraInstance = new CameraJSONHandler.CameraInstance();
+        if (Aperture == null) return new CameraJSONHandler.CameraInstance();
+        if (ClipPlane == null) return new CameraJSONHandler.CameraInstance();
+        if (IntrestPoint == null) return new CameraJSONHandler.CameraInstance();
+        if (UpVector == null) return new CameraJSONHandler.CameraInstance();
+        if (InitialPosition == null) return new CameraJSONHandler.CameraInstance();
+        if (InitalRotation == null) return new CameraJSONHandler.CameraInstance();
 
-        cameraInstance.CameraName = Name;
-        cameraInstance.Translation = JsonUtil.Vector3ToArray(Position);
-        cameraInstance.Rotation = JsonUtil.Vector3ToArray(EulerAngles);
+        CameraJSONHandler.CameraInstance cameraInstance = new CameraJSONHandler.CameraInstance
+        {
+            CameraName = Name,
+            Translation = JsonUtil.Vector3ToArray(Position),
+            Rotation = JsonUtil.Vector3ToArray(EulerAngles),
+            Type = CameraType,
+            FocalLength = FocalLength,
+            AspectRatio = AspectRatio,
+            Aperture = Aperture,
+            ClipPlane = ClipPlane,
+            IntrestPoint = IntrestPoint,
+            UpVector = UpVector,
+            AnimTime = AnimTime,
 
-        cameraInstance.Type = CameraType;
-        cameraInstance.FocalLength = FocalLength;
-        cameraInstance.AspectRatio = AspectRatio;
-        cameraInstance.Aperture = Aperture;
-        cameraInstance.ClipPlane = ClipPlane;
-        cameraInstance.IntrestPoint = IntrestPoint;
-        cameraInstance.UpVector = UpVector;
-        cameraInstance.AnimTime = AnimTime;
+            InitialPosition = InitialPosition,
+            InitalRotation = InitalRotation,
+            U0 = U0,
 
-        cameraInstance.InitialPosition = InitialPosition;
-        cameraInstance.InitalRotation = InitalRotation;
-        cameraInstance.U0= U0;
-
-        cameraInstance.AnimationHeaders = new List<CameraJSONHandler.CameraAnimationHeader>();
+            AnimationHeaders = new List<CameraJSONHandler.CameraAnimationHeader>()
+        };
 
         for (int i = 0; i < AnimationHeaders.Count; i++)
         {
