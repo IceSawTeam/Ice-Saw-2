@@ -1,5 +1,8 @@
 using Raylib_cs;
 
+/*
+    InputAction names can be found in KeyBindings.cs
+*/
 
 namespace IceSaw2
 {
@@ -29,7 +32,7 @@ namespace IceSaw2
             return false;
         }
 
-        
+
         public static bool IsActionReleased(string actionName)
         {
             var action = Settings.KeyBinding.Instance.GetInputActionByName(actionName);

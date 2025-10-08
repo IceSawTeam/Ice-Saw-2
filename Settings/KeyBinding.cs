@@ -43,40 +43,53 @@ namespace IceSaw2.Settings
             public DataClass()
             {
                 // Camera movement
-                InputMap.Add(new InputAction("CameraMoveLeft"));
-                Instance.GetInputActionByName("CameraMoveLeft").AddInputEvent(KeyboardKey.A);
-                InputMap.Add(new InputAction("CameraMoveRight"));
-                Instance.GetInputActionByName("CameraMoveRight").AddInputEvent(KeyboardKey.D);
-                InputMap.Add(new InputAction("CameraMoveForward"));
-                Instance.GetInputActionByName("CameraMoveForward").AddInputEvent(KeyboardKey.W);
-                InputMap.Add(new InputAction("CameraMoveBack"));
-                Instance.GetInputActionByName("CameraMoveBack").AddInputEvent(KeyboardKey.S);
-                InputMap.Add(new InputAction("CameraMoveUp"));
-                Instance.GetInputActionByName("CameraMoveUp").AddInputEvent(KeyboardKey.E);
-                InputMap.Add(new InputAction("CameraMoveDown"));
-                Instance.GetInputActionByName("CameraMoveDown").AddInputEvent(KeyboardKey.Q);
-                InputMap.Add(new InputAction("CameraBoost"));
-                Instance.GetInputActionByName("CameraBoost").AddInputEvent(KeyboardKey.LeftShift);
-                Instance.GetInputActionByName("CameraBoost").AddInputEvent(MouseButton.Left);
-                InputMap.Add(new InputAction("CameraActivate"));
-                Instance.GetInputActionByName("CameraActivate").AddInputEvent(MouseButton.Right);
+                InputAction cameraMoveLeft = new("CameraMoveLeft");
+                cameraMoveLeft.AddInputEvent(KeyboardKey.A);
+                InputMap.Add(cameraMoveLeft);
+                InputAction cameraMoveRight = new("CameraMoveRight");
+                cameraMoveRight.AddInputEvent(KeyboardKey.D);
+                InputMap.Add(cameraMoveRight);
+                InputAction cameraMoveForward = new("CameraMoveForward");
+                cameraMoveForward.AddInputEvent(KeyboardKey.W);
+                InputMap.Add(cameraMoveForward);
+                InputAction cameraMoveBack = new("CameraMoveBack");
+                cameraMoveBack.AddInputEvent(KeyboardKey.S);
+                InputMap.Add(cameraMoveBack);
+                InputAction cameraMoveUp = new("CameraMoveUp");
+                cameraMoveUp.AddInputEvent(KeyboardKey.E);
+                InputMap.Add(cameraMoveUp);
+                InputAction cameraMoveDown = new("CameraMoveDown");
+                cameraMoveDown.AddInputEvent(KeyboardKey.Q);
+                InputMap.Add(cameraMoveDown);
+                InputAction cameraBoost = new("CameraBoost");
+                cameraBoost.AddInputEvent(KeyboardKey.LeftShift);
+                cameraBoost.AddInputEvent(MouseButton.Left);
+                InputMap.Add(cameraBoost);
+                InputAction cameraActivate = new("CameraActivate");
+                cameraActivate.AddInputEvent(MouseButton.Right);
+                InputMap.Add(cameraActivate); 
 
                 // Tab switching
-                InputMap.Add(new InputAction("LevelSwitch"));
-                Instance.GetInputActionByName("LevelSwitch").AddInputEvent(KeyboardKey.L);
-                InputMap.Add(new InputAction("ModelsSwitch"));
-                Instance.GetInputActionByName("ModelsSwitch").AddInputEvent(KeyboardKey.P);
-                InputMap.Add(new InputAction("LogicSwitch"));
-                Instance.GetInputActionByName("LogicSwitch").AddInputEvent(KeyboardKey.N);
+                InputAction levelSwitch = new("LevelSwitch");
+                levelSwitch.AddInputEvent(KeyboardKey.L);
+                InputMap.Add(levelSwitch);
+                InputAction modelSwitch = new("ModelSwitch");
+                modelSwitch.AddInputEvent(KeyboardKey.P);
+                InputMap.Add(modelSwitch);
+                InputAction logicSwitch = new("LogicSwitch");
+                logicSwitch.AddInputEvent(KeyboardKey.N);
+                InputMap.Add(logicSwitch);
 
                 // Other
-                InputMap.Add(new InputAction("Click"));
-                Instance.GetInputActionByName("Click").AddInputEvent(MouseButton.Left);
-                InputMap.Add(new InputAction("Save"));
-                Instance.GetInputActionByName("Save").AddInputEvent(KeyboardKey.LeftControl, KeyboardKey.S);
-                InputMap.Add(new InputAction("Exit"));
-                Instance.GetInputActionByName("Exit").AddInputEvent(KeyboardKey.Escape);
-
+                InputAction click = new("Click");
+                click.AddInputEvent(MouseButton.Left);
+                InputMap.Add(click);
+                InputAction save = new("Save");
+                save.AddInputEvent(KeyboardKey.LeftControl, KeyboardKey.S);
+                InputMap.Add(save);
+                InputAction exit = new("Exit");
+                exit.AddInputEvent(KeyboardKey.Escape);
+                InputMap.Add(exit);
             }
         }
         public DataClass Data = new();
