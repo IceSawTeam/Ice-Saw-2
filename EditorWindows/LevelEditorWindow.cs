@@ -1,8 +1,10 @@
 ﻿using IceSaw2.LevelObject;
+using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace IceSaw2.EditorWindows
 {
@@ -23,6 +25,7 @@ namespace IceSaw2.EditorWindows
         public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
 
+        public List<BaseObject> RenderItems = new List<BaseObject>();
 
         public void Initilize()
         {
@@ -57,57 +60,13 @@ namespace IceSaw2.EditorWindows
             Raylib.DrawLine3D(new Vector3(0, -axisLineSize, 0), new Vector3(0, axisLineSize, 0), new Color(17, 212, 4));
             Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
+            //GenerateRenderList();
+            var RenderList = CollectionsMarshal.AsSpan(RenderItems);
+
             //Render Objects
-            for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
+            for (int i = 0; i < RenderList.Length; i++)
             {
-                TrickyDataManager.trickyPatchObjects[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickyInstanceObjects.Count; i++)
-            {
-                TrickyDataManager.trickyInstanceObjects[i].Render();
-            }
-
-            //Render Wires
-            for (int i = 0; i < TrickyDataManager.trickySplineObjects.Count; i++)
-            {
-                TrickyDataManager.trickySplineObjects[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickyAIPAIPath.Count; i++)
-            {
-                TrickyDataManager.trickyAIPAIPath[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickyAIPRaceLine.Count; i++)
-            {
-                TrickyDataManager.trickyAIPRaceLine[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickySOPAIPath.Count; i++)
-            {
-                TrickyDataManager.trickySOPAIPath[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickySOPRaceLine.Count; i++)
-            {
-                TrickyDataManager.trickySOPRaceLine[i].Render();
-            }
-
-            //Render Sprites
-            for (int i = 0; i < TrickyDataManager.trickyLightObjects.Count; i++)
-            {
-                TrickyDataManager.trickyLightObjects[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickyCameraObjects.Count; i++)
-            {
-                TrickyDataManager.trickyCameraObjects[i].Render();
-            }
-
-            for (int i = 0; i < TrickyDataManager.trickyPaticleInstanceObjects.Count; i++)
-            {
-                TrickyDataManager.trickyPaticleInstanceObjects[i].Render();
+                RenderList[i].Render();
             }
 
             Raylib.EndMode3D();
@@ -138,6 +97,22 @@ namespace IceSaw2.EditorWindows
 
             ImGui.End();
             ImGui.PopStyleVar(2);
+        }
+
+        public void GenerateRenderList()
+        {
+            RenderItems = new List<BaseObject>();
+
+            RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);
+            RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
+            RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);
+            RenderItems.AddRange(TrickyDataManager.trickySOPAIPath);
+            RenderItems.AddRange(TrickyDataManager.trickySOPRaceLine);
+            RenderItems.AddRange(TrickyDataManager.trickyLightObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyCameraObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyPaticleInstanceObjects);
         }
 
         public override void LogicUpdate()

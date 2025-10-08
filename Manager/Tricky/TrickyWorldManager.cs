@@ -87,6 +87,7 @@ namespace IceSaw2.Manager.Tricky
                             Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
                             Settings.General.Instance.Save();
                             Settings.KeyBinding.Instance.Save();
+                            levelEditorWindow.GenerateRenderList();
                             // Do something with selectedPath
                         });
                         // Handle file open
