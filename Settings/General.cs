@@ -41,7 +41,7 @@ namespace IceSaw2.Settings
                     if (ver.Type == JTokenType.String && ver.ToString() == GeneralSettingsVersion)
                     {
                         DataClass? loadedData = JsonConvert.DeserializeObject<DataClass>(fileText);
-                        Debug.Assert(loadedData != null, "Container is null");
+                        Debug.Assert(loadedData != null, "DeserializeObject is null");
                         data = loadedData;
                         return;
                     }
