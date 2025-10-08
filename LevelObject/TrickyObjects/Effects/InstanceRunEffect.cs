@@ -18,6 +18,7 @@ public class InstanceRunEffect : EffectBase
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (effect.Instance == null) return;
         InstanceIndex = effect.Instance.Value.InstanceIndex;
         EffectIndex = effect.Instance.Value.EffectIndex;
     }

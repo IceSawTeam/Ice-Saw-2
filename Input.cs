@@ -1,8 +1,31 @@
 using Raylib_cs;
 
+
 /*
-    InputAction names can be found in KeyBindings.cs
+    Wraps raylib's input with an Input Action system.
+
+    An action can have multiple events, each with different combinations of keys/mouse buttons,
+    Allowing you to bind multiple keys to a single action.
+    For example you can use camera boost with either the left click or left shift.
+
+    InputAction names can be found and edited in KeyBindings.cs
+
+    Usable methods:
+    - IsActionPressed()
+    - IsActionReleased()
+    - IsActionDown()
+
+    It's very unlikely that you'll ever use IsActionPressed/Released on an input action's event
+    that requires multiple key or mouse button presses. This is because pressing multiple keys in a
+    single frame is very unlikely and have no real use.
+    If you want to check a key combination then check if the Modifier is held down, and then check for the
+    action key being pressed.
+
+    DEVNOTE:
+    This system might be scaled and specialized as the project grows, for now its barebones.
+    Scroll wheel, mouse motion, and checking for multiple action presses in one frame is not supported.
 */
+
 
 namespace IceSaw2
 {

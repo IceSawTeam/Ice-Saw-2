@@ -9,11 +9,12 @@ public class FunctionRunEffect : EffectBase
         get { return 21; }
     }
 
-    public TrickyFunctionHeader FunctionObject;
+    public TrickyFunctionHeader? FunctionObject;
     int FunctionIndex;
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (effect.FunctionRunIndex == null) return;
         FunctionIndex = effect.FunctionRunIndex.Value;
     }
 

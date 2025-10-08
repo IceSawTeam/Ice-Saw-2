@@ -13,6 +13,7 @@ public class SoundEffect : EffectBase
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (effect.SoundPlay == null) return;
         SoundPlayIndex = effect.SoundPlay.Value;
     }
 

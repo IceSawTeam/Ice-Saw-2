@@ -57,11 +57,12 @@ public class TrickyPathBObject : LineBaseObject
 
     public void GenerateWorldPathPoints()
     {
-        WorldLinePoints = [Position * WorldScale];
-
-        for (int i = 0; i < PathPoints.Count; i++)
+        // TODO: worldLinePoints is never used outside the function.
+        // Is the funciton unfinished?
+        List<Vector3> worldLinePoints = [Position * WorldScale];
+        foreach (var point in PathPoints)
         {
-            WorldLinePoints.Add((PathPoints[i] + Position) * WorldScale);
+            worldLinePoints.Add((point + Position) * WorldScale);
         }
     }
 
