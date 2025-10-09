@@ -109,6 +109,8 @@ namespace IceSaw2.LevelObject
             //}
         }
 
+        public BoundingBox boundingBox;
+
         public bool Visable = true;
         public bool Enabled = true;
         public bool VisableHierarchy = true;

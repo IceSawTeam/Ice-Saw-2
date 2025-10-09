@@ -105,7 +105,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 NewTextureCords[i] = new Vector2(UV[i].X, UV[i].Y);
             }
 
-            Raylib.UploadMesh(ref mesh, false);
+            Raylib.UploadMesh(ref _mesh, false);
             MeshLoaded = true;
 
             var Texture = TrickyDataManager.ReturnTexture(TexturePath, false);
