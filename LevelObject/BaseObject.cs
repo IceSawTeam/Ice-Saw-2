@@ -109,7 +109,9 @@ namespace IceSaw2.LevelObject
             //}
         }
 
-        public BoundingBox boundingBox;
+        public BoundingBox meshBoundingBox;
+        public BoundingBox localBoundingBox;
+        public BoundingBox worldBoundingBox;
 
         public bool Visable = true;
         public bool Enabled = true;
@@ -184,6 +186,7 @@ namespace IceSaw2.LevelObject
                 //TempMatrix4X4 = Raymath.MatrixMultiply(TempMatrix4X4, Raymath.MatrixTranslate(_position.X, _position.Y, _position.Z));
 
                 localMatrix4X4 = TempMatrix4X4;
+                GenerateBBoxLocal();
             }
 
             //Check Parent
@@ -195,6 +198,7 @@ namespace IceSaw2.LevelObject
             {
                 worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
             }
+            GenertateBboxWorld();
 
             //Update Children
             for (global::System.Int32 i = 0; i < Children.Count; i++)
@@ -229,6 +233,48 @@ namespace IceSaw2.LevelObject
                     ImGui.TreePop();
                 }
             }
+        }
+
+        public void GenerateBBoxMesh(float[] vertices)
+        {
+            // Initialize min and max vectors with extreme values
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+            for (int i = 0; i < vertices.Length/3; i++)
+            {
+                float x = vertices[i * 3 + 0];
+                float y = vertices[i * 3 + 1];
+                float z = vertices[i * 3 + 2];
+
+                Vector3 vertex = new Vector3(x, y, z);
+
+                // Update min
+                min.X = Math.Min(min.X, vertex.X);
+                min.Y = Math.Min(min.Y, vertex.Y);
+                min.Z = Math.Min(min.Z, vertex.Z);
+
+                // Update max
+                max.X = Math.Max(max.X, vertex.X);
+                max.Y = Math.Max(max.Y, vertex.Y);
+                max.Z = Math.Max(max.Z, vertex.Z);
+            }
+
+            meshBoundingBox = new BoundingBox(min, max);
+
+            GenerateBBoxLocal();
+
+            GenertateBboxWorld();
+        }
+
+        void GenerateBBoxLocal()
+        {
+            localBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, localMatrix4X4), Raymath.Vector3Transform(meshBoundingBox.Max, localMatrix4X4));
+        }
+
+        void GenertateBboxWorld()
+        {
+            worldBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, worldMatrix4x4), Raymath.Vector3Transform(meshBoundingBox.Max, worldMatrix4x4));
         }
 
 
