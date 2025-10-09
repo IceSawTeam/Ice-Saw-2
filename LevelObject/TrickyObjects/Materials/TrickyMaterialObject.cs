@@ -47,10 +47,7 @@ namespace IceSaw2.LevelObject.Materials
         {
             Skybox = _skybox;
 
-            if (json.MaterialName != "" && json.MaterialName != null)
-            {
-                Name = json.MaterialName;
-            }
+            Name = json.MaterialName;
 
             TexturePath = json.TexturePath;
             UnknownInt2 = json.UnknownInt2;
