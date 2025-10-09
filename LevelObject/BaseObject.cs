@@ -198,7 +198,7 @@ namespace IceSaw2.LevelObject
             {
                 worldMatrix4x4 = Raymath.MatrixMultiply(localMatrix4X4, _parent.worldMatrix4x4);
             }
-            GenertateBboxWorld();
+            GenertateBBoxWorld();
 
             //Update Children
             for (global::System.Int32 i = 0; i < Children.Count; i++)
@@ -235,19 +235,15 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        public void GenerateBBoxMesh(float[] vertices)
+        public void GenerateBBoVertices(List<Vector3> vertices)
         {
             // Initialize min and max vectors with extreme values
             Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-            for (int i = 0; i < vertices.Length/3; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
-                float x = vertices[i * 3 + 0];
-                float y = vertices[i * 3 + 1];
-                float z = vertices[i * 3 + 2];
-
-                Vector3 vertex = new Vector3(x, y, z);
+                Vector3 vertex = vertices[i];
 
                 // Update min
                 min.X = Math.Min(min.X, vertex.X);
@@ -264,15 +260,15 @@ namespace IceSaw2.LevelObject
 
             GenerateBBoxLocal();
 
-            GenertateBboxWorld();
+            GenertateBBoxWorld();
         }
 
-        void GenerateBBoxLocal()
+        public void GenerateBBoxLocal()
         {
             localBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, localMatrix4X4), Raymath.Vector3Transform(meshBoundingBox.Max, localMatrix4X4));
         }
 
-        void GenertateBboxWorld()
+        public void GenertateBBoxWorld()
         {
             worldBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, worldMatrix4x4), Raymath.Vector3Transform(meshBoundingBox.Max, worldMatrix4x4));
         }

@@ -23,8 +23,9 @@ namespace IceSaw2.LevelObject
             set
             {
                 _mesh = value;
-                var vertices = mesh.VerticesAs<float>().ToArray();
-                GenerateBBoxMesh(vertices);
+                meshBoundingBox = Raylib.GetMeshBoundingBox(value);
+                GenerateBBoxLocal();
+                GenertateBBoxWorld();
             }
         }
 
