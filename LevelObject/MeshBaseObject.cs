@@ -24,7 +24,7 @@ namespace IceSaw2.LevelObject
             {
                 _mesh = value;
                 var vertices = mesh.VerticesAs<float>().ToArray();
-                GenerateBBox(vertices);
+                GenerateBBoxMesh(vertices);
             }
         }
 
