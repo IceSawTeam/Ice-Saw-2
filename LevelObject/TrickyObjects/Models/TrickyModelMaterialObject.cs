@@ -20,8 +20,10 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public string MeshPath;
         public int MaterialIndex;
-        public void LoadPrefabMaterialObject(ModelJsonHandler.MeshHeader objectHeader, bool skybox)
+        public void LoadModelMaterialObject(ModelJsonHandler.MeshHeader objectHeader, bool skybox)
         {
+            Name = objectHeader.MeshName;
+
             Skybox = skybox;
 
             MeshPath = objectHeader.MeshPath;

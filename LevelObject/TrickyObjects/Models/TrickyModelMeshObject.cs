@@ -17,9 +17,11 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeAnimation;
         public bool IncludeMatrix;
 
-        public List<TrickyModelMaterialObject> trickyPrefabMaterialObjects = new List<TrickyModelMaterialObject>();
-        public void LoadPrefabMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
+        public List<TrickyModelMaterialObject> trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
+        public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
+            Name = objectHeader.ObjectName;
+
             Skybox = skybox;
 
             ParentID = objectHeader.ParentID;
@@ -67,7 +69,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Rotation = JsonUtil.ArrayToQuaternion(objectHeader.Rotation);
             }
 
-            trickyPrefabMaterialObjects = new List<TrickyModelMaterialObject>();
+            trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
 
             //Load MeshHeaders
             for (int i = 0; i < objectHeader.MeshData.Count; i++)
@@ -76,9 +78,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 TrickyPrefabMaterialObject.parent = this;
 
-                TrickyPrefabMaterialObject.LoadPrefabMaterialObject(objectHeader.MeshData[i], Skybox);
+                TrickyPrefabMaterialObject.LoadModelMaterialObject(objectHeader.MeshData[i], Skybox);
 
-                trickyPrefabMaterialObjects.Add(TrickyPrefabMaterialObject);
+                trickyModelMaterialObjects.Add(TrickyPrefabMaterialObject);
 
                 //GameObject ChildMesh = new GameObject(i.ToString());
 
@@ -93,9 +95,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public override void Render()
         {
-            for (int i = 0; i < trickyPrefabMaterialObjects.Count; i++)
+            for (int i = 0; i < trickyModelMaterialObjects.Count; i++)
             {
-                trickyPrefabMaterialObjects[i].Render();
+                trickyModelMaterialObjects[i].Render();
             }
         }
 

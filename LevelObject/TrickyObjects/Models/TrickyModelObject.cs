@@ -19,17 +19,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public int Unknown3;
         public float AnimTime;
 
-        public List<TrickyModelMeshObject> trickyPrefabSubObjects = new List<TrickyModelMeshObject>();
+        public List<TrickyModelMeshObject> trickyModelMeshObjects = new List<TrickyModelMeshObject>();
 
         public void LoadPrefab(ModelJsonHandler.ModelJson prefabJson, bool skybox = false)
         {
             Skybox = skybox;
 
-            Name = prefabJson.PrefabName;
+            Name = prefabJson.ModelName;
             Unknown3 = prefabJson.Unknown3;
             AnimTime = prefabJson.AnimTime;
 
-            trickyPrefabSubObjects = new List<TrickyModelMeshObject>();
+            trickyModelMeshObjects = new List<TrickyModelMeshObject>();
 
             for (int i = 0; i < prefabJson.ModelObjects.Count; i++)
             {
@@ -37,17 +37,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 TrickyPrefabMeshObject.parent = this;
 
-                TrickyPrefabMeshObject.LoadPrefabMeshObject(prefabJson.ModelObjects[i], Skybox);
+                TrickyPrefabMeshObject.LoadModelMeshObject(prefabJson.ModelObjects[i], Skybox);
 
-                trickyPrefabSubObjects.Add(TrickyPrefabMeshObject);
+                trickyModelMeshObjects.Add(TrickyPrefabMeshObject);
             }
         }
 
         public override void Render()
         {
-            for (int i = 0; i < trickyPrefabSubObjects.Count; i++)
+            for (int i = 0; i < trickyModelMeshObjects.Count; i++)
             {
-                trickyPrefabSubObjects[i].Render();
+                trickyModelMeshObjects[i].Render();
             }
         }
 
