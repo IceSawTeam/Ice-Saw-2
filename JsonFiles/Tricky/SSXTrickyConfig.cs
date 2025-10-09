@@ -61,6 +61,7 @@ namespace SSXMultiTool.JsonFiles.Tricky
             {
                 var stream = File.ReadAllText(paths);
                 var container = JsonConvert.DeserializeObject<SSXTrickyConfig>(stream);
+                if (container == null) return new SSXTrickyConfig();
                 return container;
             }
             else

@@ -13,8 +13,8 @@ namespace IceSaw2.LevelObject
 
         public string Name = "Null";
 
-        private BaseObject _parent = null;
-        public BaseObject parent
+        private BaseObject? _parent = null;
+        public BaseObject? parent
         {
             get
             { return _parent; }

@@ -97,7 +97,7 @@ public class TrickyCameraObject : BaseObject
 
         cameraInstance.InitialPosition = InitialPosition;
         cameraInstance.InitalRotation = InitalRotation;
-        cameraInstance.U0= U0;
+        cameraInstance.U0 = U0;
 
         cameraInstance.AnimationHeaders = new List<CameraJSONHandler.CameraAnimationHeader>();
 

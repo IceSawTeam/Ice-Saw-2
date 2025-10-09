@@ -1,10 +1,6 @@
 using IceSaw2.LevelObject;
-using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
 using System.Numerics;
 
 public class TrickyPathBObject : LineBaseObject
@@ -16,12 +12,12 @@ public class TrickyPathBObject : LineBaseObject
 
     public float DistanceToFinish;
 
-    public List<Vector3> PathPoints;
-    public List<Vector3> VectorPoints;
+    public List<Vector3> PathPoints = [];
+    public List<Vector3> VectorPoints = [];
 
-    public List<PathEvent> PathEvents;
+    public List<PathEvent> PathEvents = [];
 
-    public override Vector3 Colour => new Vector3(0, 0, 0);
+    public override Vector3 Colour => new(0, 0, 0);
 
     public void LoadPathB(AIPSOPJsonHandler.PathB pathB)
     {
@@ -30,8 +26,8 @@ public class TrickyPathBObject : LineBaseObject
 
         Position = JsonUtil.ArrayToVector3(pathB.PathPos);
 
-        PathPoints = new List<Vector3>();
-        VectorPoints = new List<Vector3>();
+        PathPoints = [];
+        VectorPoints = [];
         for (int i = 0; i < pathB.PathPoints.GetLength(0); i++)
         {
             VectorPoints.Add(new Vector3(pathB.PathPoints[i, 0], pathB.PathPoints[i, 1], pathB.PathPoints[i, 2]));
@@ -42,15 +38,16 @@ public class TrickyPathBObject : LineBaseObject
             }
         }
 
-        PathEvents = new List<PathEvent>();
+        PathEvents = [];
         for (int i = 0; i < pathB.PathEvents.Count; i++)
         {
-            var NewStruct = new PathEvent();
-
-            NewStruct.EventType = pathB.PathEvents[i].EventType;
-            NewStruct.EventValue = pathB.PathEvents[i].EventValue;
-            NewStruct.EventStart = pathB.PathEvents[i].EventStart;
-            NewStruct.EventEnd = pathB.PathEvents[i].EventEnd;
+            PathEvent NewStruct = new()
+            {
+                EventType = pathB.PathEvents[i].EventType,
+                EventValue = pathB.PathEvents[i].EventValue,
+                EventStart = pathB.PathEvents[i].EventStart,
+                EventEnd = pathB.PathEvents[i].EventEnd
+            };
 
             PathEvents.Add(NewStruct);
         }
@@ -84,12 +81,12 @@ public class TrickyPathBObject : LineBaseObject
                 //Get Pos
                 float position = TestDistance - FindDistance;
                 //Get Percentage
-                float Percentage = (position / Size);
+                float Percentage = position / Size;
 
                 //Return Local Point
                 if(i - 1<0)
                 {
-                    return ((1f-Percentage) * VectorPoints[i]);
+                    return (1f-Percentage) * VectorPoints[i];
                 }
                 return ((1f - Percentage) * VectorPoints[i]) + PathPoints[i - 1];
             }
@@ -109,7 +106,7 @@ public class TrickyPathBObject : LineBaseObject
 
     public AIPSOPJsonHandler.PathB GeneratePathB()
     {
-        AIPSOPJsonHandler.PathB pathB = new AIPSOPJsonHandler.PathB();
+        AIPSOPJsonHandler.PathB pathB = new();
 
         pathB.Name = Name;
         pathB.DistanceToFinish = DistanceToFinish;
@@ -156,7 +153,7 @@ public class TrickyPathBObject : LineBaseObject
 
     public void GenerateVectors()
     {
-        VectorPoints = new List<Vector3>();
+        VectorPoints = [];
         for (int i = 0; i < PathPoints.Count;i++)
         {
             if(i==0)
@@ -171,7 +168,7 @@ public class TrickyPathBObject : LineBaseObject
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PathEvent
     {
         public int EventType;

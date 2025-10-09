@@ -13,6 +13,7 @@ public class MultiplierEffect : EffectBase
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (effect.MultiplierScore == null) return;
         MultiplierScore = effect.MultiplierScore.Value;
     }
 

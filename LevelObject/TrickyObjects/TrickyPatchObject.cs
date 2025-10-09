@@ -10,15 +10,15 @@ namespace IceSaw2.LevelObject.TrickyObjects
     public class TrickyPatchObject : MeshBaseObject
     {
         public Vector4 LightMapPoint;
-        public List<Vector2> UVPoints;
-        public Vector3[,] WorldPoints;
+        public List<Vector2> UVPoints = [];
+        public Vector3[,] WorldPoints = new Vector3[4,4];
 
         public int SurfaceType;
         public bool TrickOnlyPatch;
         public string TexturePath = "";
         public int LightmapID;
 
-        Surface surface;
+        Surface? surface;
 
         bool MeshLoaded =false;
 
@@ -60,7 +60,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Raylib.UnloadMesh(mesh);
             }
 
-            Vector3[,] vertices = new Vector3[4, 4];
+            // Vector3[,] vertices = new Vector3[4, 4];
 
             //Control points
             ControlPoint[,] cps = new ControlPoint[4, 4];

@@ -36,6 +36,9 @@ public class Type0Sub24Effect : EffectBase
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)
     {
+        if (!effect.type0.HasValue) return;
+        if (!effect.type0.Value.type0Sub24.HasValue) return;
+
         Unknown1 = effect.type0.Value.type0Sub24.Value.U0;
         Unknown2 = effect.type0.Value.type0Sub24.Value.U1;
         Unknown3 = effect.type0.Value.type0Sub24.Value.U2;

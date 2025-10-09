@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Raylib_cs;
 using System.Diagnostics;
-
-
-// TODO:
-// - Integrate the keybinding system config json.
-// - Work on Input.cs using the ActionMap.
 
 
 namespace IceSaw2.Settings
@@ -15,86 +11,101 @@ namespace IceSaw2.Settings
         private KeyBinding() { }
         private static readonly KeyBinding _instance = new();
         public static KeyBinding Instance { get { return _instance; } }
+        public string KeyBindingVersion = "1";
 
-        public enum InputActionType
+
+        public class InputAction(string name)
         {
-            // Camera movement
-            CameraMoveLeft,
-            CameraMoveRight,
-            CameraMoveForward,
-            CameraMoveBack,
-            CameraMoveUp,
-            CameraMoveDown,
-            CameraBoost,
-            CameraActivate,
+            public string Name = name;
 
-            // Tab switching
-            LevelSwitch,
-            ModelsSwitch,
-            LogicSwitch,
+            // Holds compinations of Keyboardkey and MouseButton that represent this action.
+            public List<List<object>> InputEvents = []; 
 
-            // Other
-            Save,
-            Exit,
-        }
-
-        public struct InputAction
-        {
-            public Type inputTag = typeof(KeyboardKey);
-            public KeyboardKey key;
-            public MouseButton button;
-
-            public InputAction(KeyboardKey key)
+            public void AddInputEvent(params object[] inputs)
             {
-                inputTag = typeof(KeyboardKey);
-                this.key = key;
-            }
-
-            public InputAction(MouseButton button)
-            {
-                inputTag = typeof(MouseButton);
-                this.button = button;
+                List<object> inputList = [];
+                foreach (object i in inputs)
+                {
+                    Debug.Assert(i.GetType() == typeof(KeyboardKey) || i.GetType() == typeof(MouseButton),
+                                 "Input action is not a KeyboardKey or MouseButton ");
+                    inputList.Add(i);
+                }
+                InputEvents.Add(inputList);
             }
         }
 
-        public Dictionary<InputActionType, List<InputAction>> ActionMap = new()
-        {
-            { InputActionType.CameraMoveLeft, [new InputAction(KeyboardKey.A)] },
-            { InputActionType.CameraMoveRight, [new InputAction(KeyboardKey.D)] },
-            { InputActionType.CameraMoveForward, [new InputAction(KeyboardKey.W)] },
-            { InputActionType.CameraMoveBack, [new InputAction(KeyboardKey.S)] },
-            { InputActionType.CameraMoveUp, [new InputAction(KeyboardKey.E)] },
-            { InputActionType.CameraMoveDown, [new InputAction(KeyboardKey.Q)] },
-            { InputActionType.CameraBoost, [new InputAction(MouseButton.Left)] },
-            { InputActionType.CameraActivate, [new InputAction(MouseButton.Right)] },
-            { InputActionType.LevelSwitch, [new InputAction(KeyboardKey.L)] },
-            { InputActionType.ModelsSwitch, [new InputAction(KeyboardKey.P)] },
-            { InputActionType.LogicSwitch, [new InputAction(KeyboardKey.M)] },
-            { InputActionType.Save, [new InputAction(KeyboardKey.LeftControl), new InputAction(KeyboardKey.S)] },
-            { InputActionType.Exit, [new InputAction(KeyboardKey.E)] },
-        };
 
-
-
-        public DataClass data = new();
         public class DataClass
         {
-            //TODO: Convert to use a list so we can have multi hotkeys
-            //General
-            public KeyboardKey LevelWindow = KeyboardKey.L;
-            public KeyboardKey LogicWindow = KeyboardKey.M;
-            public KeyboardKey PrefabWindow = KeyboardKey.P;
-            public KeyboardKey OpenProject = KeyboardKey.F;
+            public string Version = "1";
+            public List<InputAction> InputMap = [];
 
-            // Camera movement
-            public MouseButton ActivateCamera = MouseButton.Right;
-            public KeyboardKey Forward = KeyboardKey.W;
-            public KeyboardKey Back = KeyboardKey.S;
-            public KeyboardKey Left = KeyboardKey.A;
-            public KeyboardKey Right = KeyboardKey.D;
-            public KeyboardKey Up = KeyboardKey.E;
-            public KeyboardKey Down = KeyboardKey.Q;
-            public KeyboardKey Boost = KeyboardKey.LeftShift;
+            public DataClass()
+            {
+                // Camera movement
+                InputAction cameraMoveLeft = new("CameraMoveLeft");
+                cameraMoveLeft.AddInputEvent(KeyboardKey.A);
+                InputMap.Add(cameraMoveLeft);
+                InputAction cameraMoveRight = new("CameraMoveRight");
+                cameraMoveRight.AddInputEvent(KeyboardKey.D);
+                InputMap.Add(cameraMoveRight);
+                InputAction cameraMoveForward = new("CameraMoveForward");
+                cameraMoveForward.AddInputEvent(KeyboardKey.W);
+                InputMap.Add(cameraMoveForward);
+                InputAction cameraMoveBack = new("CameraMoveBack");
+                cameraMoveBack.AddInputEvent(KeyboardKey.S);
+                InputMap.Add(cameraMoveBack);
+                InputAction cameraMoveUp = new("CameraMoveUp");
+                cameraMoveUp.AddInputEvent(KeyboardKey.E);
+                InputMap.Add(cameraMoveUp);
+                InputAction cameraMoveDown = new("CameraMoveDown");
+                cameraMoveDown.AddInputEvent(KeyboardKey.Q);
+                InputMap.Add(cameraMoveDown);
+                InputAction cameraBoost = new("CameraBoost");
+                cameraBoost.AddInputEvent(KeyboardKey.LeftShift);
+                cameraBoost.AddInputEvent(MouseButton.Left);
+                InputMap.Add(cameraBoost);
+                InputAction cameraActivate = new("CameraActivate");
+                cameraActivate.AddInputEvent(MouseButton.Right);
+                InputMap.Add(cameraActivate); 
+
+                // Tab switching
+                InputAction levelSwitch = new("LevelSwitch");
+                levelSwitch.AddInputEvent(KeyboardKey.L);
+                InputMap.Add(levelSwitch);
+                InputAction modelSwitch = new("ModelSwitch");
+                modelSwitch.AddInputEvent(KeyboardKey.P);
+                InputMap.Add(modelSwitch);
+                InputAction logicSwitch = new("LogicSwitch");
+                logicSwitch.AddInputEvent(KeyboardKey.N);
+                InputMap.Add(logicSwitch);
+
+                // Other
+                InputAction click = new("Click");
+                click.AddInputEvent(MouseButton.Left);
+                InputMap.Add(click);
+                InputAction save = new("Save");
+                save.AddInputEvent(KeyboardKey.LeftControl, KeyboardKey.S);
+                InputMap.Add(save);
+                InputAction exit = new("Exit");
+                exit.AddInputEvent(KeyboardKey.Escape);
+                InputMap.Add(exit);
+            }
+        }
+        public DataClass Data = new();
+
+
+        public InputAction GetInputActionByName(string name)
+        {
+            foreach (InputAction action in Data.InputMap)
+            {
+                if (action.Name == name)
+                {
+                    return action;
+                }
+            }
+            Debug.Assert(false, $"Input action '{name}' does not exist");
+            return new InputAction("Invalid");
         }
 
 
@@ -104,24 +115,33 @@ namespace IceSaw2.Settings
             string loadPath = Path.Combine(loadFolder, "KeyBinding.json");
             if (File.Exists(loadPath))
             {
-                string stream = File.ReadAllText(loadPath);
-                DataClass? loadedData = JsonConvert.DeserializeObject<DataClass>(stream);
-                Debug.Assert(loadedData != null, "Container is null");
-                data = loadedData;
-                return;
+                string fileText = File.ReadAllText(loadPath);
+                var parsedJson = JObject.Parse(fileText);
+                if (parsedJson.TryGetValue("version", StringComparison.Ordinal, out JToken? ver))
+                {
+                    if (ver.Type == JTokenType.String && ver.ToString() == KeyBindingVersion)
+                    {
+                        DataClass? loadedData = JsonConvert.DeserializeObject<DataClass>(fileText);
+                        Debug.Assert(loadedData != null, "DeserializeObject is null");
+                        Data = loadedData;
+                        return;
+                    }
+                }
             }
+
+            // Save if file doesn't exist, or if it has a different version.
+            Console.WriteLine("Disk Keybindings were incompatible. Overritten with newer version.");
             Instance.Save();
             return;
         }
+
 
         public void Save()
         {
             string saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
             string savePath = Path.Combine(saveFolder, "KeyBinding.json");
-            var serializer = JsonConvert.SerializeObject(data, Formatting.Indented);
+            var serializer = JsonConvert.SerializeObject(Data, Formatting.Indented);
             File.WriteAllText(savePath, serializer);
         }
-
-
     }
 }

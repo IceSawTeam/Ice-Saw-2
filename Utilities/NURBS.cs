@@ -1,6 +1,9 @@
-using System;
+// using System;
 using System.Numerics;
 using Raylib_cs;
+
+#pragma warning disable CS8618
+#pragma warning disable IDE0130
 
 namespace NURBS
 {
@@ -13,7 +16,7 @@ namespace NURBS
         /// <summary>
         /// Coordinates of the control point
         /// </summary>
-        public float x,y,z;
+        public float x, y, z;
         /// <summary>
         /// Weight of the control point, how much influence it has
         /// </summary>

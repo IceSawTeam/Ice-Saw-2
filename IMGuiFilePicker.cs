@@ -10,13 +10,13 @@ namespace IceSaw2
     public class IMGuiFilePicker
     {
         private string currentPath;
-        private string selectedFile;
+        private string? selectedFile;
         private bool isOpen;
-        private Action<string> onFileSelected;
+        private Action<string>? onFileSelected;
 
         public bool IsVisible => isOpen;
 
-        public IMGuiFilePicker(string startPath = "")
+        public IMGuiFilePicker(string? startPath = "")
         {
             if(startPath=="")
             {
