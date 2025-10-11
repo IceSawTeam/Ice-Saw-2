@@ -113,9 +113,9 @@ namespace IceSaw2.LevelObject
         public BoundingBox localBoundingBox;
         public BoundingBox worldBoundingBox;
 
-        public bool Visable = true;
+        public bool Visible = true;
         public bool Enabled = true;
-        public bool VisableHierarchy = true;
+        public bool VisibleHierarchy = true;
 
 
         public virtual ObjectType Type
@@ -209,7 +209,7 @@ namespace IceSaw2.LevelObject
 
         public void HierarchyRender()
         {
-            if (VisableHierarchy)
+            if (VisibleHierarchy)
             {
                 var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
 

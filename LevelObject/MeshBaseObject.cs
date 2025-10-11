@@ -31,7 +31,7 @@ namespace IceSaw2.LevelObject
 
         public override void Render()
         {
-            if (Visable && Enabled)
+            if (Visible && Enabled)
             {
                 if (mesh.VertexCount != 0)
                 {
@@ -42,7 +42,7 @@ namespace IceSaw2.LevelObject
 
         public override void Render(Matrix4x4 matrix4X4)
         {
-            if (Visable && Enabled)
+            if (Visible && Enabled)
             {
                 if (mesh.VertexCount != 0)
                 {
