@@ -258,7 +258,7 @@ namespace IceSaw2.LevelObject
             TempInstance.U0 = U0;
             TempInstance.PlayerBounceAmmount = PlayerBounceAmmount;
             TempInstance.U2 = U2;
-            TempInstance.Visable = Visable;
+            TempInstance.Visable = InstanceVisable;
             TempInstance.PlayerCollision = PlayerCollision;
             TempInstance.PlayerBounce = PlayerBounce;
             TempInstance.Unknown241 = Unknown241;
