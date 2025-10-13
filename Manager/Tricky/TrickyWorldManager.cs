@@ -3,6 +3,7 @@ using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
+using System.Diagnostics;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -24,6 +25,8 @@ namespace IceSaw2.Manager.Tricky
         public Texture2D ParticleIcon = new();
 
         public Texture2D ErrorTexture = new();
+
+        bool showAboutWindow = false;
 
         public TrickyWorldManager()
         {
@@ -120,7 +123,7 @@ namespace IceSaw2.Manager.Tricky
                 {
                     if (ImGui.MenuItem("About"))
                     {
-                        // Show About modal
+                        showAboutWindow = !showAboutWindow;
                     }
                     ImGui.EndMenu();
                 }
@@ -141,6 +144,59 @@ namespace IceSaw2.Manager.Tricky
                 }
 
                 ImGui.EndMainMenuBar();
+
+                if (showAboutWindow)
+                {
+                    ImGui.SetNextWindowSize(new System.Numerics.Vector2(300, 150), ImGuiCond.FirstUseEver);
+                    ImGui.Begin("About", ref showAboutWindow, ImGuiWindowFlags.NoResize);
+
+                    ImGui.Text("Ice Saw 2");
+                    ImGui.Separator();
+                    ImGui.Text("Created by: Archy, Platanito, Linkz");
+
+                    ImGui.Text("Visit our project:");
+                    ImGui.SameLine();
+
+                    // Simulate a blue, underlined clickable link
+                    ImGui.PushStyleColor(ImGuiCol.Text, new System.Numerics.Vector4(0.0f, 0.5f, 1.0f, 1.0f)); // Blue
+                    ImGui.Text("Github");
+                    ImGui.PopStyleColor();
+
+                    // Make it look clickable
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
+                        ImGui.BeginTooltip();
+                        ImGui.Text("Open in browser");
+                        ImGui.EndTooltip();
+                    }
+
+                    if (ImGui.IsItemClicked())
+                    {
+                        try
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = "https://github.com/GlitcherOG/Ice-Saw-2",
+                                UseShellExecute = true
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Failed to open link: " + ex.Message);
+                        }
+                    }
+
+                    ImGui.Text("© SSX Modding");
+                    ImGui.Spacing();
+
+                    if (ImGui.Button("OK"))
+                    {
+                        showAboutWindow = false;
+                    }
+
+                    ImGui.End();
+                }
             }
         }
 
