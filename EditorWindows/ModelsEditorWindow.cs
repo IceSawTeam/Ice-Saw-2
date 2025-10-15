@@ -120,16 +120,25 @@ namespace IceSaw2.EditorWindows
             }
 
 
+            // Render UI
+            
+
+            var io = ImGui.GetIO();
+            var vp = ImGui.GetMainViewport();
+            var vpPos = vp.Pos;
+            var vpSize = vp.Size;
+
             #region Secondary Top Bar
             // Calculate position below main menu bar
             float yOffset = ImGui.GetFrameHeight(); // Main menu height
 
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, yOffset), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(ImGui.GetIO().DisplaySize.X, yOffset-20));
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(vpSize.X, 16f/*yOffset-20*/));
 
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new System.Numerics.Vector2(8, 9));
+            //ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0.6f, 0.6f, 0.6f, 1f)); // color test
 
             ImGui.Begin("TabStrip", ImGuiWindowFlags.NoTitleBar |
                                      ImGuiWindowFlags.NoResize |
@@ -170,14 +179,12 @@ namespace IceSaw2.EditorWindows
 
             ImGui.End();
             ImGui.PopStyleVar(2);
+            //ImGui.PopStyleColor(); // color test
             #endregion
+            
+            
 
-            var io = ImGui.GetIO();
-            var vp = ImGui.GetMainViewport();
-            var vpPos = vp.Pos;
-            var vpSize = vp.Size;
-
-            //Render UI
+            
 
             float menuBarHeight = ImGui.GetFrameHeight() + 32; // Typically height of main menu bar
             float outlinerWidth = 300;
@@ -282,7 +289,6 @@ namespace IceSaw2.EditorWindows
             // Example placeholder: show a child area representing the render target region
             //ImGui.BeginChild("viewport_content", new Vector2(winSize.X - 16, winSize.Y - viewportHeaderHeight - 16), ImGuiChildFlags.None,
             //                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-
             ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
