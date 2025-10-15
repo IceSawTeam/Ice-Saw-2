@@ -37,6 +37,12 @@ namespace IceSaw2.EditorWindows
 
         }
 
+        bool BatchTestLoad = false;
+
+        Mesh mesh;
+        Texture2D texture;
+        Material material;
+        Matrix4x4 matrix4X4 = Matrix4x4.Identity;
         public override void RenderUpdate()
         {
             //Render 3D
@@ -45,14 +51,42 @@ namespace IceSaw2.EditorWindows
 
             Rlgl.DisableDepthMask();
             //Render Skybox
-            for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)
-            {
-                var TempLocation = TrickyDataManager.trickySkyboxPrefabObjects[i].Position;
 
-                TrickyDataManager.trickySkyboxPrefabObjects[i].Position = viewCamera3D.Position / BaseObject.WorldScale;
-                TrickyDataManager.trickySkyboxPrefabObjects[i].Render();
-                TrickyDataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
+            //Nasty Check to see if loaded
+            if(TrickyDataManager.trickySkyboxPrefabObjects.Count!=0)
+            {
+                if(!BatchTestLoad)
+                {
+                    BatchTestLoad = true;
+
+                    var Loaded = IceSaw2.Batch.Skybox.FromFolder(Path.Combine(TrickyDataManager.LoadPath, "Skybox"));
+
+                    mesh = Loaded.Item1;
+
+                    Raylib.UploadMesh(ref mesh, false);
+
+                    var Image = Loaded.Item2;
+
+                    texture = Raylib.LoadTextureFromImage(Image);
+
+                    material = Raylib.LoadMaterialDefault();
+
+                    Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
+
+                    matrix4X4 = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
+                }
+
+                Raylib.DrawMesh(mesh, material, matrix4X4);
             }
+
+            //for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)
+            //{
+            //    var TempLocation = TrickyDataManager.trickySkyboxPrefabObjects[i].Position;
+
+            //    TrickyDataManager.trickySkyboxPrefabObjects[i].Position = viewCamera3D.Position / BaseObject.WorldScale;
+            //    TrickyDataManager.trickySkyboxPrefabObjects[i].Render();
+            //    TrickyDataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
+            //}
             Rlgl.EnableDepthMask();            
 
             //Render Default
@@ -63,11 +97,11 @@ namespace IceSaw2.EditorWindows
             //GenerateRenderList();
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
 
-            //Render Objects
-            for (int i = 0; i < RenderList.Length; i++)
-            {
-                RenderList[i].Render();
-            }
+            ////Render Objects
+            //for (int i = 0; i < RenderList.Length; i++)
+            //{
+            //    RenderList[i].Render();
+            //}
 
             Raylib.EndMode3D();
 
