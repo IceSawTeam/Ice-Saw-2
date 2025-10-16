@@ -121,7 +121,7 @@ namespace IceSaw2.EditorWindows
 
 
             // Render UI
-            
+
 
             var io = ImGui.GetIO();
             var vp = ImGui.GetMainViewport();
@@ -181,12 +181,12 @@ namespace IceSaw2.EditorWindows
             ImGui.PopStyleVar(2);
             //ImGui.PopStyleColor(); // color test
             #endregion
-            
-            
 
-            
 
-            float menuBarHeight = ImGui.GetFrameHeight() + 32; // Typically height of main menu bar
+
+
+            // Dimensions
+            float menuBarHeight = ImGui.GetFrameHeight() + 32; // Note: this includes both top bars.
             float outlinerWidth = 300;
             float inspectorWidth = 300;
             float viewportWidth = Math.Max(100f, vpSize.X - outlinerWidth - inspectorWidth);
