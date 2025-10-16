@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Assets\Fonts\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
     <PackageReference Include="Raylib-cs" Version="7.0.1" />
     <PackageReference Include="rlImgui-cs" Version="3.2.0" />

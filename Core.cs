@@ -8,8 +8,10 @@
 #pragma warning disable CA1822
 
 using IceSaw2.Manager.Tricky;
+using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
+using System.Diagnostics;
 
 namespace IceSaw2
 {
@@ -39,7 +41,16 @@ namespace IceSaw2
                                  (int)Settings.General.Instance.data.windowHeight);
             Raylib.SetWindowState(windowFlags);
 
+
+            
+            rlImGui.SetupUserFonts += (ImGuiIOPtr imGuiIo) =>
+            {
+                var io = ImGui.GetIO();
+                io.Fonts.Clear();
+                io.Fonts.AddFontFromFileTTF("Assets/Fonts/Inter_New.ttf", 14f);
+            };
             rlImGui.Setup(true);
+
 
             //--------------------- Manager/Module/System initializations here -------------------------
             worldManager = new TrickyWorldManager();
