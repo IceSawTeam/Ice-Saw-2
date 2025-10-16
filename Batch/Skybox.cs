@@ -61,23 +61,19 @@ namespace IceSaw2.Batch
                 cursorX += image.Width;
                 rowHighestHeight = Math.Max(rowHighestHeight, image.Height);
 
-                unsafe
+                var ModelVertices = model.Mesh.TexCoordsAs<Vector2>();
+
+                for (int i = 0; i < ModelVertices.Length; i++)
                 {
-                    float* texCoords = model.Mesh.TexCoords;
-                    int texCoordCount = model.Mesh.VertexCount * 2;
-                    for (int i = 0; i < texCoordCount; i += 2)
-                    {
-                        // Size in normalized space
-                        var width = destRectangle.Width / resolution;
-                        var height = destRectangle.Height / resolution;
+                    // Size in normalized space
+                    var width = destRectangle.Width / resolution;
+                    var height = destRectangle.Height / resolution;
 
-                        // Offset position in normalized space
-                        var offsetX = destRectangle.X / resolution;
-                        var offsetY = destRectangle.Y / resolution;
+                    // Offset position in normalized space
+                    var offsetX = destRectangle.X / resolution;
+                    var offsetY = destRectangle.Y / resolution;
 
-                        texCoords[i] = (texCoords[i] * width) + offsetX;
-                        texCoords[i + 1] = (texCoords[i + 1] * height) + offsetY;
-                    }
+                    ModelVertices[i] = new Vector2((ModelVertices[i].X * width) + offsetX, (ModelVertices[i].Y * height) + offsetY);
                 }
             }
 
@@ -98,12 +94,14 @@ namespace IceSaw2.Batch
 
             var batchedMeshVertices = batchedMesh.VerticesAs<Vector3>();
             var batchedMeshNormal = batchedMesh.NormalsAs<Vector3>();
+            var batchedMeshTexCord = batchedMesh.TexCoordsAs<Vector2>();
             var batchedMeshIndices = batchedMesh.IndicesAs<ushort>();
 
             // Vertices
             int vertexIndex = 0;
             int indicesIndex = 0;
             int normalsIndex = 0;
+            int TexIndex = 0;
 
             int PrevIndex = 0;
 
@@ -112,6 +110,7 @@ namespace IceSaw2.Batch
                 var ModelVertices = model.Mesh.VerticesAs<Vector3>();
                 var ModelMeshNormal = model.Mesh.NormalsAs<Vector3>();
                 var ModelMeshIndices = model.Mesh.IndicesAs<ushort>();
+                var ModelMeshTex = model.Mesh.TexCoordsAs<Vector2>();
 
                 for (var i = 0; i < ModelVertices.Length; i++)
                 {
@@ -129,6 +128,12 @@ namespace IceSaw2.Batch
                 {
                     batchedMeshNormal[normalsIndex] = ModelMeshNormal[i];
                     normalsIndex++;
+                }
+
+                for (var i = 0; i < ModelMeshTex.Length; i++)
+                {
+                    batchedMeshTexCord[TexIndex] = ModelMeshTex[i];
+                    TexIndex++;
                 }
 
                 PrevIndex += ModelVertices.Length;
