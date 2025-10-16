@@ -105,8 +105,6 @@ namespace IceSaw2.EditorWindows
                 TrickyDataManager.LevelNodeTree[i].HierarchyRender();
             }
 
-            // Add your sidebar content here
-
             ImGui.End();
             //ImGui.PopStyleVar(2);
 
