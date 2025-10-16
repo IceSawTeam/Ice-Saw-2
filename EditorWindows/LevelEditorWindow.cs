@@ -55,28 +55,44 @@ namespace IceSaw2.EditorWindows
             //Nasty Check to see if loaded
             if(TrickyDataManager.trickySkyboxPrefabObjects.Count!=0)
             {
-                if(!BatchTestLoad)
+                if (!BatchTestLoad)
                 {
                     BatchTestLoad = true;
-
-                    var Loaded = IceSaw2.Batch.Skybox.FromFolder(Path.Combine(TrickyDataManager.LoadPath, "Skybox"));
-
+                    var Loaded = Batch.Skybox.FromFolder(Path.Combine(TrickyDataManager.LoadPath, "Skybox"));
                     mesh = Loaded.Item1;
-
                     Raylib.UploadMesh(ref mesh, false);
-
                     var Image = Loaded.Item2;
-
                     texture = Raylib.LoadTextureFromImage(Image);
-
                     material = Raylib.LoadMaterialDefault();
-
                     Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
-
                     matrix4X4 = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
                 }
 
-                Raylib.DrawMesh(mesh, material, matrix4X4);
+                Rlgl.EnableDepthMask();
+
+                List<Matrix4x4> instances = [];
+                for (var y = 0; y < 10; y++)
+                {
+                    for (var x = 0; x < 10; x++)
+                    {
+                        var offset = 10;
+                        var mat = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
+                        mat = Raymath.MatrixMultiply( Raymath.MatrixTranslate(x * offset, y * offset, 0), mat);
+                        instances.Add(mat);
+                    }
+                }
+
+                unsafe
+                {
+                    Matrix4x4[] arr = instances.ToArray();
+                    fixed (Matrix4x4* mat = arr)
+                    {
+                        Raylib.DrawMeshInstanced(mesh, material, mat, instances.Count);
+                    }
+                }
+
+
+
             }
 
             //for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)

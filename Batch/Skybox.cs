@@ -65,6 +65,8 @@ namespace IceSaw2.Batch
 
                 for (int i = 0; i < ModelVertices.Length; i++)
                 {
+                    ModelVertices[i].Y *= -1;
+
                     // Size in normalized space
                     var width = destRectangle.Width / resolution;
                     var height = destRectangle.Height / resolution;
@@ -73,7 +75,15 @@ namespace IceSaw2.Batch
                     var offsetX = destRectangle.X / resolution;
                     var offsetY = destRectangle.Y / resolution;
 
-                    ModelVertices[i] = new Vector2((ModelVertices[i].X * width) + offsetX, (ModelVertices[i].Y * height) + offsetY);
+                    // Flip Y
+                    offsetY += height;
+                    height *= -1;
+
+                    ModelVertices[i] = new Vector2
+                    {
+                        X = (ModelVertices[i].X * width) + offsetX,
+                        Y = (ModelVertices[i].Y * height) + offsetY,
+                    };
                 }
             }
 
