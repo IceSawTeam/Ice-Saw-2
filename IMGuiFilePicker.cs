@@ -110,8 +110,9 @@ namespace IceSaw2
                     }
                 }
 
-                ImGui.End();
+                
             }
+            ImGui.End();
         }
 
         private void Close()

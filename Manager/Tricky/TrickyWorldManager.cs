@@ -80,6 +80,8 @@ namespace IceSaw2.Manager.Tricky
             Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30, 75, 24, Raylib.GetColor(0x0000009d));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -199,6 +201,7 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.End();
                 }
             }
+            ImGui.PopStyleVar(2);
         }
 
 

@@ -8,8 +8,8 @@ namespace IceSaw2.EditorWindows
 {
     public class ModelsEditorWindow : BaseEditorWindow
     {
-        bool Skybox;
-        bool Material;
+        bool ShowSkybox;
+        bool ShowMaterials;
 
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
@@ -31,7 +31,7 @@ namespace IceSaw2.EditorWindows
 
         public override void LogicUpdate()
         {
-            if (!Skybox)
+            if (!ShowSkybox)
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
@@ -74,7 +74,7 @@ namespace IceSaw2.EditorWindows
 
             if (Raylib.IsKeyPressed(KeyboardKey.Slash))
             {
-                Skybox = !Skybox;
+                ShowSkybox = !ShowSkybox;
             }
 
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
@@ -82,7 +82,7 @@ namespace IceSaw2.EditorWindows
 
         public override void RenderUpdate()
         {
-            if (!Skybox)
+            if (!ShowSkybox)
             {
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
@@ -157,23 +157,8 @@ namespace IceSaw2.EditorWindows
                 {
                     selectedTab = i;
 
-                    if(selectedTab>=2)
-                    {
-                        Skybox = true;
-                    }
-                    else
-                    {
-                        Skybox = false;
-                    }
-
-                    if(selectedTab==1 || selectedTab == 3)
-                    {
-                        Material = true;
-                    }
-                    else
-                    {
-                        Material = false;
-                    }
+                    ShowSkybox = selectedTab >= 2;
+                    ShowMaterials = selectedTab == 1 || selectedTab == 3;
                 }
             }
 
@@ -207,9 +192,9 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Outliner Panel", flags);
             ImGui.Text("Outliner");
 
-            if (!Skybox)
+            if (!ShowSkybox)
             {
-                if (Material)
+                if (ShowMaterials)
                 {
                     for (int i = 0; i < TrickyDataManager.trickyMaterialObject.Count; i++)
                     {
@@ -226,7 +211,7 @@ namespace IceSaw2.EditorWindows
             }
             else
             {
-                if (Material)
+                if (ShowMaterials)
                 {
                     for (int i = 0; i < TrickyDataManager.trickySkyboxMaterialObject.Count; i++)
                     {
