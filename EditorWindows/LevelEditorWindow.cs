@@ -53,7 +53,7 @@ namespace IceSaw2.EditorWindows
             //Render Skybox
 
             //Nasty Check to see if loaded
-            if(TrickyDataManager.trickySkyboxPrefabObjects.Count!=0)
+            if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
             {
                 if (!BatchTestLoad)
                 {
@@ -71,24 +71,25 @@ namespace IceSaw2.EditorWindows
                 Rlgl.EnableDepthMask();
 
                 List<Matrix4x4> instances = [];
-                for (var y = 0; y < 10; y++)
+                for (var y = 0; y < 100; y++)
                 {
-                    for (var x = 0; x < 10; x++)
+                    for (var x = 0; x < 100; x++)
                     {
-                        var offset = 10;
+                        var offset = 5000;
                         var mat = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
-                        mat = Raymath.MatrixMultiply( Raymath.MatrixTranslate(x * offset, y * offset, 0), mat);
+                        mat = Raymath.MatrixMultiply(Raymath.MatrixTranslate(x * offset, y * offset, 0), mat);
                         instances.Add(mat);
                     }
                 }
 
-                unsafe
+                // foreach (var instance in instances)
+                // {
+                //     Raylib.DrawMesh(mesh, material, instance);
+                // }
+
+                Matrix4x4[] arr = instances.ToArray();
                 {
-                    Matrix4x4[] arr = instances.ToArray();
-                    fixed (Matrix4x4* mat = arr)
-                    {
-                        Raylib.DrawMeshInstanced(mesh, material, mat, instances.Count);
-                    }
+                    Raylib.DrawMeshInstanced(mesh, material, arr, instances.Count);
                 }
 
 
