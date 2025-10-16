@@ -205,8 +205,9 @@ namespace IceSaw2.EditorWindows
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Outliner Panel", flags);
+            ImGui.Text("Outliner");
 
-            if(!Skybox)
+            if (!Skybox)
             {
                 if (Material)
                 {

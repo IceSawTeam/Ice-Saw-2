@@ -98,6 +98,7 @@ namespace IceSaw2.EditorWindows
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Outliner Panel", flags);
+            ImGui.Text("Outliner");
 
             for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
             {
