@@ -77,6 +77,7 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateRender()
         {
+            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30, 75, 24, Raylib.GetColor(0x0000009d));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
             if (ImGui.BeginMainMenuBar())
