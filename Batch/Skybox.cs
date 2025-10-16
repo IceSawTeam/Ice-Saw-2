@@ -1,4 +1,5 @@
 using SSXMultiTool.JsonFiles.Tricky;
+using System.Numerics;
 
 namespace IceSaw2.Batch
 {
@@ -95,53 +96,45 @@ namespace IceSaw2.Batch
             batchedMesh.AllocTexCoords();
             batchedMesh.AllocNormals();
 
+            var batchedMeshVertices = batchedMesh.VerticesAs<Vector3>();
+            var batchedMeshNormal = batchedMesh.NormalsAs<Vector3>();
+            var batchedMeshIndices = batchedMesh.IndicesAs<ushort>();
+
             // Vertices
             int vertexIndex = 0;
-            foreach (var model in models)
-            {
-                for (var i = 0; i < model.Mesh.VertexCount; i += 3)
-                {
-                    unsafe
-                    {
-                        batchedMesh.Vertices[vertexIndex] = model.Mesh.Vertices[i];
-                        batchedMesh.Vertices[vertexIndex + 1] = model.Mesh.Vertices[i + 1];
-                        batchedMesh.Vertices[vertexIndex + 2] = model.Mesh.Vertices[i + 2];
-                    }
-                }
-                vertexIndex += 3;
-            }
-
-            // Indices
             int indicesIndex = 0;
+            int normalsIndex = 0;
+
+            int PrevIndex = 0;
+
             foreach (var model in models)
             {
-                for (var i = 0; i < model.Mesh.TriangleCount; i += 3)
+                var ModelVertices = model.Mesh.VerticesAs<Vector3>();
+                var ModelMeshNormal = model.Mesh.NormalsAs<Vector3>();
+                var ModelMeshIndices = model.Mesh.IndicesAs<ushort>();
+
+                for (var i = 0; i < ModelVertices.Length; i++)
                 {
-                    unsafe
-                    {
-                        batchedMesh.Indices[indicesIndex] = model.Mesh.Indices[i];
-                        batchedMesh.Indices[indicesIndex + 1] = model.Mesh.Indices[i + 1];
-                        batchedMesh.Indices[indicesIndex + 2] = model.Mesh.Indices[i + 2];
-                    }
+                    batchedMeshVertices[vertexIndex] = ModelVertices[i];
+                    vertexIndex++;
                 }
-                indicesIndex += 3;
+
+                for (var i = 0; i < ModelMeshIndices.Length; i++)
+                {
+                    batchedMeshIndices[indicesIndex] = (ushort)(ModelMeshIndices[i] + (ushort)PrevIndex);
+                    indicesIndex++;
+                }
+
+                for (var i = 0; i < ModelMeshNormal.Length; i++)
+                {
+                    batchedMeshNormal[normalsIndex] = ModelMeshNormal[i];
+                    normalsIndex++;
+                }
+
+                PrevIndex += ModelVertices.Length;
             }
 
-            // Normals
-            int normalsIndex = 0;
-            foreach (var model in models)
-            {
-                for (var i = 0; i < model.Mesh.VertexCount; i += 3)
-                {
-                    unsafe
-                    {
-                        batchedMesh.Normals[normalsIndex] = model.Mesh.Normals[i];
-                        batchedMesh.Normals[normalsIndex + 1] = model.Mesh.Normals[i + 1];
-                        batchedMesh.Normals[normalsIndex + 2] = model.Mesh.Normals[i + 2];
-                    }
-                }
-                normalsIndex += 3;
-            }
+
             return (batchedMesh, batchedTexture);
         }
 
