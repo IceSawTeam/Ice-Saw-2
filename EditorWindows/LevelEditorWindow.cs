@@ -68,30 +68,28 @@ namespace IceSaw2.EditorWindows
                     var Image = Loaded.Item2;
                     texture = Raylib.LoadTextureFromImage(Image);
                     material = Raylib.LoadMaterialDefault();
-                    // Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
+                    Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
                     matrix4X4 = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
                     shader = Raylib.LoadShader("/home/eric/Documents/Github/Ice-Saw-2/Shaders/Instance.vs",
                                                 "/home/eric/Documents/Github/Ice-Saw-2/Shaders/Instance.fs");
 
-                    // unsafe
-                    // {
-                    //     int* locs = (int*)shader.Locs;
-                    //     locs[(int)ShaderLocationIndex.MatrixMvp] = Raylib.GetShaderLocation(shader, "mvp");
-                    //     locs[(int)ShaderLocationIndex.VectorView] = Raylib.GetShaderLocation(shader, "viewPos");
-                    //     locs[(int)ShaderLocationIndex.MatrixModel] = Raylib.GetShaderLocationAttrib(
-                    //         shader,
-                    //         "instanceTransform"
-                    //     );
-                    // }
+                    unsafe
+                    {
+                        int* locs = shader.Locs;
+                        locs[(int)ShaderLocationIndex.MatrixModel] = Raylib.GetShaderLocationAttrib(
+                            shader,
+                            "instanceTransform"
+                        );
+                    }
                     material.Shader = shader;
                 }
 
                 Rlgl.EnableDepthMask();
 
                 List<Matrix4x4> instances = [];
-                for (var y = 0; y < 10; y++)
+                for (var y = 0; y < 200; y++)
                 {
-                    for (var x = 0; x < 10; x++)
+                    for (var x = 0; x < 200; x++)
                     {
                         var offset = 5000;
                         var mat = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
@@ -100,7 +98,6 @@ namespace IceSaw2.EditorWindows
                     }
                 }
 
-
                 // foreach (var instance in instances)
                 // {
                 //     Raylib.DrawMesh(mesh, material, instance);
@@ -108,9 +105,6 @@ namespace IceSaw2.EditorWindows
 
                 Matrix4x4[] arr = instances.ToArray();
                 Raylib.DrawMeshInstanced(mesh, material, arr, instances.Count);
-
-
-
             }
 
             //for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)
