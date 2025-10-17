@@ -37,29 +37,32 @@ namespace IceSaw2.Batch
             // Sort models by texture height
             models.Sort((a, b) => b.Texture.Height.CompareTo(a.Texture.Height));
 
-            int resolution = GetAtlasEstimateResolution(materialTextures);
+            int resolution = GetAtlasEstimateResolution(materialTextures, 4);
             var batchedTexture = Raylib_cs.Raylib.GenImageColor(resolution, resolution, Raylib_cs.Color.Black);
             int rowHighestHeight = 0;
             int cursorX = 0;
             int cursorY = 0;
 
+            // Generate Padded Atlas
+            const int padding = 4;
             foreach (var model in models)
             {
-                var image = model.Texture;
-                if (cursorX + image.Width > resolution)
+                var paddedImage = PadImage(model.Texture, padding);
+                if (cursorX + paddedImage.Width > resolution)
                 {
                     cursorY += rowHighestHeight;
                     cursorX = 0;
                     rowHighestHeight = 0;
                 }
-                var destRectangle = new Raylib_cs.Rectangle(cursorX, cursorY, image.Width, image.Height);
+                var paddedRect = new Raylib_cs.Rectangle(cursorX, cursorY, paddedImage.Width, paddedImage.Height);
+                var uvRect = new Raylib_cs.Rectangle(cursorX + padding, cursorY + padding, paddedImage.Width - padding * 2, paddedImage.Height - padding * 2);
 
-                Raylib_cs.Raylib.ImageDraw(ref batchedTexture, image,
-                                        new Raylib_cs.Rectangle(0, 0, image.Width, image.Height),
-                                        destRectangle,
+                Raylib_cs.Raylib.ImageDraw(ref batchedTexture, paddedImage,
+                                        new Raylib_cs.Rectangle(0, 0, paddedImage.Width, paddedImage.Height),
+                                        paddedRect,
                                         Raylib_cs.Color.White);
-                cursorX += image.Width;
-                rowHighestHeight = Math.Max(rowHighestHeight, image.Height);
+                cursorX += paddedImage.Width;
+                rowHighestHeight = Math.Max(rowHighestHeight, paddedImage.Height);
 
                 var ModelVertices = model.Mesh.TexCoordsAs<Vector2>();
 
@@ -68,12 +71,12 @@ namespace IceSaw2.Batch
                     ModelVertices[i].Y *= -1;
 
                     // Size in normalized space
-                    var width = destRectangle.Width / resolution;
-                    var height = destRectangle.Height / resolution;
+                    var width = uvRect.Width / resolution;
+                    var height = uvRect.Height / resolution;
 
                     // Offset position in normalized space
-                    var offsetX = destRectangle.X / resolution;
-                    var offsetY = destRectangle.Y / resolution;
+                    var offsetX = uvRect.X / resolution;
+                    var offsetY = uvRect.Y / resolution;
 
                     // Flip Y
                     offsetY += height;
@@ -86,6 +89,7 @@ namespace IceSaw2.Batch
                     };
                 }
             }
+            Raylib_cs.Raylib.ExportImage(batchedTexture, "/home/eric/Downloads/atlas.png");
 
             // Merging time
             int vertexCount = 0;
@@ -148,17 +152,46 @@ namespace IceSaw2.Batch
 
                 PrevIndex += ModelVertices.Length;
             }
-
-
             return (batchedMesh, batchedTexture);
         }
 
-        private static int GetAtlasEstimateResolution(List<Raylib_cs.Image> images)
+        private static Raylib_cs.Image PadImage(Raylib_cs.Image image, int padding)
         {
+            var result = Raylib_cs.Raylib.GenImageColor(image.Width + padding * 2,
+                                                        image.Height + padding * 2,
+                                                        Raylib_cs.Color.Black);
+
+            // Paste image's center
+            var src = new Raylib_cs.Rectangle(0, 0, image.Width, image.Height);
+            var dst = new Raylib_cs.Rectangle(padding, padding, image.Width, image.Height);
+            Raylib_cs.Raylib.ImageDraw(ref result, image, src, dst, Raylib_cs.Color.White);
+
+            // Draw edges
+            var srcTop = new Raylib_cs.Rectangle(0, 0, image.Width, 1);
+            var dstTop = new Raylib_cs.Rectangle(padding, 0, image.Width, padding);
+            Raylib_cs.Raylib.ImageDraw(ref result, image, srcTop, dstTop, Raylib_cs.Color.White);
+            
+            var srcBottom = new Raylib_cs.Rectangle(0, image.Height - 1, image.Width, 1);
+            var dstBottom = new Raylib_cs.Rectangle(padding, padding + image.Height, image.Width, padding);
+            Raylib_cs.Raylib.ImageDraw(ref result, image, srcBottom, dstBottom, Raylib_cs.Color.White);
+            
+            var srcLeft = new Raylib_cs.Rectangle(0, 0, 1, image.Height);
+            var dstLeft = new Raylib_cs.Rectangle(0, padding, padding, image.Height);
+            Raylib_cs.Raylib.ImageDraw(ref result, image, srcLeft, dstLeft, Raylib_cs.Color.White);
+            
+            var srcRight = new Raylib_cs.Rectangle(image.Width - 1, 0, 1, image.Height);
+            var dstRight = new Raylib_cs.Rectangle(padding + image.Width, padding, padding, image.Height);
+            Raylib_cs.Raylib.ImageDraw(ref result, image, srcRight, dstRight, Raylib_cs.Color.White);
+            return result;
+        }
+
+        private static int GetAtlasEstimateResolution(List<Raylib_cs.Image> images, int padding)
+        {
+            int fullPadding = padding * 2;
             int totalArea = 0;
             foreach (var image in images)
             {
-                totalArea += image.Width * image.Height;
+                totalArea += (image.Width + fullPadding) * (image.Height + fullPadding);
             }
             int estimatedArea = (int)(totalArea / 0.60);
             var res = (int)Math.Round(Math.Sqrt(estimatedArea));

@@ -70,6 +70,7 @@ namespace IceSaw2.EditorWindows
                     texture = Raylib.LoadTextureFromImage(Image);
                     material = Raylib.LoadMaterialDefault();
                     Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
+                    Raylib.SetTextureFilter(texture, TextureFilter.Bilinear);
                     matrix4X4 = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
                     shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.Instance.vs", System.Text.Encoding.UTF8),
                                                 LoadEmbeddedFile.LoadText("Shaders.Instance.fs", System.Text.Encoding.UTF8));
