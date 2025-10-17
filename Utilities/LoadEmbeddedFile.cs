@@ -46,7 +46,7 @@ namespace IceSaw2.Utilities
             // Construct the resource path (namespace.subfolders.imageName.extension)
             // Example: If your project's default namespace is "MyProject" and the image is in a "Resources" folder,
             // and the image is named "myImage.png", the path would be "MyProject.Resources.myImage.png"
-            string resourcePath = "IceSaw2.Assets." + Name;
+            string resourcePath = "IceSaw2." + Name;
 
             // Get the embedded resource stream
             Stream myStream = myAssembly.GetManifestResourceStream(resourcePath);

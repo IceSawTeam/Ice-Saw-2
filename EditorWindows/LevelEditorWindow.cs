@@ -1,6 +1,7 @@
 ﻿using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
+using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
@@ -70,8 +71,8 @@ namespace IceSaw2.EditorWindows
                     material = Raylib.LoadMaterialDefault();
                     Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, texture);
                     matrix4X4 = Raymath.MatrixScale(BaseObject.WorldScale, BaseObject.WorldScale, BaseObject.WorldScale);
-                    shader = Raylib.LoadShader("/home/eric/Documents/Github/Ice-Saw-2/Shaders/Instance.vs",
-                                                "/home/eric/Documents/Github/Ice-Saw-2/Shaders/Instance.fs");
+                    shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.Instance.vs", System.Text.Encoding.UTF8),
+                                                LoadEmbeddedFile.LoadText("Shaders.Instance.fs", System.Text.Encoding.UTF8));
 
                     unsafe
                     {
