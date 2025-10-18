@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/IceSawTeam/Ice-Saw-2</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +42,17 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
     <PackageReference Include="Raylib-cs" Version="7.0.1" />
     <PackageReference Include="rlImgui-cs" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
