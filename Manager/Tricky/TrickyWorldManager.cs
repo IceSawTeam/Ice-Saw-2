@@ -27,6 +27,7 @@ namespace IceSaw2.Manager.Tricky
         public Texture2D ErrorTexture = new();
 
         bool showAboutWindow = false;
+        bool showImGuiDemo = false;
 
         public TrickyWorldManager()
         {
@@ -77,8 +78,11 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateRender()
         {
-            Raylib.DrawFPS(Raylib.GetScreenWidth() - 150, Raylib.GetScreenHeight() - 30);
+            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30, 75, 24, Raylib.GetColor(0x0000009d));
+            Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             if (ImGui.BeginMainMenuBar())
             {
                 if (ImGui.BeginMenu("File"))
@@ -125,6 +129,11 @@ namespace IceSaw2.Manager.Tricky
                     {
                         showAboutWindow = !showAboutWindow;
                     }
+                    if (ImGui.MenuItem("ImGui Demo"))
+                    {
+                        showImGuiDemo = !showImGuiDemo;
+                    }
+
                     ImGui.EndMenu();
                 }
 
@@ -144,6 +153,11 @@ namespace IceSaw2.Manager.Tricky
                 }
 
                 ImGui.EndMainMenuBar();
+
+                if (showImGuiDemo)
+                {
+                    ImGui.ShowDemoWindow();
+                }
 
                 if (showAboutWindow)
                 {
@@ -198,6 +212,7 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.End();
                 }
             }
+            ImGui.PopStyleVar(2);
         }
 
 
