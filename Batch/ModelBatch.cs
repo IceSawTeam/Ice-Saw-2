@@ -22,10 +22,14 @@ namespace IceSaw2.Batch
             {
                 foreach (var meshData in modelObject.trickyModelMaterialObjects)
                 {
+
                     var tempModel = new Model
                     {
                         Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
-                        Texture = materialTextures[meshData.MaterialIndex]
+                        Texture = materialTextures[meshData.MaterialIndex],
+
+                        //Matrix Math
+                        matrix4X4 = meshData.worldMatrix4x4
                     };
                     models.Add(tempModel);
 
@@ -219,6 +223,8 @@ namespace IceSaw2.Batch
         {
             public Raylib_cs.Mesh Mesh;
             public Raylib_cs.Image Texture;
+
+            public Matrix4x4 matrix4X4;
         }
     }
 }
