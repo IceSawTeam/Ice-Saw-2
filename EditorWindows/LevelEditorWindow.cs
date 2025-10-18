@@ -53,7 +53,7 @@ namespace IceSaw2.EditorWindows
                 TrickyDataManager.trickySkyboxPrefabObjects[i].Render();
                 TrickyDataManager.trickySkyboxPrefabObjects[i].Position = TempLocation;
             }
-            Rlgl.EnableDepthMask();            
+            Rlgl.EnableDepthMask();
 
             //Render Default
             Raylib.DrawLine3D(new Vector3(-axisLineSize, 0, 0), new Vector3(axisLineSize, 0, 0), new Color(212, 28, 4));

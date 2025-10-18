@@ -27,6 +27,7 @@ namespace IceSaw2.Manager.Tricky
         public Texture2D ErrorTexture = new();
 
         bool showAboutWindow = false;
+        bool showImGuiDemo = false;
 
         public TrickyWorldManager()
         {
@@ -128,6 +129,11 @@ namespace IceSaw2.Manager.Tricky
                     {
                         showAboutWindow = !showAboutWindow;
                     }
+                    if (ImGui.MenuItem("ImGui Demo"))
+                    {
+                        showImGuiDemo = !showImGuiDemo;
+                    }
+
                     ImGui.EndMenu();
                 }
 
@@ -147,6 +153,11 @@ namespace IceSaw2.Manager.Tricky
                 }
 
                 ImGui.EndMainMenuBar();
+
+                if (showImGuiDemo)
+                {
+                    ImGui.ShowDemoWindow();
+                }
 
                 if (showAboutWindow)
                 {
