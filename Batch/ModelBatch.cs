@@ -6,37 +6,34 @@ namespace IceSaw2.Batch
 {
     public class ModelBatch
     {
-        public static (Raylib_cs.Mesh, Raylib_cs.Image) FromLoaded()
+        public static (Raylib_cs.Mesh, Raylib_cs.Image) FromLoaded(int ModelIndex)
         {
             List<Raylib_cs.Image> materialTextures = []; // Index is the ID
             foreach (var material in TrickyDataManager.trickyMaterialObject)
             {
-                materialTextures.Add(Raylib_cs.Raylib.LoadImageFromTexture(TrickyDataManager.ReturnTexture(material.TexturePath,false)));
+                materialTextures.Add(Raylib_cs.Raylib.LoadImageFromTexture(TrickyDataManager.ReturnTexture(material.TexturePath, false)));
             }
 
             int MeshCount = 0;
 
             // Load Models
             List<Model> models = [];
-            foreach (var model in TrickyDataManager.trickyModelObjects)
+            foreach (var modelObject in TrickyDataManager.trickyModelObjects[ModelIndex].trickyModelMeshObjects)
             {
-                foreach (var modelObject in model.trickyModelMeshObjects)
+                foreach (var meshData in modelObject.trickyModelMaterialObjects)
                 {
-                    foreach (var meshData in modelObject.trickyModelMaterialObjects)
+                    var tempModel = new Model
                     {
-                        var tempModel = new Model
-                        {
-                            Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath,true),
-                            Texture = materialTextures[meshData.MaterialIndex]
-                        };
-                        models.Add(tempModel);
+                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
+                        Texture = materialTextures[meshData.MaterialIndex]
+                    };
+                    models.Add(tempModel);
 
-                        MeshCount++;
-                    }
+                    MeshCount++;
                 }
             }
 
-            if(MeshCount==1)
+            if (MeshCount == 1)
             {
                 return (models[0].Mesh, models[0].Texture);
             }
