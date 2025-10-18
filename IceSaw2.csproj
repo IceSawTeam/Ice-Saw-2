@@ -11,6 +11,14 @@
     <RepositoryUrl>https://github.com/IceSawTeam/Ice-Saw-2</RepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+    <DefineConstants>WINDOWS</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Assets\icon.png" />
     <None Remove="Assets\Textures\CameraIcon.png" />

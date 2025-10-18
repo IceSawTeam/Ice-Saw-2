@@ -25,6 +25,7 @@ namespace IceSaw2.Settings
             public bool isMaximized = true;
             public string LastLoad = "";
             public int PatchResolution = 8;
+            public bool ConsoleWindow = false;
         }
 
 

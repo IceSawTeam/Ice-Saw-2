@@ -28,6 +28,8 @@ namespace IceSaw2
 
         public Core()
         {
+            ConsoleWindow.GenerateConsole();
+
             Raylib.InitWindow(1280, 720, "Ice Saw 2");
             Raylib.SetWindowIcon(LoadEmbeddedFile.LoadImage("icon.png"));
             Raylib.SetTargetFPS(MaxFps);
@@ -53,6 +55,10 @@ namespace IceSaw2
             rlImGui.Setup(true);
             InterNewFont.ReleaseFont();
 
+            if(!Settings.General.Instance.data.ConsoleWindow)
+            {
+                ConsoleWindow.CloseConsole();
+            }
 
             //--------------------- Manager/Module/System initializations here -------------------------
             worldManager = new TrickyWorldManager();

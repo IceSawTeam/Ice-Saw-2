@@ -129,6 +129,20 @@ namespace IceSaw2.Manager.Tricky
                     {
                         showAboutWindow = !showAboutWindow;
                     }
+                    if (ImGui.MenuItem("Console"))
+                    {
+                        Settings.General.Instance.data.ConsoleWindow = !Settings.General.Instance.data.ConsoleWindow;
+
+                        if(Settings.General.Instance.data.ConsoleWindow)
+                        {
+                            ConsoleWindow.GenerateConsole();
+                        }
+                        else
+                        {
+                            ConsoleWindow.CloseConsole();
+                        }
+                        Settings.General.Instance.Save();
+                    }
                     if (ImGui.MenuItem("ImGui Demo"))
                     {
                         showImGuiDemo = !showImGuiDemo;
