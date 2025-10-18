@@ -37,14 +37,13 @@ namespace IceSaw2.Batch
             // Sort models by texture height
             models.Sort((a, b) => b.Texture.Height.CompareTo(a.Texture.Height));
 
-            int resolution = GetAtlasEstimateResolution(materialTextures, 4);
+            // Generate Padded Atlas
+            const int padding = 4;
+            int resolution = GetAtlasEstimateResolution(materialTextures, padding);
             var batchedTexture = Raylib_cs.Raylib.GenImageColor(resolution, resolution, Raylib_cs.Color.Black);
             int rowHighestHeight = 0;
             int cursorX = 0;
             int cursorY = 0;
-
-            // Generate Padded Atlas
-            const int padding = 4;
             foreach (var model in models)
             {
                 var paddedImage = PadImage(model.Texture, padding);
@@ -56,7 +55,6 @@ namespace IceSaw2.Batch
                 }
                 var paddedRect = new Raylib_cs.Rectangle(cursorX, cursorY, paddedImage.Width, paddedImage.Height);
                 var uvRect = new Raylib_cs.Rectangle(cursorX + padding, cursorY + padding, paddedImage.Width - padding * 2, paddedImage.Height - padding * 2);
-
                 Raylib_cs.Raylib.ImageDraw(ref batchedTexture, paddedImage,
                                         new Raylib_cs.Rectangle(0, 0, paddedImage.Width, paddedImage.Height),
                                         paddedRect,
@@ -64,8 +62,8 @@ namespace IceSaw2.Batch
                 cursorX += paddedImage.Width;
                 rowHighestHeight = Math.Max(rowHighestHeight, paddedImage.Height);
 
+                // Update mesh's UV coords to atlas
                 var ModelVertices = model.Mesh.TexCoordsAs<Vector2>();
-
                 for (int i = 0; i < ModelVertices.Length; i++)
                 {
                     ModelVertices[i].Y *= -1;
@@ -78,7 +76,7 @@ namespace IceSaw2.Batch
                     var offsetX = uvRect.X / resolution;
                     var offsetY = uvRect.Y / resolution;
 
-                    // Flip Y
+                    // Flip the UV map upside down.
                     offsetY += height;
                     height *= -1;
 
@@ -89,9 +87,8 @@ namespace IceSaw2.Batch
                     };
                 }
             }
-            Raylib_cs.Raylib.ExportImage(batchedTexture, "/home/eric/Downloads/atlas.png");
 
-            // Merging time
+            // It's Merging time
             int vertexCount = 0;
             int triangleCount = 0;
             foreach (var model in models)
@@ -99,57 +96,46 @@ namespace IceSaw2.Batch
                 vertexCount += model.Mesh.VertexCount;
                 triangleCount += model.Mesh.TriangleCount;
             }
-
             var batchedMesh = new Raylib_cs.Mesh(vertexCount, triangleCount);
             batchedMesh.AllocVertices();
             batchedMesh.AllocIndices();
             batchedMesh.AllocTexCoords();
             batchedMesh.AllocNormals();
-
             var batchedMeshVertices = batchedMesh.VerticesAs<Vector3>();
             var batchedMeshNormal = batchedMesh.NormalsAs<Vector3>();
             var batchedMeshTexCord = batchedMesh.TexCoordsAs<Vector2>();
             var batchedMeshIndices = batchedMesh.IndicesAs<ushort>();
-
-            // Vertices
             int vertexIndex = 0;
             int indicesIndex = 0;
             int normalsIndex = 0;
             int TexIndex = 0;
-
             int PrevIndex = 0;
-
             foreach (var model in models)
             {
                 var ModelVertices = model.Mesh.VerticesAs<Vector3>();
                 var ModelMeshNormal = model.Mesh.NormalsAs<Vector3>();
                 var ModelMeshIndices = model.Mesh.IndicesAs<ushort>();
                 var ModelMeshTex = model.Mesh.TexCoordsAs<Vector2>();
-
                 for (var i = 0; i < ModelVertices.Length; i++)
                 {
                     batchedMeshVertices[vertexIndex] = ModelVertices[i];
                     vertexIndex++;
                 }
-
                 for (var i = 0; i < ModelMeshIndices.Length; i++)
                 {
                     batchedMeshIndices[indicesIndex] = (ushort)(ModelMeshIndices[i] + (ushort)PrevIndex);
                     indicesIndex++;
                 }
-
                 for (var i = 0; i < ModelMeshNormal.Length; i++)
                 {
                     batchedMeshNormal[normalsIndex] = ModelMeshNormal[i];
                     normalsIndex++;
                 }
-
                 for (var i = 0; i < ModelMeshTex.Length; i++)
                 {
                     batchedMeshTexCord[TexIndex] = ModelMeshTex[i];
                     TexIndex++;
                 }
-
                 PrevIndex += ModelVertices.Length;
             }
             return (batchedMesh, batchedTexture);
@@ -182,6 +168,19 @@ namespace IceSaw2.Batch
             var srcRight = new Raylib_cs.Rectangle(image.Width - 1, 0, 1, image.Height);
             var dstRight = new Raylib_cs.Rectangle(padding + image.Width, padding, padding, image.Height);
             Raylib_cs.Raylib.ImageDraw(ref result, image, srcRight, dstRight, Raylib_cs.Color.White);
+
+            // Draw corners
+            var topLeft = Raylib_cs.Raylib.GetImageColor(image, 0, 0);
+            Raylib_cs.Raylib.ImageDrawRectangle(ref result, 0, 0, padding, padding, topLeft);
+
+            var topRight = Raylib_cs.Raylib.GetImageColor(image, image.Width - 1, 0);
+            Raylib_cs.Raylib.ImageDrawRectangle(ref result, padding + image.Width, 0, padding, padding, topRight);
+
+            var bottomLeft = Raylib_cs.Raylib.GetImageColor(image, 0, image.Height - 1);
+            Raylib_cs.Raylib.ImageDrawRectangle(ref result, 0, padding + image.Height, padding, padding, bottomLeft);
+
+            var bottomRight = Raylib_cs.Raylib.GetImageColor(image, image.Width - 1, image.Height - 1);
+            Raylib_cs.Raylib.ImageDrawRectangle(ref result, padding + image.Width, padding + image.Height, padding, padding, bottomRight);
             return result;
         }
 
