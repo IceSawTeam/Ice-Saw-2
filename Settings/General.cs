@@ -24,7 +24,7 @@ namespace IceSaw2.Settings
             public float windowHeight = 720;
             public bool isMaximized = true;
             public string LastLoad = "";
-            public int PatchResolution = 7;
+            public int PatchResolution = 8;
         }
 
 

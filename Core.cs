@@ -17,7 +17,7 @@ namespace IceSaw2
 {
     public class Core
     {
-        public const int MaxFps = 60;
+        public const int MaxFps = 120;
 
         public bool isRunning = true;
 
