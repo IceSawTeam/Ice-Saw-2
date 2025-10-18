@@ -51,11 +51,11 @@ namespace IceSaw2.Manager.Tricky
 
         public void InitalizeAssets()
         {
-            LightIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("LightIcon.png"));
-            CameraIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("CameraIcon.png"));
-            ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("ParticleIcon.png"));
+            LightIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightIcon.png"));
+            CameraIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.CameraIcon.png"));
+            ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.ParticleIcon.png"));
 
-            ErrorTexture = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Error.png"));
+            ErrorTexture = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.Error.png"));
         }
 
         public void UpdateLogic()

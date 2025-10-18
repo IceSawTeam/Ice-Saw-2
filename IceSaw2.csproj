@@ -12,16 +12,16 @@
     <None Remove="Assets\CameraIcon.png" />
     <None Remove="Assets\LightIcon.png" />
     <None Remove="Assets\ParticleIcon.png" />
-    <None Remove="Shaders\Instance.fs" />
-    <None Remove="Shaders\Instance.vs" />
+    <None Remove="Assets\Shaders\Instance.fs" />
+    <None Remove="Assets\Shaders\Instance.vs" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\CameraIcon.png" />
-    <EmbeddedResource Include="Assets\LightIcon.png" />
-    <EmbeddedResource Include="Assets\ParticleIcon.png" />
-    <EmbeddedResource Include="Shaders\Instance.fs" />
-    <EmbeddedResource Include="Shaders\Instance.vs" />
+    <EmbeddedResource Include="Assets\Textures\CameraIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\LightIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\ParticleIcon.png" />
+    <EmbeddedResource Include="Assets\Shaders\Instance.fs" />
+    <EmbeddedResource Include="Assets\Shaders\Instance.vs" />
   </ItemGroup>
 
   <ItemGroup>
