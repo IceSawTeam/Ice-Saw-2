@@ -41,7 +41,6 @@ namespace IceSaw2.EditorWindows
         {
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
-            Rlgl.DisableBackfaceCulling();
 
             Rlgl.DisableDepthMask();
             //Render Skybox
