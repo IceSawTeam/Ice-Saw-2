@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Fonts\Inter_New.ttf" />
     <EmbeddedResource Include="Assets\Textures\CameraIcon.png" />
     <EmbeddedResource Include="Assets\Textures\Error.png" />
     <EmbeddedResource Include="Assets\Textures\LightIcon.png" />
@@ -28,6 +29,10 @@
 
   <ItemGroup>
     <None Include="Assets\Fonts\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Fonts\Inter_New.ttf" />
   </ItemGroup>
 
   <ItemGroup>
