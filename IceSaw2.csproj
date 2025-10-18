@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\icon.png" />
     <None Remove="Assets\Textures\CameraIcon.png" />
     <None Remove="Assets\Textures\Error.png" />
     <None Remove="Assets\Textures\LightIcon.png" />
@@ -22,6 +23,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Fonts\Inter_New.ttf" />
+    <EmbeddedResource Include="Assets\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
     <EmbeddedResource Include="Assets\Textures\CameraIcon.png" />
     <EmbeddedResource Include="Assets\Textures\Error.png" />
     <EmbeddedResource Include="Assets\Textures\LightIcon.png" />
@@ -45,10 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
     <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

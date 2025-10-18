@@ -29,6 +29,7 @@ namespace IceSaw2
         public Core()
         {
             Raylib.InitWindow(1280, 720, "Ice Saw 2");
+            Raylib.SetWindowIcon(LoadEmbeddedFile.LoadImage("icon.png"));
             Raylib.SetTargetFPS(MaxFps);
 
             // Load settings
