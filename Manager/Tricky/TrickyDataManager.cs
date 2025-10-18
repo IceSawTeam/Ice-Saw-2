@@ -1,4 +1,5 @@
-﻿using IceSaw2.LevelObject;
+﻿using IceSaw2.Batch;
+using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
@@ -50,6 +51,10 @@ namespace IceSaw2.Manager.Tricky
         //Mesh Data
         public static List<MeshData> worldMeshes = new List<MeshData>();
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
+
+        //Cached Mesh Data
+        public static Model cachedSkyboxMeshes = new Model();
+
 
         public static List<BaseObject> LevelNodeTree = new List<BaseObject>();
 
@@ -327,6 +332,16 @@ namespace IceSaw2.Manager.Tricky
 
                 trickySkyboxPrefabObjects.Add(NewPrefab);
             }
+
+            cachedSkyboxMeshes = new Model();
+
+            var TempCache = Skybox.FromLoaded();
+
+            cachedSkyboxMeshes.Mesh = TempCache.Item1;
+            Raylib.UploadMesh(ref cachedSkyboxMeshes.Mesh, false);
+            cachedSkyboxMeshes.Texture = Raylib.LoadTextureFromImage(TempCache.Item2);
+            cachedSkyboxMeshes.Material = Raylib.LoadMaterialDefault();
+            Raylib.SetMaterialTexture(ref cachedSkyboxMeshes.Material, MaterialMapIndex.Diffuse, cachedSkyboxMeshes.Texture);
         }
 
         public static void LoadEffects()
@@ -607,6 +622,13 @@ namespace IceSaw2.Manager.Tricky
         {
             public string Name;
             public Mesh mesh;
+        }
+
+        public struct Model
+        {
+            public Mesh Mesh;
+            public Texture2D Texture;
+            public Material Material;
         }
     }
 }

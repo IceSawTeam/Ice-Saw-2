@@ -10,6 +10,7 @@ namespace IceSaw2.LevelObject
         private static int IDCount = 0;
 
         public static float WorldScale = 0.001f;
+        public static Matrix4x4 Default = Raymath.MatrixScale(WorldScale, WorldScale, WorldScale);
 
         public string Name = "Null";
 
@@ -87,7 +88,6 @@ namespace IceSaw2.LevelObject
                 Rotation = Raymath.QuaternionFromEuler(value.Z, value.Y, value.X);
             }
         }
-
         public Matrix4x4 localMatrix4X4
         {
             get; private set;
