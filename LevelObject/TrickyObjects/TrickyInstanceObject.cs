@@ -297,21 +297,17 @@ namespace IceSaw2.LevelObject
 
         public void AddToModelRender()
         {
-            if(!TrickyPrefab.RenderingInstances.Contains(this))
+            if (TrickyPrefab != null)
             {
-                TrickyPrefab.RenderingInstances.Add(this);
-                TrickyPrefab.RenderingMatrixs.Add(worldMatrix4x4);
+                TrickyPrefab.AddToRenderCache(this);
             }
         }
 
         public void RemoveFromModelRender()
         {
-            if (TrickyPrefab.RenderingInstances.Contains(this))
+            if (TrickyPrefab != null)
             {
-                var Value = TrickyPrefab.RenderingInstances.IndexOf(this);
-
-                TrickyPrefab.RenderingInstances.Remove(this);
-                TrickyPrefab.RenderingMatrixs.RemoveAt(Value);
+                TrickyPrefab.RemoveFromRenderCache(this);
             }
         }
 
@@ -328,7 +324,7 @@ namespace IceSaw2.LevelObject
         //        TrickyPrefab.parent = null;
         //    }
         //}
-        
+
         //public override void Render()
         //{
         //    for (int i = 0; i < renderCaches.Count; i++)

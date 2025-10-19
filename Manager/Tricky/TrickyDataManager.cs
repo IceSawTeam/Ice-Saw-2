@@ -130,7 +130,7 @@ namespace IceSaw2.Manager.Tricky
                 TempMesh.Name = Path.GetFileName(MeshFiles[i]);
                 TempMesh.mesh = ObjImporter.ObjLoad(MeshFiles[i]);
 
-                //Raylib.UploadMesh(ref TempMesh.mesh, false);
+                Raylib.UploadMesh(ref TempMesh.mesh, false);
 
                 worldMeshes.Add(TempMesh);
             }

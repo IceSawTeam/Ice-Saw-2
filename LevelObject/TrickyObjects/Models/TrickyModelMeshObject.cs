@@ -2,6 +2,7 @@ using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
+using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -18,6 +19,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeMatrix;
 
         public List<Meshes> meshes = new List<Meshes>();
+        public List<RenderCache> renderCaches = new List<RenderCache>();
 
         public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
@@ -85,19 +87,62 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 meshes.Add(mesh);
             }
+
+            GenerateRenderCacheNew();
         }
 
         public override void Render()
         {
-            for (int i = 0; i < meshes.Count; i++)
+            for (int i = 0; i < renderCaches.Count; i++)
             {
-                if (IncludeMatrix)
+                //Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s[0]);
+                if (Skybox)
                 {
-                    Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, worldMatrix4x4);
+                    Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, worldMatrix4x4);
                 }
                 else
                 {
-                    Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, BaseObject.Default);
+                    Raylib.DrawMeshInstanced(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].trickyInstanceObjects.Count);
+                }
+            }
+        }
+
+        public void GenerateRenderCacheNew()
+        {
+            renderCaches = new List<RenderCache>();
+
+            for (global::System.Int32 j = 0; j < meshes.Count; j++)
+            {
+                var TempCache = new RenderCache();
+
+                TempCache.mesh = meshes[j].mesh;
+                TempCache.material = meshes[j].material;
+                TempCache.matrix4X4s = new List<Matrix4x4>();
+                TempCache.trickyInstanceObjects = new List<TrickyInstanceObject>();
+
+                renderCaches.Add(TempCache);
+            }
+        }
+
+        public void AddToRenderCache(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                renderCaches[i].trickyInstanceObjects.Add(trickyInstanceObject);
+                renderCaches[i].matrix4X4s.Add(trickyInstanceObject.worldMatrix4x4 * localMatrix4X4);
+            }
+        }
+
+        public void RemoveFromRenderCache(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                if (renderCaches[i].trickyInstanceObjects.Contains(trickyInstanceObject))
+                {
+                    int Value = renderCaches[i].trickyInstanceObjects.IndexOf(trickyInstanceObject);
+
+                    renderCaches[i].trickyInstanceObjects.RemoveAt(Value);
+                    renderCaches[i].matrix4X4s.RemoveAt(Value);
                 }
             }
         }
@@ -164,25 +209,18 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             public void GenerateModel()
             {
-                mesh = TrickyDataManager.ReturnMesh(MeshPath, Skybox);
-
-                var TexturePath = "";
+                mesh = TrickyDataManager.ReturnMesh(_meshPath, Skybox);
 
                 if (!Skybox)
                 {
-                    TexturePath = TrickyDataManager.trickyMaterialObject[MaterialIndex].TexturePath;
+                    material = TrickyDataManager.trickyMaterialObject[_MaterialIndex].material;
                 }
                 else
                 {
-                    TexturePath = TrickyDataManager.trickySkyboxMaterialObject[MaterialIndex].TexturePath;
+                    material = TrickyDataManager.trickySkyboxMaterialObject[_MaterialIndex].material;
                 }
-
-                Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
-
-                material = Raylib.LoadMaterialDefault();
-
-                Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
             }
         }
+
     }
 }

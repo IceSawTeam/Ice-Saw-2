@@ -1,5 +1,6 @@
 using IceSaw2.LevelObject;
 using IceSaw2.Manager.Tricky;
+using IceSaw2.Utilities;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Collections;
@@ -75,10 +76,10 @@ namespace IceSaw2.LevelObject.Materials
             TextureFlipbook = json.TextureFlipbook;
             UnknownInt20 = json.UnknownInt20;
 
-            GenerateMesh();
+            GenerateMaterial();
         }
 
-        public MaterialJsonHandler.MaterialsJson GenerateMaterial()
+        public MaterialJsonHandler.MaterialsJson GenerateMaterialJson()
         {
             var NewJson = new MaterialJsonHandler.MaterialsJson();
 
@@ -113,15 +114,24 @@ namespace IceSaw2.LevelObject.Materials
             return NewJson;
         }
 
-        public void GenerateMesh()
+        public void GenerateMaterial()
         {
-            mesh = Raylib.GenMeshCube(2000, 1000, 2000);
-
             Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
 
             material = Raylib.LoadMaterialDefault();
 
             Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
+            var shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.Instance.vs", System.Text.Encoding.UTF8),
+                                            LoadEmbeddedFile.LoadText("Shaders.Instance.fs", System.Text.Encoding.UTF8));
+            unsafe
+            {
+                int* locs = shader.Locs;
+                locs[(int)ShaderLocationIndex.MatrixModel] = Raylib.GetShaderLocationAttrib(
+                    shader,
+                    "instanceTransform"
+                );
+            }
+            material.Shader = shader;
         }
 
 

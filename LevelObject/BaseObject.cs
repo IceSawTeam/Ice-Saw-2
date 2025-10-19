@@ -303,7 +303,10 @@ namespace IceSaw2.LevelObject
 
         public struct RenderCache
         {
-            public TrickyInstanceObject instanceObject;
+            public Mesh mesh;
+            public Material material;
+            public List<TrickyInstanceObject> trickyInstanceObjects;
+            public List<Matrix4x4> matrix4X4s;
         }
     }
 }
