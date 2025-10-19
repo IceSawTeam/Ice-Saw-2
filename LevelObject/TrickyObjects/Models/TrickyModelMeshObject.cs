@@ -91,7 +91,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             for (int i = 0; i < meshes.Count; i++)
             {
-                Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, worldMatrix4x4);
+                if (IncludeMatrix)
+                {
+                    Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, worldMatrix4x4);
+                }
+                else
+                {
+                    Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, BaseObject.Default);
+                }
             }
         }
 
@@ -124,7 +131,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             public float Value6;
         }
         [Serializable]
-        public class Meshes
+        public struct Meshes
         {
             public bool Skybox;
             private string _meshPath;
