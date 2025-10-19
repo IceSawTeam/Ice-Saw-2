@@ -1,7 +1,7 @@
-using SSXMultiTool.Utilities;
-using System.Collections;
-using System.Collections.Generic;
+using IceSaw2.Manager.Tricky;
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
+using SSXMultiTool.Utilities;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -17,7 +17,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeAnimation;
         public bool IncludeMatrix;
 
-        public List<TrickyModelMaterialObject> trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
+        public List<Meshes> meshes = new List<Meshes>();
+
         public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
             Name = objectHeader.ObjectName;
@@ -69,49 +70,30 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Rotation = JsonUtil.ArrayToQuaternion(objectHeader.Rotation);
             }
 
-            trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
+            meshes = new List<Meshes>();
+            //trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
 
             //Load MeshHeaders
             for (int i = 0; i < objectHeader.MeshData.Count; i++)
             {
-                var TrickyPrefabMaterialObject = new TrickyModelMaterialObject();
+                var mesh = new Meshes();
 
-                TrickyPrefabMaterialObject.parent = this;
+                mesh.Skybox = skybox;
 
-                TrickyPrefabMaterialObject.LoadModelMaterialObject(objectHeader.MeshData[i], Skybox);
+                mesh.MeshPath = objectHeader.MeshData[i].MeshPath;
+                mesh.MaterialIndex = objectHeader.MeshData[i].MaterialID;
 
-                trickyModelMaterialObjects.Add(TrickyPrefabMaterialObject);
-
-                //GameObject ChildMesh = new GameObject(i.ToString());
-
-                //ChildMesh.transform.parent = transform;
-                //ChildMesh.transform.localPosition = Vector3.zero;
-                //ChildMesh.transform.localScale = Vector3.one;
-                //ChildMesh.transform.localRotation = new Quaternion(0, 0, 0, 0);
-
-                //ChildMesh.AddComponent<PrefabMeshObject>().LoadPrefabMeshObject(objectHeader.MeshData[i]);
+                meshes.Add(mesh);
             }
         }
 
         public override void Render()
         {
-            for (int i = 0; i < trickyModelMaterialObjects.Count; i++)
+            for (int i = 0; i < meshes.Count; i++)
             {
-                trickyModelMaterialObjects[i].Render();
+                Raylib.DrawMesh(meshes[i].mesh, meshes[i].material, worldMatrix4x4);
             }
         }
-
-        //public List<RenderCache> GenerateRenderCache()
-        //{
-        //    List<RenderCache> cache = new List<RenderCache>();
-
-        //    for (int i = 0; i < Children.Count; i++)
-        //    {
-        //        cache.Add(((TrickyModelMaterialObject)Children[i]).GenerateRenderCache());
-        //    }
-
-        //    return cache;
-        //}
 
         [Serializable]
         public struct ObjectAnimation
@@ -140,6 +122,60 @@ namespace IceSaw2.LevelObject.TrickyObjects
             public float Value4;
             public float Value5;
             public float Value6;
+        }
+        [Serializable]
+        public class Meshes
+        {
+            public bool Skybox;
+            private string _meshPath;
+
+            public string MeshPath
+            {
+                get
+                { return _meshPath; }
+                set
+                {
+                    _meshPath = value;
+                    GenerateModel();
+                }
+            }
+
+            private int _MaterialIndex;
+            public int MaterialIndex
+            {
+                get
+                { return _MaterialIndex; }
+                set
+                {
+                    _MaterialIndex = value;
+                    GenerateModel();
+                }
+            }
+
+            public Mesh mesh;
+            public Material material;
+
+            public void GenerateModel()
+            {
+                mesh = TrickyDataManager.ReturnMesh(MeshPath, Skybox);
+
+                var TexturePath = "";
+
+                if (!Skybox)
+                {
+                    TexturePath = TrickyDataManager.trickyMaterialObject[MaterialIndex].TexturePath;
+                }
+                else
+                {
+                    TexturePath = TrickyDataManager.trickySkyboxMaterialObject[MaterialIndex].TexturePath;
+                }
+
+                Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
+
+                material = Raylib.LoadMaterialDefault();
+
+                Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
+            }
         }
     }
 }

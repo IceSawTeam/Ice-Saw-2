@@ -155,11 +155,11 @@ namespace IceSaw2.Batch
             List<Model> models = [];
             foreach (var modelObject in trickyModelObject.trickyModelMeshObjects)
             {
-                foreach (var meshData in modelObject.trickyModelMaterialObjects)
+                foreach (var meshData in modelObject.meshes)
                 {
                     var tempModel = new Model
                     {
-                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
+                        Mesh = meshData.mesh,
                         Texture = materialTextures[meshData.MaterialIndex]
                     };
                     models.Add(tempModel);

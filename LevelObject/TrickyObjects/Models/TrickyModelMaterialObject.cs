@@ -36,7 +36,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             //Have it pull mesh and material from trickyMaterial and mesh instead
 
-
             mesh = TrickyDataManager.ReturnMesh(MeshPath, Skybox);
 
             var TexturePath = ""; 

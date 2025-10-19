@@ -22,16 +22,16 @@ namespace IceSaw2.Batch
             List<Model> models = [];
             foreach (var modelObject in trickyModelObject.trickyModelMeshObjects)
             {
-                foreach (var meshData in modelObject.trickyModelMaterialObjects)
+                foreach (var meshData in modelObject.meshes)
                 {
 
                     var tempModel = new Model
                     {
-                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, false),
-                        texture2D = materialTextures[meshData.MaterialIndex],
+                        Mesh = meshData.mesh,
+                        texture2D = TrickyDataManager.ReturnTexture(TrickyDataManager.trickyMaterialObject[meshData.MaterialIndex].TexturePath, false),
 
                         //Matrix Math
-                        matrix4X4 = meshData.worldMatrix4x4
+                        matrix4X4 = modelObject.worldMatrix4x4,
                     };
                     models.Add(tempModel);
 
