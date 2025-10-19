@@ -160,7 +160,7 @@ namespace IceSaw2.LevelObject
             if (ModelID != -1)
             {
                 TrickyPrefab = TrickyDataManager.trickyModelObjects[ModelID];
-                GenerateRenderCache();
+                AddToModelRender();
             }
         }
 
@@ -294,26 +294,48 @@ namespace IceSaw2.LevelObject
         }
 
         #region Rendering
-        List<RenderCache> renderCaches = new List<RenderCache>();
 
-        public void GenerateRenderCache()
+        public void AddToModelRender()
         {
-            renderCaches = new List<RenderCache>();
-            if (TrickyPrefab != null)
+            if(!TrickyPrefab.RenderingInstances.Contains(this))
             {
-                TrickyPrefab.parent = this;
-                renderCaches = TrickyPrefab.GenerateRenderCache();
-                TrickyPrefab.parent = null;
+                TrickyPrefab.RenderingInstances.Add(this);
+                TrickyPrefab.RenderingMatrixs.Add(worldMatrix4x4);
             }
         }
+
+        public void RemoveFromModelRender()
+        {
+            if (TrickyPrefab.RenderingInstances.Contains(this))
+            {
+                var Value = TrickyPrefab.RenderingInstances.IndexOf(this);
+
+                TrickyPrefab.RenderingInstances.Remove(this);
+                TrickyPrefab.RenderingMatrixs.RemoveAt(Value);
+            }
+        }
+
+
+        //List<RenderCache> renderCaches = new List<RenderCache>();
+
+        //public void GenerateRenderCache()
+        //{
+        //    renderCaches = new List<RenderCache>();
+        //    if (TrickyPrefab != null)
+        //    {
+        //        TrickyPrefab.parent = this;
+        //        renderCaches = TrickyPrefab.GenerateRenderCache();
+        //        TrickyPrefab.parent = null;
+        //    }
+        //}
         
-        public override void Render()
-        {
-            for (int i = 0; i < renderCaches.Count; i++)
-            {
-                renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
-            }
-        }
+        //public override void Render()
+        //{
+        //    for (int i = 0; i < renderCaches.Count; i++)
+        //    {
+        //        renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
+        //    }
+        //}
         #endregion
 
         [System.Serializable]

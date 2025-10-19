@@ -48,7 +48,7 @@ namespace IceSaw2.EditorWindows
 
             if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
             {
-                Raylib.DrawMesh(TrickyDataManager.cachedSkyboxMeshes.Mesh, TrickyDataManager.cachedSkyboxMeshes.Material, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
+                Raylib.DrawMesh(TrickyDataManager.trickySkyboxPrefabObjects[0].CachedMesh, TrickyDataManager.trickySkyboxPrefabObjects[0].CachedMaterial, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
             }
 
             Rlgl.EnableDepthMask();            
@@ -102,7 +102,7 @@ namespace IceSaw2.EditorWindows
             RenderItems = new List<BaseObject>();
 
             RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
             RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
             RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
             RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);

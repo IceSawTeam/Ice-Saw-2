@@ -1,4 +1,6 @@
+using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Numerics;
 
@@ -6,27 +8,27 @@ namespace IceSaw2.Batch
 {
     public class ModelBatch
     {
-        public static (Raylib_cs.Mesh, Raylib_cs.Image) FromLoaded(int ModelIndex)
+        public static (Raylib_cs.Mesh, Raylib_cs.Texture2D, bool CachedModel, bool CachedTexture) FromLoaded(TrickyModelObject trickyModelObject)
         {
-            List<Raylib_cs.Image> materialTextures = []; // Index is the ID
+            List<Raylib_cs.Texture2D> materialTextures = []; // Index is the ID
             foreach (var material in TrickyDataManager.trickyMaterialObject)
             {
-                materialTextures.Add(Raylib_cs.Raylib.LoadImageFromTexture(TrickyDataManager.ReturnTexture(material.TexturePath, false)));
+                materialTextures.Add(TrickyDataManager.ReturnTexture(material.TexturePath, false));
             }
 
             int MeshCount = 0;
 
             // Load Models
             List<Model> models = [];
-            foreach (var modelObject in TrickyDataManager.trickyModelObjects[ModelIndex].trickyModelMeshObjects)
+            foreach (var modelObject in trickyModelObject.trickyModelMeshObjects)
             {
                 foreach (var meshData in modelObject.trickyModelMaterialObjects)
                 {
 
                     var tempModel = new Model
                     {
-                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
-                        Texture = materialTextures[meshData.MaterialIndex],
+                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, false),
+                        texture2D = materialTextures[meshData.MaterialIndex],
 
                         //Matrix Math
                         matrix4X4 = meshData.worldMatrix4x4
@@ -39,26 +41,35 @@ namespace IceSaw2.Batch
 
             if (MeshCount == 1)
             {
-                return (models[0].Mesh, models[0].Texture);
+                return (models[0].Mesh, models[0].texture2D,false,false);
             }
 
             //If MeshCount >1 but only 1 texture
 
 
+            //Changes Texture to Image
+            for (int i = 0; i < models.Count; i++)
+            {
+                var model = models[i];
+
+                model.Image = Raylib.LoadImageFromTexture(model.texture2D);
+
+                models[i] = model;
+            }
 
             // Sort models by texture height
-            models.Sort((a, b) => b.Texture.Height.CompareTo(a.Texture.Height));
+            models.Sort((a, b) => b.Image.Height.CompareTo(a.Image.Height));
 
             // Generate Padded Atlas
             const int padding = 4;
             int resolution = GetAtlasEstimateResolution(materialTextures, padding);
-            var batchedTexture = Raylib_cs.Raylib.GenImageColor(resolution, resolution, Raylib_cs.Color.Black);
+            var batchedImage = Raylib_cs.Raylib.GenImageColor(resolution, resolution, Raylib_cs.Color.Black);
             int rowHighestHeight = 0;
             int cursorX = 0;
             int cursorY = 0;
             foreach (var model in models)
             {
-                var paddedImage = PadImage(model.Texture, padding);
+                var paddedImage = PadImage(model.Image, padding);
                 if (cursorX + paddedImage.Width > resolution)
                 {
                     cursorY += rowHighestHeight;
@@ -67,7 +78,7 @@ namespace IceSaw2.Batch
                 }
                 var paddedRect = new Raylib_cs.Rectangle(cursorX, cursorY, paddedImage.Width, paddedImage.Height);
                 var uvRect = new Raylib_cs.Rectangle(cursorX + padding, cursorY + padding, paddedImage.Width - padding * 2, paddedImage.Height - padding * 2);
-                Raylib_cs.Raylib.ImageDraw(ref batchedTexture, paddedImage,
+                Raylib_cs.Raylib.ImageDraw(ref batchedImage, paddedImage,
                                         new Raylib_cs.Rectangle(0, 0, paddedImage.Width, paddedImage.Height),
                                         paddedRect,
                                         Raylib_cs.Color.White);
@@ -150,7 +161,10 @@ namespace IceSaw2.Batch
                 }
                 PrevIndex += ModelVertices.Length;
             }
-            return (batchedMesh, batchedTexture);
+
+            var batchedTexture = Raylib.LoadTextureFromImage(batchedImage);
+
+            return (batchedMesh, batchedTexture, true, true);
         }
 
         private static Raylib_cs.Image PadImage(Raylib_cs.Image image, int padding)
@@ -196,7 +210,7 @@ namespace IceSaw2.Batch
             return result;
         }
 
-        private static int GetAtlasEstimateResolution(List<Raylib_cs.Image> images, int padding)
+        private static int GetAtlasEstimateResolution(List<Raylib_cs.Texture2D> images, int padding)
         {
             int fullPadding = padding * 2;
             int totalArea = 0;
@@ -222,7 +236,8 @@ namespace IceSaw2.Batch
         private struct Model
         {
             public Raylib_cs.Mesh Mesh;
-            public Raylib_cs.Image Texture;
+            public Raylib_cs.Image Image;
+            public Raylib_cs.Texture2D texture2D; 
 
             public Matrix4x4 matrix4X4;
         }

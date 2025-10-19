@@ -101,17 +101,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
         }
 
-        public List<RenderCache> GenerateRenderCache()
-        {
-            List<RenderCache> cache = new List<RenderCache>();
+        //public List<RenderCache> GenerateRenderCache()
+        //{
+        //    List<RenderCache> cache = new List<RenderCache>();
 
-            for (int i = 0; i < Children.Count; i++)
-            {
-                cache.Add(((TrickyModelMaterialObject)Children[i]).GenerateRenderCache());
-            }
+        //    for (int i = 0; i < Children.Count; i++)
+        //    {
+        //        cache.Add(((TrickyModelMaterialObject)Children[i]).GenerateRenderCache());
+        //    }
 
-            return cache;
-        }
+        //    return cache;
+        //}
 
         [Serializable]
         public struct ObjectAnimation

@@ -303,8 +303,7 @@ namespace IceSaw2.LevelObject
 
         public struct RenderCache
         {
-            public BaseObject baseObject;
-            public Matrix4x4 WorldMatrix;
+            public TrickyInstanceObject instanceObject;
         }
     }
 }

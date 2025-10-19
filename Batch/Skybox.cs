@@ -1,3 +1,4 @@
+using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using SSXMultiTool.JsonFiles.Tricky;
 using System.Numerics;
@@ -142,7 +143,7 @@ namespace IceSaw2.Batch
             return (batchedMesh, batchedTexture);
         }
 
-        public static (Raylib_cs.Mesh, Raylib_cs.Image) FromLoaded()
+        public static (Raylib_cs.Mesh, Raylib_cs.Image) FromLoaded(TrickyModelObject trickyModelObject)
         {
             List<Raylib_cs.Image> materialTextures = []; // Index is the ID
             foreach (var material in TrickyDataManager.trickySkyboxMaterialObject)
@@ -152,19 +153,16 @@ namespace IceSaw2.Batch
 
             // Load Models
             List<Model> models = [];
-            foreach (var model in TrickyDataManager.trickySkyboxPrefabObjects)
+            foreach (var modelObject in trickyModelObject.trickyModelMeshObjects)
             {
-                foreach (var modelObject in model.trickyModelMeshObjects)
+                foreach (var meshData in modelObject.trickyModelMaterialObjects)
                 {
-                    foreach (var meshData in modelObject.trickyModelMaterialObjects)
+                    var tempModel = new Model
                     {
-                        var tempModel = new Model
-                        {
-                            Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath,true),
-                            Texture = materialTextures[meshData.MaterialIndex]
-                        };
-                        models.Add(tempModel);
-                    }
+                        Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
+                        Texture = materialTextures[meshData.MaterialIndex]
+                    };
+                    models.Add(tempModel);
                 }
             }
 
