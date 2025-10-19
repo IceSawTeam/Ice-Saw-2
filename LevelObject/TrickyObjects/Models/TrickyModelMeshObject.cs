@@ -94,27 +94,34 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public override void Render()
         {
-            if(!Skybox)
+            if (TrickyWorldManager.instance.windowMode == TrickyWorldManager.WindowMode.World)
             {
-                for (int i = 0; i < renderCaches.Count; i++)
+                if (!Skybox)
                 {
-                    //Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s[0]);
+                    for (int i = 0; i < renderCaches.Count; i++)
+                    {
+                        Raylib.DrawMeshInstanced(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                    }
+                }
+                else
+                {
+                    Matrix4x4 matrix4X4 = Default;
+                    matrix4X4.M14 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.X;
+                    matrix4X4.M24 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Y;
+                    matrix4X4.M34 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Z;
 
-                    Raylib.DrawMeshInstanced(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                    for (int i = 0; i < renderCaches.Count; i++)
+                    {
+                        Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, matrix4X4);
+                    }
                 }
             }
             else
             {
-                Matrix4x4 matrix4X4 =  Default;
-                matrix4X4.M14 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.X;
-                matrix4X4.M24 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Y;
-                matrix4X4.M34 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Z;
-
-                for (int i = 0; i < renderCaches.Count; i++)
+                Matrix4x4[] matrixArray = { worldMatrix4x4 };
+                for (int i = 0; i < meshes.Count; i++)
                 {
-                    Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, matrix4X4);
-
-                    //Raylib.DrawMeshInstanced(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                    Raylib.DrawMeshInstanced(meshes[i].mesh, meshes[i].material, matrixArray, 1);
                 }
             }
         }
