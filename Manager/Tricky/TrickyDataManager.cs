@@ -144,6 +144,8 @@ namespace IceSaw2.Manager.Tricky
                 TempMesh.Name = Path.GetFileName(SkyboxMeshFiles[i]);
                 TempMesh.mesh = ObjImporter.ObjLoad(SkyboxMeshFiles[i]);
 
+                Raylib.UploadMesh(ref TempMesh.mesh, false);
+
                 skyboxMeshes.Add(TempMesh);
             }
         }
@@ -312,7 +314,7 @@ namespace IceSaw2.Manager.Tricky
             {
                 TrickyMaterialObject materialObject = new TrickyMaterialObject();
 
-                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], false);
+                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], true);
 
                 trickySkyboxMaterialObject.Add(materialObject);
             }

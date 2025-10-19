@@ -121,17 +121,22 @@ namespace IceSaw2.LevelObject.Materials
             material = Raylib.LoadMaterialDefault();
 
             Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
-            var shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.Instance.vs", System.Text.Encoding.UTF8),
-                                            LoadEmbeddedFile.LoadText("Shaders.Instance.fs", System.Text.Encoding.UTF8));
-            unsafe
+
+            if (!Skybox)
             {
-                int* locs = shader.Locs;
-                locs[(int)ShaderLocationIndex.MatrixModel] = Raylib.GetShaderLocationAttrib(
-                    shader,
-                    "instanceTransform"
-                );
+                var shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.Instance.vs", System.Text.Encoding.UTF8),
+                                                LoadEmbeddedFile.LoadText("Shaders.Instance.fs", System.Text.Encoding.UTF8));
+                unsafe
+                {
+                    int* locs = shader.Locs;
+                    locs[(int)ShaderLocationIndex.MatrixModel] = Raylib.GetShaderLocationAttrib(
+                        shader,
+                        "instanceTransform"
+                    );
+                }
+
+                material.Shader = shader;
             }
-            material.Shader = shader;
         }
 
 
