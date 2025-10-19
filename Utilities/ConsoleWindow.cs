@@ -21,7 +21,7 @@ namespace IceSaw2.Utilities
                 var handle = GetConsoleWindow();
                 ShowWindow(handle, SW_SHOW);
             }
-#endif
+            #endif
         }
 
         public static void CloseConsole()
@@ -29,7 +29,7 @@ namespace IceSaw2.Utilities
             #if WINDOWS
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
-#endif
+            #endif
         }
 
         #if WINDOWS
@@ -51,6 +51,6 @@ namespace IceSaw2.Utilities
 
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
-#endif
+        #endif
     }
 }
