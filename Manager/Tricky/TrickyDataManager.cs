@@ -4,11 +4,7 @@ using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IceSaw2.RayWarp;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -53,9 +49,6 @@ namespace IceSaw2.Manager.Tricky
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
 
         //Cached Mesh Data
-        public static Model cachedSkyboxMeshes = new Model();
-
-
         public static List<BaseObject> LevelNodeTree = new List<BaseObject>();
 
         public static string LoadPath = "";
@@ -131,9 +124,9 @@ namespace IceSaw2.Manager.Tricky
                 var TempMesh = new MeshData();
 
                 TempMesh.Name = Path.GetFileName(MeshFiles[i]);
-                TempMesh.mesh = ObjImporter.ObjLoad(MeshFiles[i]);
+                TempMesh.mesh = new MeshRef(ObjImporter.ObjLoad(MeshFiles[i]));
 
-                Raylib.UploadMesh(ref TempMesh.mesh, false);
+                Raylib.UploadMesh(ref TempMesh.mesh.Mesh, false);
 
                 worldMeshes.Add(TempMesh);
             }
@@ -145,9 +138,9 @@ namespace IceSaw2.Manager.Tricky
                 var TempMesh = new MeshData();
 
                 TempMesh.Name = Path.GetFileName(SkyboxMeshFiles[i]);
-                TempMesh.mesh = ObjImporter.ObjLoad(SkyboxMeshFiles[i]);
+                TempMesh.mesh = new MeshRef(ObjImporter.ObjLoad(SkyboxMeshFiles[i]));
 
-                Raylib.UploadMesh(ref TempMesh.mesh, false);
+                Raylib.UploadMesh(ref TempMesh.mesh.Mesh, false);
 
                 skyboxMeshes.Add(TempMesh);
             }
@@ -317,7 +310,7 @@ namespace IceSaw2.Manager.Tricky
             {
                 TrickyMaterialObject materialObject = new TrickyMaterialObject();
 
-                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], false);
+                materialObject.LoadMaterial(matskyJsonHandler.Materials[i], true);
 
                 trickySkyboxMaterialObject.Add(materialObject);
             }
@@ -332,16 +325,6 @@ namespace IceSaw2.Manager.Tricky
 
                 trickySkyboxPrefabObjects.Add(NewPrefab);
             }
-
-            cachedSkyboxMeshes = new Model();
-
-            var TempCache = Skybox.FromLoaded();
-
-            cachedSkyboxMeshes.Mesh = TempCache.Item1;
-            Raylib.UploadMesh(ref cachedSkyboxMeshes.Mesh, false);
-            cachedSkyboxMeshes.Texture = Raylib.LoadTextureFromImage(TempCache.Item2);
-            cachedSkyboxMeshes.Material = Raylib.LoadMaterialDefault();
-            Raylib.SetMaterialTexture(ref cachedSkyboxMeshes.Material, MaterialMapIndex.Diffuse, cachedSkyboxMeshes.Texture);
         }
 
         public static void LoadEffects()
@@ -504,7 +487,7 @@ namespace IceSaw2.Manager.Tricky
 
             for (int i = 0; i < trickyPatchObjects.Count; i++)
             {
-                Raylib.UnloadMesh(trickyPatchObjects[i].mesh);
+                Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
             }
 
             trickyPatchObjects = new List<TrickyPatchObject>();
@@ -548,12 +531,12 @@ namespace IceSaw2.Manager.Tricky
 
             for (int i = 0; i < worldMeshes.Count; i++)
             {
-                Raylib.UnloadMesh(worldMeshes[i].mesh);
+                Raylib.UnloadMesh(worldMeshes[i].mesh.Mesh);
             }
 
             for (int i = 0; i < skyboxMeshes.Count; i++)
             {
-                Raylib.UnloadMesh(skyboxMeshes[i].mesh);
+                Raylib.UnloadMesh(skyboxMeshes[i].mesh.Mesh);
             }
 
             worldMeshes = new List<MeshData>();
@@ -586,7 +569,7 @@ namespace IceSaw2.Manager.Tricky
             }
         }
 
-        public static Mesh ReturnMesh(string FileName, bool Skybox)
+        public static MeshRef ReturnMesh(string FileName, bool Skybox)
         {
             if (!Skybox)
             {
@@ -621,14 +604,7 @@ namespace IceSaw2.Manager.Tricky
         public struct MeshData
         {
             public string Name;
-            public Mesh mesh;
-        }
-
-        public struct Model
-        {
-            public Mesh Mesh;
-            public Texture2D Texture;
-            public Material Material;
+            public MeshRef mesh;
         }
     }
 }

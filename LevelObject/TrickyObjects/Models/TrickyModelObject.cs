@@ -1,9 +1,4 @@
-using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
-using System.Collections;
-using System.Collections.Generic;
-using System.Numerics;
-
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -51,16 +46,32 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
         }
 
-        public List<RenderCache> GenerateRenderCache()
+        public void AddToRenderCache(TrickyInstanceObject trickyInstanceObject)
         {
-            List<RenderCache> cache = new List<RenderCache>();
-
-            for (int i = 0; i < Children.Count; i++)
+            for (int i = 0; i < trickyModelMeshObjects.Count; i++)
             {
-                cache.AddRange(((TrickyModelMeshObject)Children[i]).GenerateRenderCache());
+                trickyModelMeshObjects[i].AddToRenderCache(trickyInstanceObject);
             }
-
-            return cache;
         }
+
+        public void RemoveFromRenderCache(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < trickyModelMeshObjects.Count; i++)
+            {
+                trickyModelMeshObjects[i].RemoveFromRenderCache(trickyInstanceObject);
+            }
+        }
+
+        //public List<RenderCache> GenerateRenderCache()
+        //{
+        //    List<RenderCache> cache = new List<RenderCache>();
+
+        //    for (int i = 0; i < Children.Count; i++)
+        //    {
+        //        cache.AddRange(((TrickyModelMeshObject)Children[i]).GenerateRenderCache());
+        //    }
+
+        //    return cache;
+        //}
     }
 }

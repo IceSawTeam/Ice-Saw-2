@@ -1,7 +1,10 @@
-using SSXMultiTool.Utilities;
-using System.Collections;
-using System.Collections.Generic;
+using IceSaw2.EditorWindows;
+using IceSaw2.Manager.Tricky;
+using IceSaw2.RayWarp;
+using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
+using SSXMultiTool.Utilities;
+using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -17,7 +20,10 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeAnimation;
         public bool IncludeMatrix;
 
-        public List<TrickyModelMaterialObject> trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
+        public List<Meshes> meshes = new List<Meshes>();
+
+        private List<RenderCache> renderCaches = new List<RenderCache>();
+
         public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
             Name = objectHeader.ObjectName;
@@ -69,48 +75,102 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Rotation = JsonUtil.ArrayToQuaternion(objectHeader.Rotation);
             }
 
-            trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
+            meshes = new List<Meshes>();
+            //trickyModelMaterialObjects = new List<TrickyModelMaterialObject>();
 
             //Load MeshHeaders
             for (int i = 0; i < objectHeader.MeshData.Count; i++)
             {
-                var TrickyPrefabMaterialObject = new TrickyModelMaterialObject();
+                var mesh = new Meshes();
 
-                TrickyPrefabMaterialObject.parent = this;
+                mesh.Skybox = skybox;
 
-                TrickyPrefabMaterialObject.LoadModelMaterialObject(objectHeader.MeshData[i], Skybox);
+                mesh.MeshPath = objectHeader.MeshData[i].MeshPath;
+                mesh.MaterialIndex = objectHeader.MeshData[i].MaterialID;
 
-                trickyModelMaterialObjects.Add(TrickyPrefabMaterialObject);
-
-                //GameObject ChildMesh = new GameObject(i.ToString());
-
-                //ChildMesh.transform.parent = transform;
-                //ChildMesh.transform.localPosition = Vector3.zero;
-                //ChildMesh.transform.localScale = Vector3.one;
-                //ChildMesh.transform.localRotation = new Quaternion(0, 0, 0, 0);
-
-                //ChildMesh.AddComponent<PrefabMeshObject>().LoadPrefabMeshObject(objectHeader.MeshData[i]);
+                meshes.Add(mesh);
             }
+
+            GenerateRenderCacheNew();
         }
 
         public override void Render()
         {
-            for (int i = 0; i < trickyModelMaterialObjects.Count; i++)
+            if (TrickyWorldManager.instance.windowMode == TrickyWorldManager.WindowMode.World)
             {
-                trickyModelMaterialObjects[i].Render();
+                if (!Skybox)
+                {
+                    for (int i = 0; i < renderCaches.Count; i++)
+                    {
+                        Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                    }
+                }
+                else
+                {
+                    Matrix4x4 matrix4X4 = Default;
+                    matrix4X4.M14 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.X;
+                    matrix4X4.M24 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Y;
+                    matrix4X4.M34 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Z;
+
+                    for (int i = 0; i < renderCaches.Count; i++)
+                    {
+                        Raylib.DrawMesh(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, matrix4X4);
+                    }
+                }
+            }
+            else
+            {
+                Matrix4x4[] matrixArray = { worldMatrix4x4 };
+                for (int i = 0; i < meshes.Count; i++)
+                {
+                    Raylib.DrawMeshInstanced(meshes[i].meshRef.Mesh, meshes[i].materialRef.Material, matrixArray, 1);
+                }
             }
         }
 
-        public List<RenderCache> GenerateRenderCache()
+        public void GenerateRenderCacheNew()
         {
-            List<RenderCache> cache = new List<RenderCache>();
+            renderCaches = new List<RenderCache>();
 
-            for (int i = 0; i < Children.Count; i++)
+            for (global::System.Int32 j = 0; j < meshes.Count; j++)
             {
-                cache.Add(((TrickyModelMaterialObject)Children[i]).GenerateRenderCache());
-            }
+                var TempCache = new RenderCache();
 
-            return cache;
+                TempCache.meshRef = meshes[j].meshRef;
+                TempCache.materialRef = meshes[j].materialRef;
+                TempCache.matrix4X4s = new List<Matrix4x4>();
+                TempCache.trickyInstanceObjects = new List<TrickyInstanceObject>();
+
+                if(Skybox)
+                {
+                    TempCache.matrix4X4s.Add(worldMatrix4x4);
+                }
+
+                renderCaches.Add(TempCache);
+            }
+        }
+
+        public void AddToRenderCache(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                renderCaches[i].trickyInstanceObjects.Add(trickyInstanceObject);
+                renderCaches[i].matrix4X4s.Add(trickyInstanceObject.worldMatrix4x4 * localMatrix4X4);
+            }
+        }
+
+        public void RemoveFromRenderCache(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                if (renderCaches[i].trickyInstanceObjects.Contains(trickyInstanceObject))
+                {
+                    int Value = renderCaches[i].trickyInstanceObjects.IndexOf(trickyInstanceObject);
+
+                    renderCaches[i].trickyInstanceObjects.RemoveAt(Value);
+                    renderCaches[i].matrix4X4s.RemoveAt(Value);
+                }
+            }
         }
 
         [Serializable]
@@ -141,5 +201,52 @@ namespace IceSaw2.LevelObject.TrickyObjects
             public float Value5;
             public float Value6;
         }
+        [Serializable]
+        public struct Meshes
+        {
+            public bool Skybox;
+            private string _meshPath;
+
+            public string MeshPath
+            {
+                get
+                { return _meshPath; }
+                set
+                {
+                    _meshPath = value;
+                    GenerateModel();
+                }
+            }
+
+            private int _MaterialIndex;
+            public int MaterialIndex
+            {
+                get
+                { return _MaterialIndex; }
+                set
+                {
+                    _MaterialIndex = value;
+                    GenerateModel();
+                }
+            }
+
+            public MeshRef meshRef;
+            public MaterialRef materialRef;
+
+            public void GenerateModel()
+            {
+                meshRef = TrickyDataManager.ReturnMesh(_meshPath, Skybox);
+
+                if (!Skybox)
+                {
+                    materialRef = TrickyDataManager.trickyMaterialObject[_MaterialIndex].materialRef;
+                }
+                else
+                {
+                    materialRef = TrickyDataManager.trickySkyboxMaterialObject[_MaterialIndex].materialRef;
+                }
+            }
+        }
+
     }
 }

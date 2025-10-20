@@ -160,7 +160,7 @@ namespace IceSaw2.LevelObject
             if (ModelID != -1)
             {
                 TrickyPrefab = TrickyDataManager.trickyModelObjects[ModelID];
-                GenerateRenderCache();
+                AddToModelRender();
             }
         }
 
@@ -294,26 +294,44 @@ namespace IceSaw2.LevelObject
         }
 
         #region Rendering
-        List<RenderCache> renderCaches = new List<RenderCache>();
 
-        public void GenerateRenderCache()
+        public void AddToModelRender()
         {
-            renderCaches = new List<RenderCache>();
             if (TrickyPrefab != null)
             {
-                TrickyPrefab.parent = this;
-                renderCaches = TrickyPrefab.GenerateRenderCache();
-                TrickyPrefab.parent = null;
+                TrickyPrefab.AddToRenderCache(this);
             }
         }
-        
-        public override void Render()
+
+        public void RemoveFromModelRender()
         {
-            for (int i = 0; i < renderCaches.Count; i++)
+            if (TrickyPrefab != null)
             {
-                renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
+                TrickyPrefab.RemoveFromRenderCache(this);
             }
         }
+
+
+        //List<RenderCache> renderCaches = new List<RenderCache>();
+
+        //public void GenerateRenderCache()
+        //{
+        //    renderCaches = new List<RenderCache>();
+        //    if (TrickyPrefab != null)
+        //    {
+        //        TrickyPrefab.parent = this;
+        //        renderCaches = TrickyPrefab.GenerateRenderCache();
+        //        TrickyPrefab.parent = null;
+        //    }
+        //}
+
+        //public override void Render()
+        //{
+        //    for (int i = 0; i < renderCaches.Count; i++)
+        //    {
+        //        renderCaches[i].baseObject.Render(renderCaches[i].WorldMatrix);
+        //    }
+        //}
         #endregion
 
         [System.Serializable]

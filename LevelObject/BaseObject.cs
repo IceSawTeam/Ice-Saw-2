@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using IceSaw2.RayWarp;
+using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
 
@@ -10,7 +11,7 @@ namespace IceSaw2.LevelObject
         private static int IDCount = 0;
 
         public static float WorldScale = 0.001f;
-        public static Matrix4x4 Default = Raymath.MatrixScale(WorldScale, WorldScale, WorldScale);
+        public static Matrix4x4 Default { get { return Raymath.MatrixScale(WorldScale, WorldScale, WorldScale); } }
 
         public string Name = "Null";
 
@@ -287,7 +288,6 @@ namespace IceSaw2.LevelObject
             Material,
             Spline,
             Prefab,
-            PrefabSub,
             PrefabMesh,
             ParticlePrefab,
             SkyboxMaterial,
@@ -303,8 +303,10 @@ namespace IceSaw2.LevelObject
 
         public struct RenderCache
         {
-            public BaseObject baseObject;
-            public Matrix4x4 WorldMatrix;
+            public MeshRef meshRef;
+            public MaterialRef materialRef;
+            public List<TrickyInstanceObject> trickyInstanceObjects;
+            public List<Matrix4x4> matrix4X4s;
         }
     }
 }
