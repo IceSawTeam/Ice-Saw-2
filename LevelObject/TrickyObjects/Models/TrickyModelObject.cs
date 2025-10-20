@@ -1,6 +1,5 @@
 using SSXMultiTool.JsonFiles.Tricky;
 
-
 namespace IceSaw2.LevelObject.TrickyObjects
 {
     public class TrickyModelObject : BaseObject

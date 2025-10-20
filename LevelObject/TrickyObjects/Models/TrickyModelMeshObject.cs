@@ -5,7 +5,6 @@ using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
-using static IceSaw2.LevelObject.TrickyObjects.TrickyModelMeshObject;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -22,7 +21,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public bool IncludeMatrix;
 
         public List<Meshes> meshes = new List<Meshes>();
-        public List<RenderCache> renderCaches = new List<RenderCache>();
+
+        private List<RenderCache> renderCaches = new List<RenderCache>();
 
         public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
