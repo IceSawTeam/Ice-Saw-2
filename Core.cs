@@ -8,8 +8,11 @@
 #pragma warning disable CA1822
 
 using IceSaw2.Manager.Tricky;
+using IceSaw2.Utilities;
+using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
+using System.Diagnostics;
 
 namespace IceSaw2
 {
@@ -25,7 +28,10 @@ namespace IceSaw2
 
         public Core()
         {
+            ConsoleWindow.GenerateConsole();
+
             Raylib.InitWindow(1280, 720, "Ice Saw 2");
+            Raylib.SetWindowIcon(LoadEmbeddedFile.LoadImage("icon.png"));
             Raylib.SetTargetFPS(MaxFps);
 
             // Load settings
@@ -39,7 +45,20 @@ namespace IceSaw2
                                  (int)Settings.General.Instance.data.windowHeight);
             Raylib.SetWindowState(windowFlags);
 
+            FontLoader InterNewFont = new FontLoader();
+
+            rlImGui.SetupUserFonts += (ImGuiIOPtr imGuiIo) =>
+            {
+                var io = ImGui.GetIO();
+                InterNewFont.LoadFont("Fonts.Inter_New.ttf", 14f);
+            };
             rlImGui.Setup(true);
+            InterNewFont.ReleaseFont();
+
+            if(!Settings.General.Instance.data.ConsoleWindow)
+            {
+                ConsoleWindow.CloseConsole();
+            }
 
             //--------------------- Manager/Module/System initializations here -------------------------
             worldManager = new TrickyWorldManager();

@@ -8,8 +8,8 @@ namespace IceSaw2.EditorWindows
 {
     public class ModelsEditorWindow : BaseEditorWindow
     {
-        bool Skybox;
-        bool Material;
+        bool ShowSkybox;
+        bool ShowMaterials;
 
         Camera3D camera3D = new Camera3D();
         int PrefabSelection = 0;
@@ -31,7 +31,7 @@ namespace IceSaw2.EditorWindows
 
         public override void LogicUpdate()
         {
-            if (!Skybox)
+            if (!ShowSkybox)
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
@@ -74,7 +74,7 @@ namespace IceSaw2.EditorWindows
 
             if (Raylib.IsKeyPressed(KeyboardKey.Slash))
             {
-                Skybox = !Skybox;
+                ShowSkybox = !ShowSkybox;
             }
 
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
@@ -82,7 +82,7 @@ namespace IceSaw2.EditorWindows
 
         public override void RenderUpdate()
         {
-            if (!Skybox)
+            if (!ShowSkybox)
             {
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
@@ -120,16 +120,25 @@ namespace IceSaw2.EditorWindows
             }
 
 
+            // Render UI
+
+
+            var io = ImGui.GetIO();
+            var vp = ImGui.GetMainViewport();
+            var vpPos = vp.Pos;
+            var vpSize = vp.Size;
+
             #region Secondary Top Bar
             // Calculate position below main menu bar
             float yOffset = ImGui.GetFrameHeight(); // Main menu height
 
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, yOffset), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(ImGui.GetIO().DisplaySize.X, yOffset-20));
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(vpSize.X, 16f/*yOffset-20*/));
 
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new System.Numerics.Vector2(8, 9));
+            //ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new System.Numerics.Vector2(8, 9));
+            //ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0.6f, 0.6f, 0.6f, 1f)); // color test
 
             ImGui.Begin("TabStrip", ImGuiWindowFlags.NoTitleBar |
                                      ImGuiWindowFlags.NoResize |
@@ -148,49 +157,44 @@ namespace IceSaw2.EditorWindows
                 {
                     selectedTab = i;
 
-                    if(selectedTab>=2)
-                    {
-                        Skybox = true;
-                    }
-                    else
-                    {
-                        Skybox = false;
-                    }
-
-                    if(selectedTab==1 || selectedTab == 3)
-                    {
-                        Material = true;
-                    }
-                    else
-                    {
-                        Material = false;
-                    }
+                    ShowSkybox = selectedTab >= 2;
+                    ShowMaterials = selectedTab == 1 || selectedTab == 3;
                 }
             }
 
             ImGui.End();
-            ImGui.PopStyleVar(3);
+            ImGui.PopStyleVar(2);
+            //ImGui.PopStyleColor(); // color test
             #endregion
 
-            //Render UI
 
-            float menuBarHeight = ImGui.GetFrameHeight()+32; // Typically height of main menu bar
 
-            // Sidebar dimensions
-            int sidebarWidth = 300;
 
-            // Position and size sidebar *below* the main menu bar
+            // Dimensions
+            float menuBarHeight = ImGui.GetFrameHeight() + 32; // Note: this includes both top bars.
+            float outlinerWidth = 300;
+            float inspectorWidth = 300;
+            float viewportWidth = Math.Max(100f, vpSize.X - outlinerWidth - inspectorWidth);
+            float viewportHeaderHeight = 28f;
+
+            ImGuiWindowFlags flags = ImGuiWindowFlags.NoTitleBar |
+                             ImGuiWindowFlags.NoResize |
+                             ImGuiWindowFlags.NoMove |
+                             ImGuiWindowFlags.NoCollapse |
+                             ImGuiWindowFlags.NoBringToFrontOnFocus |
+                             ImGuiWindowFlags.NoFocusOnAppearing;
+
+            // --- OUTLINER ---
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(sidebarWidth, Raylib.GetScreenHeight() - menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(outlinerWidth, vpSize.Y /*Raylib.GetScreenHeight() - menuBarHeight*/), ImGuiCond.Always);
+            //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.Begin("Outliner Panel", flags);
+            ImGui.Text("Outliner");
 
-            // Optional: remove decorations
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-            ImGui.Begin("Side Panel", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
-
-            if(!Skybox)
+            if (!ShowSkybox)
             {
-                if (Material)
+                if (ShowMaterials)
                 {
                     for (int i = 0; i < TrickyDataManager.trickyMaterialObject.Count; i++)
                     {
@@ -207,7 +211,7 @@ namespace IceSaw2.EditorWindows
             }
             else
             {
-                if (Material)
+                if (ShowMaterials)
                 {
                     for (int i = 0; i < TrickyDataManager.trickySkyboxMaterialObject.Count; i++)
                     {
@@ -226,7 +230,61 @@ namespace IceSaw2.EditorWindows
                 // Add your sidebar content here
 
             ImGui.End();
+            //ImGui.PopStyleVar(2);
+
+
+
+            // --- INSPECTOR ---
+            ImGui.SetNextWindowPos(new System.Numerics.Vector2(vpPos.X + vpSize.X - inspectorWidth, menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(inspectorWidth, vpSize.Y /*Raylib.GetScreenHeight() - menuBarHeight*/), ImGuiCond.Always);
+            //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.Begin("Inspector Panel", flags);
+            ImGui.Text("Inspector");
+            ImGui.End();
+            //ImGui.PopStyleVar(2);
+
+
+
+
+            // --- VIEWPORT ---
+            float centerX = vpPos.X + outlinerWidth;
+            ImGui.SetNextWindowPos(new Vector2(centerX, vpPos.Y + menuBarHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(viewportWidth, vpSize.Y), ImGuiCond.Always);
+
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0f, 0f, 0f, 0f));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.Begin("Viewport", flags);
+
+            var drawList = ImGui.GetWindowDrawList();
+            var winPos = ImGui.GetWindowPos();
+            var winSize = ImGui.GetWindowSize();
+
+            Vector2 headerTL = new Vector2(winPos.X, winPos.Y);
+            Vector2 headerBR = new Vector2(winPos.X + winSize.X, winPos.Y + viewportHeaderHeight);
+            uint headerCol = ImGui.ColorConvertFloat4ToU32(new Vector4(0.08f, 0.08f, 0.08f, 0.5f));
+            drawList.AddRectFilled(headerTL, headerBR, headerCol);
+
+            ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + 4));
+            ImGui.Text("Viewport Header");
+
+            ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + viewportHeaderHeight + 8));
+
+            // Here you can render your scene texture / draw calls.
+            // Example placeholder: show a child area representing the render target region
+            //ImGui.BeginChild("viewport_content", new Vector2(winSize.X - 16, winSize.Y - viewportHeaderHeight - 16), ImGuiChildFlags.None,
+            //                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
+            ImGui.EndChild();
+
+            ImGui.End();
+            ImGui.PopStyleColor();
             ImGui.PopStyleVar(2);
+
+
         }
     }
 }

@@ -25,12 +25,19 @@ namespace IceSaw2.Settings
             public bool isMaximized = true;
             public string LastLoad = "";
             public int PatchResolution = 8;
+            public bool ConsoleWindow = false;
         }
 
 
         public void Load()
         {
             string loadFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IceSaw2");
+
+            if(!Directory.Exists(loadFolder))
+            {
+                Directory.CreateDirectory(loadFolder);
+            }
+
             string loadPath = Path.Combine(loadFolder, "GeneralSettings.json");
             if (File.Exists(loadPath))
             {
