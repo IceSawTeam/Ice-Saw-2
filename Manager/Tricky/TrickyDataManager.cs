@@ -4,11 +4,7 @@ using IceSaw2.LevelObject.Materials;
 using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IceSaw2.RayWarp;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -128,9 +124,9 @@ namespace IceSaw2.Manager.Tricky
                 var TempMesh = new MeshData();
 
                 TempMesh.Name = Path.GetFileName(MeshFiles[i]);
-                TempMesh.mesh = ObjImporter.ObjLoad(MeshFiles[i]);
+                TempMesh.mesh = new MeshRef(ObjImporter.ObjLoad(MeshFiles[i]));
 
-                Raylib.UploadMesh(ref TempMesh.mesh, false);
+                Raylib.UploadMesh(ref TempMesh.mesh.Mesh, false);
 
                 worldMeshes.Add(TempMesh);
             }
@@ -142,9 +138,9 @@ namespace IceSaw2.Manager.Tricky
                 var TempMesh = new MeshData();
 
                 TempMesh.Name = Path.GetFileName(SkyboxMeshFiles[i]);
-                TempMesh.mesh = ObjImporter.ObjLoad(SkyboxMeshFiles[i]);
+                TempMesh.mesh = new MeshRef(ObjImporter.ObjLoad(SkyboxMeshFiles[i]));
 
-                Raylib.UploadMesh(ref TempMesh.mesh, false);
+                Raylib.UploadMesh(ref TempMesh.mesh.Mesh, false);
 
                 skyboxMeshes.Add(TempMesh);
             }
@@ -491,7 +487,7 @@ namespace IceSaw2.Manager.Tricky
 
             for (int i = 0; i < trickyPatchObjects.Count; i++)
             {
-                Raylib.UnloadMesh(trickyPatchObjects[i].mesh);
+                Raylib.UnloadMesh(trickyPatchObjects[i].mesh.Mesh);
             }
 
             trickyPatchObjects = new List<TrickyPatchObject>();
@@ -535,12 +531,12 @@ namespace IceSaw2.Manager.Tricky
 
             for (int i = 0; i < worldMeshes.Count; i++)
             {
-                Raylib.UnloadMesh(worldMeshes[i].mesh);
+                Raylib.UnloadMesh(worldMeshes[i].mesh.Mesh);
             }
 
             for (int i = 0; i < skyboxMeshes.Count; i++)
             {
-                Raylib.UnloadMesh(skyboxMeshes[i].mesh);
+                Raylib.UnloadMesh(skyboxMeshes[i].mesh.Mesh);
             }
 
             worldMeshes = new List<MeshData>();
@@ -573,7 +569,7 @@ namespace IceSaw2.Manager.Tricky
             }
         }
 
-        public static Mesh ReturnMesh(string FileName, bool Skybox)
+        public static MeshRef ReturnMesh(string FileName, bool Skybox)
         {
             if (!Skybox)
             {
@@ -608,7 +604,7 @@ namespace IceSaw2.Manager.Tricky
         public struct MeshData
         {
             public string Name;
-            public Mesh mesh;
+            public MeshRef mesh;
         }
     }
 }

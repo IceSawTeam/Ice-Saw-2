@@ -1,5 +1,6 @@
 using IceSaw2.EditorWindows;
 using IceSaw2.Manager.Tricky;
+using IceSaw2.RayWarp;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
@@ -121,7 +122,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Matrix4x4[] matrixArray = { worldMatrix4x4 };
                 for (int i = 0; i < meshes.Count; i++)
                 {
-                    Raylib.DrawMeshInstanced(meshes[i].mesh, meshes[i].material, matrixArray, 1);
+                    Raylib.DrawMeshInstanced(meshes[i].mesh.Mesh, meshes[i].material.Material, matrixArray, 1);
                 }
             }
         }
@@ -134,8 +135,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 var TempCache = new RenderCache();
 
-                TempCache.mesh = meshes[j].mesh;
-                TempCache.material = meshes[j].material;
+                TempCache.mesh = meshes[j].mesh.Mesh;
+                TempCache.material = meshes[j].material.Material;
                 TempCache.matrix4X4s = new List<Matrix4x4>();
                 TempCache.trickyInstanceObjects = new List<TrickyInstanceObject>();
 
@@ -228,8 +229,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 }
             }
 
-            public Mesh mesh;
-            public Material material;
+            public MeshRef mesh;
+            public MaterialRef material;
 
             public void GenerateModel()
             {

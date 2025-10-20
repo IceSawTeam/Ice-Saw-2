@@ -118,9 +118,9 @@ namespace IceSaw2.LevelObject.Materials
         {
             Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
 
-            material = Raylib.LoadMaterialDefault();
+            material = new RayWarp.MaterialRef(Raylib.LoadMaterialDefault());
 
-            Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Diffuse, ReturnTexture);
+            Raylib.SetMaterialTexture(ref material.Material, MaterialMapIndex.Diffuse, ReturnTexture);
 
             if (!Skybox)
             {
@@ -135,7 +135,7 @@ namespace IceSaw2.LevelObject.Materials
                     );
                 }
 
-                material.Shader = shader;
+                material.Material.Shader = shader;
             }
         }
 
