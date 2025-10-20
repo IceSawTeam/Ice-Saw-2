@@ -11,19 +11,19 @@ namespace IceSaw2.LevelObject
 {
     public class MeshBaseObject : BaseObject
     {
-        public MaterialRef material;
+        public MaterialRef materialRef;
 
-        protected MeshRef _mesh;
-        public MeshRef mesh
+        protected MeshRef _meshref;
+        public MeshRef meshRef
         {
             get
             {
-                return _mesh;
+                return _meshref;
             }
 
             set
             {
-                _mesh = value;
+                _meshref = value;
                 meshBoundingBox = Raylib.GetMeshBoundingBox(value.Mesh);
                 GenerateBBoxLocal();
                 GenertateBBoxWorld();
@@ -34,9 +34,9 @@ namespace IceSaw2.LevelObject
         {
             if (Visible && Enabled)
             {
-                if (mesh.Mesh.VertexCount != 0)
+                if (meshRef.Mesh.VertexCount != 0)
                 {
-                    Raylib.DrawMesh(mesh.Mesh, material.Material, worldMatrix4x4);
+                    Raylib.DrawMesh(meshRef.Mesh, materialRef.Material, worldMatrix4x4);
                 }
             }
         }
@@ -45,9 +45,9 @@ namespace IceSaw2.LevelObject
         {
             if (Visible && Enabled)
             {
-                if (mesh.Mesh.VertexCount != 0)
+                if (meshRef.Mesh.VertexCount != 0)
                 {
-                    Raylib.DrawMesh(mesh.Mesh, material.Material, matrix4X4);
+                    Raylib.DrawMesh(meshRef.Mesh, materialRef.Material, matrix4X4);
                 }
             }
         }

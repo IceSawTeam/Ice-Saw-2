@@ -487,7 +487,7 @@ namespace IceSaw2.Manager.Tricky
 
             for (int i = 0; i < trickyPatchObjects.Count; i++)
             {
-                Raylib.UnloadMesh(trickyPatchObjects[i].mesh.Mesh);
+                Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
             }
 
             trickyPatchObjects = new List<TrickyPatchObject>();

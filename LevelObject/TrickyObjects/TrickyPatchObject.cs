@@ -58,7 +58,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         {
             if(MeshLoaded)
             {
-                Raylib.UnloadMesh(mesh.Mesh);
+                Raylib.UnloadMesh(meshRef.Mesh);
             }
 
             // Vector3[,] vertices = new Vector3[4, 4];
@@ -85,7 +85,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             surface = new NURBS.Surface(cps, degreeU, degreeV);
 
             //Build mesh (reusing Mesh to save GC allocation)
-            mesh = new MeshRef(surface.BuildMesh(resolutionU, resolutionV));
+            meshRef = new MeshRef(surface.BuildMesh(resolutionU, resolutionV));
 
             cps = new ControlPoint[2, 2];
 
@@ -100,20 +100,20 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             Vector3[] UV = surface.ReturnVertices(resolutionU, resolutionV);
 
-            Span<Vector2> NewTextureCords = mesh.Mesh.TexCoordsAs<Vector2>();
+            Span<Vector2> NewTextureCords = meshRef.Mesh.TexCoordsAs<Vector2>();
             for (int i = 0; i < UV.Length; i++)
             {
                 NewTextureCords[i] = new Vector2(UV[i].X, UV[i].Y);
             }
 
-            Raylib.UploadMesh(ref mesh.Mesh, false);
+            Raylib.UploadMesh(ref meshRef.Mesh, false);
             MeshLoaded = true;
 
             var Texture = TrickyDataManager.ReturnTexture(TexturePath, false);
 
-            material = new MaterialRef(Raylib.LoadMaterialDefault());
+            materialRef = new MaterialRef(Raylib.LoadMaterialDefault());
 
-            Raylib.SetMaterialTexture(ref material.Material, MaterialMapIndex.Diffuse, Texture);
+            Raylib.SetMaterialTexture(ref materialRef.Material, MaterialMapIndex.Diffuse, Texture);
         }
 
         public PatchesJsonHandler.PatchJson SavePatch()

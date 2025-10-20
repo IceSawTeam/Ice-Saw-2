@@ -5,6 +5,7 @@ using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
+using static IceSaw2.LevelObject.TrickyObjects.TrickyModelMeshObject;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -101,7 +102,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 {
                     for (int i = 0; i < renderCaches.Count; i++)
                     {
-                        Raylib.DrawMeshInstanced(renderCaches[i].mesh, renderCaches[i].material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                        Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
                     }
                 }
                 else
@@ -113,7 +114,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                     for (int i = 0; i < renderCaches.Count; i++)
                     {
-                        Raylib.DrawMesh(renderCaches[i].mesh, renderCaches[i].material, matrix4X4);
+                        Raylib.DrawMesh(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, matrix4X4);
                     }
                 }
             }
@@ -122,7 +123,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Matrix4x4[] matrixArray = { worldMatrix4x4 };
                 for (int i = 0; i < meshes.Count; i++)
                 {
-                    Raylib.DrawMeshInstanced(meshes[i].mesh.Mesh, meshes[i].material.Material, matrixArray, 1);
+                    Raylib.DrawMeshInstanced(meshes[i].meshRef.Mesh, meshes[i].materialRef.Material, matrixArray, 1);
                 }
             }
         }
@@ -135,8 +136,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 var TempCache = new RenderCache();
 
-                TempCache.mesh = meshes[j].mesh.Mesh;
-                TempCache.material = meshes[j].material.Material;
+                TempCache.meshRef = meshes[j].meshRef;
+                TempCache.materialRef = meshes[j].materialRef;
                 TempCache.matrix4X4s = new List<Matrix4x4>();
                 TempCache.trickyInstanceObjects = new List<TrickyInstanceObject>();
 
@@ -229,20 +230,20 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 }
             }
 
-            public MeshRef mesh;
-            public MaterialRef material;
+            public MeshRef meshRef;
+            public MaterialRef materialRef;
 
             public void GenerateModel()
             {
-                mesh = TrickyDataManager.ReturnMesh(_meshPath, Skybox);
+                meshRef = TrickyDataManager.ReturnMesh(_meshPath, Skybox);
 
                 if (!Skybox)
                 {
-                    material = TrickyDataManager.trickyMaterialObject[_MaterialIndex].material;
+                    materialRef = TrickyDataManager.trickyMaterialObject[_MaterialIndex].materialRef;
                 }
                 else
                 {
-                    material = TrickyDataManager.trickySkyboxMaterialObject[_MaterialIndex].material;
+                    materialRef = TrickyDataManager.trickySkyboxMaterialObject[_MaterialIndex].materialRef;
                 }
             }
         }

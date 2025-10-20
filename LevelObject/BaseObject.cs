@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using IceSaw2.RayWarp;
+using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
 
@@ -287,7 +288,6 @@ namespace IceSaw2.LevelObject
             Material,
             Spline,
             Prefab,
-            PrefabSub,
             PrefabMesh,
             ParticlePrefab,
             SkyboxMaterial,
@@ -303,8 +303,8 @@ namespace IceSaw2.LevelObject
 
         public struct RenderCache
         {
-            public Mesh mesh;
-            public Material material;
+            public MeshRef meshRef;
+            public MaterialRef materialRef;
             public List<TrickyInstanceObject> trickyInstanceObjects;
             public List<Matrix4x4> matrix4X4s;
         }

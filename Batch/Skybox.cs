@@ -30,7 +30,7 @@ namespace IceSaw2.Batch
                     {
                         var tempModel = new Model
                         {
-                            Mesh = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
+                            meshRef = TrickyDataManager.ReturnMesh(meshData.MeshPath, true),
                             Texture = materialTextures[meshData.MaterialID]
                         };
                         models.Add(tempModel);
@@ -67,7 +67,7 @@ namespace IceSaw2.Batch
                 rowHighestHeight = Math.Max(rowHighestHeight, paddedImage.Height);
 
                 // Update mesh's UV coords to atlas
-                var ModelVertices = model.Mesh.Mesh.TexCoordsAs<Vector2>();
+                var ModelVertices = model.meshRef.Mesh.TexCoordsAs<Vector2>();
                 for (int i = 0; i < ModelVertices.Length; i++)
                 {
                     ModelVertices[i].Y *= -1;
@@ -97,8 +97,8 @@ namespace IceSaw2.Batch
             int triangleCount = 0;
             foreach (var model in models)
             {
-                vertexCount += model.Mesh.Mesh.VertexCount;
-                triangleCount += model.Mesh.Mesh.TriangleCount;
+                vertexCount += model.meshRef.Mesh.VertexCount;
+                triangleCount += model.meshRef.Mesh.TriangleCount;
             }
             var batchedMesh = new Raylib_cs.Mesh(vertexCount, triangleCount);
             batchedMesh.AllocVertices();
@@ -116,10 +116,10 @@ namespace IceSaw2.Batch
             int PrevIndex = 0;
             foreach (var model in models)
             {
-                var ModelVertices = model.Mesh.Mesh.VerticesAs<Vector3>();
-                var ModelMeshNormal = model.Mesh.Mesh.NormalsAs<Vector3>();
-                var ModelMeshIndices = model.Mesh.Mesh.IndicesAs<ushort>();
-                var ModelMeshTex = model.Mesh.Mesh.TexCoordsAs<Vector2>();
+                var ModelVertices = model.meshRef.Mesh.VerticesAs<Vector3>();
+                var ModelMeshNormal = model.meshRef.Mesh.NormalsAs<Vector3>();
+                var ModelMeshIndices = model.meshRef.Mesh.IndicesAs<ushort>();
+                var ModelMeshTex = model.meshRef.Mesh.TexCoordsAs<Vector2>();
                 for (var i = 0; i < ModelVertices.Length; i++)
                 {
                     batchedMeshVertices[vertexIndex] = ModelVertices[i];
@@ -161,7 +161,7 @@ namespace IceSaw2.Batch
                 {
                     var tempModel = new Model
                     {
-                        Mesh = meshData.mesh,
+                        meshRef = meshData.meshRef,
                         Texture = materialTextures[meshData.MaterialIndex]
                     };
                     models.Add(tempModel);
@@ -197,7 +197,7 @@ namespace IceSaw2.Batch
                 rowHighestHeight = Math.Max(rowHighestHeight, paddedImage.Height);
 
                 // Update mesh's UV coords to atlas
-                var ModelVertices = model.Mesh.Mesh.TexCoordsAs<Vector2>();
+                var ModelVertices = model.meshRef.Mesh.TexCoordsAs<Vector2>();
                 for (int i = 0; i < ModelVertices.Length; i++)
                 {
                     ModelVertices[i].Y *= -1;
@@ -227,8 +227,8 @@ namespace IceSaw2.Batch
             int triangleCount = 0;
             foreach (var model in models)
             {
-                vertexCount += model.Mesh.Mesh.VertexCount;
-                triangleCount += model.Mesh.Mesh.TriangleCount;
+                vertexCount += model.meshRef.Mesh.VertexCount;
+                triangleCount += model.meshRef.Mesh.TriangleCount;
             }
             var batchedMesh = new Raylib_cs.Mesh(vertexCount, triangleCount);
             batchedMesh.AllocVertices();
@@ -246,10 +246,10 @@ namespace IceSaw2.Batch
             int PrevIndex = 0;
             foreach (var model in models)
             {
-                var ModelVertices = model.Mesh.Mesh.VerticesAs<Vector3>();
-                var ModelMeshNormal = model.Mesh.Mesh.NormalsAs<Vector3>();
-                var ModelMeshIndices = model.Mesh.Mesh.IndicesAs<ushort>();
-                var ModelMeshTex = model.Mesh.Mesh.TexCoordsAs<Vector2>();
+                var ModelVertices = model.meshRef.Mesh.VerticesAs<Vector3>();
+                var ModelMeshNormal = model.meshRef.Mesh.NormalsAs<Vector3>();
+                var ModelMeshIndices = model.meshRef.Mesh.IndicesAs<ushort>();
+                var ModelMeshTex = model.meshRef.Mesh.TexCoordsAs<Vector2>();
                 for (var i = 0; i < ModelVertices.Length; i++)
                 {
                     batchedMeshVertices[vertexIndex] = ModelVertices[i];
@@ -343,7 +343,7 @@ namespace IceSaw2.Batch
 
         private struct Model
         {
-            public MeshRef Mesh;
+            public MeshRef meshRef;
             public Raylib_cs.Image Texture;
         }
     }
