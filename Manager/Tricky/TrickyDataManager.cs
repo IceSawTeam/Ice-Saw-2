@@ -48,7 +48,12 @@ namespace IceSaw2.Manager.Tricky
         public static List<MeshData> worldMeshes = new List<MeshData>();
         public static List<MeshData> skyboxMeshes = new List<MeshData>();
 
-        //Cached Mesh Data
+        //Cached Skybox Mesh Data
+        public static MeshRef meshSkybox;
+        public static MaterialRef materialSkybox;
+        public static Texture2D textureSkybox;
+
+
         public static List<BaseObject> LevelNodeTree = new List<BaseObject>();
 
         public static string LoadPath = "";
@@ -325,6 +330,23 @@ namespace IceSaw2.Manager.Tricky
 
                 trickySkyboxPrefabObjects.Add(NewPrefab);
             }
+
+            if (trickySkyboxPrefabObjects.Count != 0)
+            {
+                var Skybox = Batch.Skybox.FromLoaded(trickySkyboxPrefabObjects[0]);
+
+                meshSkybox = new MeshRef(Skybox.Item1);
+
+                Raylib.UploadMesh(ref meshSkybox.Mesh, false);
+
+                textureSkybox = Raylib.LoadTextureFromImage(Skybox.Item2);
+
+                Material material = Raylib.LoadMaterialDefault();
+
+                Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Albedo, textureSkybox);
+
+                materialSkybox = new MaterialRef(material);
+            }
         }
 
         public static void LoadEffects()
@@ -482,6 +504,11 @@ namespace IceSaw2.Manager.Tricky
         {
             LevelNodeTree = new List<BaseObject>();
 
+            for (int i = 0; i < trickySkyboxMaterialObject.Count; i++)
+            {
+                Raylib.UnloadMaterial(trickySkyboxMaterialObject[i].materialRef.Material);
+            }
+
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
             trickySkyboxPrefabObjects = new List<TrickyModelObject>();
 
@@ -491,7 +518,14 @@ namespace IceSaw2.Manager.Tricky
             }
 
             trickyPatchObjects = new List<TrickyPatchObject>();
+
+            for (int i = 0; i < trickyMaterialObject.Count; i++)
+            {
+                Raylib.UnloadMaterial(trickyMaterialObject[i].materialRef.Material);
+            }
+
             trickyMaterialObject = new List<TrickyMaterialObject>();
+
             trickyModelObjects = new List<TrickyModelObject>();
             trickyInstanceObjects = new List<TrickyInstanceObject>();
             trickyLightObjects = new List<TrickyLightObject>();
@@ -508,7 +542,6 @@ namespace IceSaw2.Manager.Tricky
             trickyAIPAIPath = new List<TrickyPathAObject>();
             trickySOPAIPath = new List<TrickyPathAObject>();
             trickySOPRaceLine = new List<TrickyPathBObject>();
-
 
             for (int i = 0; i < worldTextureData.Count; i++)
             {
@@ -541,6 +574,17 @@ namespace IceSaw2.Manager.Tricky
 
             worldMeshes = new List<MeshData>();
             skyboxMeshes = new List<MeshData>();
+
+            if (meshSkybox != null)
+            {
+                Raylib.UnloadTexture(textureSkybox);
+                Raylib.UnloadMesh(meshSkybox.Mesh);
+                Raylib.UnloadMaterial(materialSkybox.Material);
+            }
+
+            textureSkybox = new Texture2D();
+            meshSkybox = null;
+            materialSkybox = null;
         }
 
         public static Texture2D ReturnTexture(string FileName, bool Skybox)

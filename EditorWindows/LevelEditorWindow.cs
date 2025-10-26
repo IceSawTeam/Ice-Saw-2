@@ -47,8 +47,8 @@ namespace IceSaw2.EditorWindows
 
             if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
             {
-                TrickyDataManager.trickySkyboxPrefabObjects[0].Render();
-                //Raylib.DrawMesh(TrickyDataManager.trickySkyboxPrefabObjects[0].CachedMesh, TrickyDataManager.trickySkyboxPrefabObjects[0].CachedMaterial, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
+                //TrickyDataManager.trickySkyboxPrefabObjects[0].Render();
+                Raylib.DrawMesh(TrickyDataManager.meshSkybox.Mesh, TrickyDataManager.materialSkybox.Material, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
             }
             Rlgl.EnableDepthMask();            
 
