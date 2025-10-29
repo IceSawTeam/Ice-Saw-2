@@ -58,14 +58,14 @@ namespace IceSaw2.EditorWindows
                     SkyboxSelection -= 1;
                     if (SkyboxSelection == -1)
                     {
-                        SkyboxSelection = TrickyDataManager.trickySkyboxPrefabObjects.Count - 1;
+                        SkyboxSelection = TrickyDataManager.trickySkyboxModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
                     SkyboxSelection += 1;
-                    if (SkyboxSelection == TrickyDataManager.trickySkyboxPrefabObjects.Count)
+                    if (SkyboxSelection == TrickyDataManager.trickySkyboxModelObjects.Count)
                     {
                         SkyboxSelection = 0;
                     }
@@ -102,18 +102,18 @@ namespace IceSaw2.EditorWindows
             }
             else
             {
-                if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Name, 12, 60, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[SkyboxSelection].Name, 12, 60, 20, Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
-                if (TrickyDataManager.trickySkyboxPrefabObjects.Count != 0)
+                if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickySkyboxPrefabObjects[SkyboxSelection].Render();
+                    TrickyDataManager.trickySkyboxModelObjects[SkyboxSelection].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -220,9 +220,9 @@ namespace IceSaw2.EditorWindows
                 }
                 else
                 {
-                    for (int i = 0; i < TrickyDataManager.trickySkyboxPrefabObjects.Count; i++)
+                    for (int i = 0; i < TrickyDataManager.trickySkyboxModelObjects.Count; i++)
                     {
-                        TrickyDataManager.trickySkyboxPrefabObjects[i].HierarchyRender();
+                        TrickyDataManager.trickySkyboxModelObjects[i].HierarchyRender();
                     }
                 }
             }
