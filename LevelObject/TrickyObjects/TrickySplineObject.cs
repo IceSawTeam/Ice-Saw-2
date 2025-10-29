@@ -164,10 +164,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             public Vector3 Point2;
             public Vector3 Point3;
             public Vector3 Point4;
-            public float U0;
-            public float U1;
-            public float U2;
-            public float U3;
 
             public Vector3 LocalPoint1;
             public Vector3 LocalPoint2;
