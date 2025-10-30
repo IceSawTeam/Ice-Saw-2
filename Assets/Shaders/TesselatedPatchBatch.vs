@@ -7,44 +7,43 @@ in vec2 vertexTexCoord2;
 in mat4 instanceTransform; // Always Identity
 
 // Input uniform values
-const int patchCount = 8;
 uniform mat4 mvp;
+
+const int patchCount = 8;
 uniform vec3 controlPoints[patchCount * 16];
 uniform vec2 diffuseTextureUVs[patchCount * 4];
 uniform vec2 lightmapTextureUVs[patchCount * 4];
-uniform int highlight[patchCount]; // 0 - false, 1 - true
 
 // Output vertex attributes (to fragment shader)
 out vec3 fragPosition;
 out vec2 fragTexCoord;
 out vec2 fragTexCoord2;
-flat out int fragHighlighted;
 flat out int instanceId;
 
 
 void main() {
+
     // Set texcoords for texture
+    vec2 vertexDiffuseTextureUVs[4];
     for (int i = 0; i < 4; i++) {
-        int textureIndex = gl_InstanceID * 4 + i;
-        fragTexCoord = diffuseTextureUVs[textureIndex];
+        vertexDiffuseTextureUVsp[i] = diffuseTextureUVs[gl_InstanceID * 4 + i];
     }
+    fragTexCoord = UVInterpolate(vertexDiffuseTextureUVs, vertexTexCoord);
 
     // Set texcoords for lightmaps
+    vec2 vertexLightmapTextureUVs[4];
     for (int i = 0; i < 4; i++) {
-        int lightmapIndex = gl_InstanceID * 4 + i;
-        fragTexCoord2 = lightmapTextureUVs[lightmapIndex];
+        vertexLightmapTextureUVs[i] = lightmapTextureUVs[gl_InstanceID * 4 + i];
     }
+    fragTexCoord = UVInterpolate(vertexLightmapTextureUVs, vertexTexCoord2);
 
-    // Set the vertex positions
+    // Get the control points
     vec3 vertexControlPoints[16];
     for (int i = 0; i < 16; i++) {
-        int cpIndex = gl_InstanceID * 16 + gl_VertexID;
-        vertexControlPoints[i] = controlPoints[cpIndex];
+        vertexControlPoints[i] = controlPoints[gl_InstanceID * 16 + gl_VertexID];
     }
 
-    // Send other vertex attributes to fragment shader,
-    // and set the vertex position.
-    fragHighlighted = highlight[gl_InstanceID];
+    // Set the vertex position based on the control points.
     vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
     fragPosition = pos;
     gl_Position = pos;
