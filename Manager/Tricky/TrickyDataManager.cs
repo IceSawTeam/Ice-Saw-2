@@ -334,17 +334,12 @@ namespace IceSaw2.Manager.Tricky
             if (trickySkyboxPrefabObjects.Count != 0)
             {
                 var Skybox = Batch.Skybox.FromLoaded(trickySkyboxPrefabObjects[0]);
-
                 meshSkybox = new MeshRef(Skybox.Item1);
-
                 Raylib.UploadMesh(ref meshSkybox.Mesh, false);
-
                 textureSkybox = Raylib.LoadTextureFromImage(Skybox.Item2);
-
                 Material material = Raylib.LoadMaterialDefault();
-
+                Raylib.SetTextureFilter(textureSkybox, TextureFilter.Bilinear);
                 Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Albedo, textureSkybox);
-
                 materialSkybox = new MaterialRef(material);
             }
         }
