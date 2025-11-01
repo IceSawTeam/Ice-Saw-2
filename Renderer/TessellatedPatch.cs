@@ -81,16 +81,16 @@ namespace IceSaw2.Renderer
             entry.LightmapUV[2] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
             entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
 
-            if (foundEmptySpot)
-            {
+            //if (foundEmptySpot)
+            //{
 
-                _patchEntries[foundID] = entry;
-            }
-            else
-            {
+            //    _patchEntries[foundID] = entry;
+            //}
+            //else
+            //{
                 _patchEntries.Add(entry);
-                foundID = _patchEntries.Count - 1;
-            }
+            //    foundID = _patchEntries.Count - 1;
+            //}
             return foundID;
         }
 
@@ -147,9 +147,9 @@ namespace IceSaw2.Renderer
             // Frustum cull and fill draw list
             foreach (var entry in _patchEntries)
             {
-                if (entry == null) continue;
-                if (SphereIn(frustum, entry.Sphere))
-                {
+                //if (entry == null) continue;
+                //if (SphereIn(frustum, entry.Sphere))
+                //{
                     _drawList.InstanceMatrix.Add(Matrix4x4.Identity);
                     _drawList.Controlpoints.AddRange(entry.Controlpoints);
                     _drawList.Texture.Add(entry.Texture);
@@ -157,17 +157,33 @@ namespace IceSaw2.Renderer
                     _drawList.LightmapID.Add(entry.LightmapID);
                     _drawList.LightmapUV.AddRange(entry.LightmapUV);
                     _drawList.Highlighted.Add(entry.Highlighted);
-                    break;
+                    //break;
+                //}
+            }
+
+            if (8 - (_drawList.Texture.Count % 8) != 8)
+            {
+                var Count = _drawList.Texture.Count;
+                for (int i = 0; i < 8 - (Count % 8); i++)
+                {
+                    var entry = _patchEntries[i];
+                    _drawList.InstanceMatrix.Add(Matrix4x4.Identity);
+                    _drawList.Controlpoints.AddRange(entry.Controlpoints);
+                    _drawList.Texture.Add(entry.Texture);
+                    _drawList.TextureUV.AddRange(entry.TextureUV);
+                    _drawList.LightmapID.Add(entry.LightmapID);
+                    _drawList.LightmapUV.AddRange(entry.LightmapUV);
+                    _drawList.Highlighted.Add(entry.Highlighted);
                 }
             }
 
             int drawListIndex = 0;
             while (true)
             {
-                int batchSize = Math.Min(8, _drawList.InstanceMatrix.Count - drawListIndex);
+                int batchSize = Math.Min(8, _drawList.InstanceMatrix.Count - drawListIndex*8);
                 if (batchSize <= 0) break;
-                for (int i = 0; i < batchSize; i++)
-                {
+                //for (int i = 0; i < batchSize; i++)
+                //{
                     unsafe
                     {
                         int* locs = _material.Shader.Locs;
@@ -229,7 +245,7 @@ namespace IceSaw2.Renderer
                         _drawList.InstanceMatrix.GetRange(drawListIndex, batchSize).ToArray(),
                         batchSize
                     );
-                }
+                //}
                 drawListIndex += 1;
             }
         }

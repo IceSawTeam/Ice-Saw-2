@@ -15,18 +15,48 @@ uniform vec2 diffuseTextureUVs[patchCount * 4];
 uniform vec2 lightmapTextureUVs[patchCount * 4];
 
 // Output vertex attributes (to fragment shader)
-out vec3 fragPosition;
+out vec4 fragPosition;
 out vec2 fragTexCoord;
 out vec2 fragTexCoord2;
 flat out int instanceId;
 
+vec2 UVInterpolate(vec2 uv[4], vec2 blendPosition) {
+    // Quadrilateral interpolation
+    vec2 a = mix(uv[0], uv[2], blendPosition.x);
+    vec2 b = mix(uv[1], uv[3], blendPosition.y);
+    return mix(a, b, blendPosition.y);
+}
+
+vec3 BezierInterpolate(vec3 p0, vec3 p1, vec3 p2, vec3 p3, float t) {
+    vec3 q0 = mix(p0, p1, t);
+    vec3 q1 = mix(p1, p2, t);
+    vec3 q2 = mix(p2, p3, t);
+    vec3 a =  mix(q0, q1, t);
+    vec3 b =  mix(q1, q2, t);
+    return mix(a, b, t);
+}
+
+vec3 EvaluateBezierSurface(in vec3 controlPoints[16], vec2 uv) {
+    // Compute 4 control points along the u direction
+    vec3 uPoints[4];
+    for (int i = 0; i < 4; i++) {
+        int row = i * 4;
+        vec3 p0 = controlPoints[row];
+        vec3 p1 = controlPoints[row + 1];
+        vec3 p2 = controlPoints[row + 2];
+        vec3 p3 = controlPoints[row + 3];
+        uPoints[i] = BezierInterpolate(p0, p1, p2, p3, uv.x);
+    }
+    // Compute the final position on the surface using v
+    return BezierInterpolate(uPoints[0], uPoints[1], uPoints[2], uPoints[3], uv.y);
+}
 
 void main() {
 
     // Set texcoords for texture
     vec2 vertexDiffuseTextureUVs[4];
     for (int i = 0; i < 4; i++) {
-        vertexDiffuseTextureUVsp[i] = diffuseTextureUVs[gl_InstanceID * 4 + i];
+        vertexDiffuseTextureUVs[i] = diffuseTextureUVs[gl_InstanceID * 4 + i];
     }
     fragTexCoord = UVInterpolate(vertexDiffuseTextureUVs, vertexTexCoord);
 
@@ -47,35 +77,4 @@ void main() {
     vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
     fragPosition = pos;
     gl_Position = pos;
-}
-
-vec3 EvaluateBezierSurface(in vec3 controlPoints[16], vec2 uv) {
-    // Compute 4 control points along the u direction
-    vec3 uPoints[4];
-    for (int i = 0; i < 4; i++) {
-        int row = i * 4;
-        vec3 p0 = controlPoints[row];
-        vec3 p1 = controlPoints[row + 1];
-        vec3 p2 = controlPoints[row + 2];
-        vec3 p3 = controlPoints[row + 3];
-        uPoints[i] = BezierInterpolate(p0, p1, p2, p3, uv.x)
-    }
-    // Compute the final position on the surface using v
-    return BezierInterpolate(uPoints[0], uPoints[1], uPoints[2], uPoints[3], uv.y);
-}
-
-vec3 BezierInterpolate(vec3 p0, vec3 p1, vec3 p2, vec3 p3, float t) {
-    vec3 q0 = mix(p0, p1, t);
-    vec3 q1 = mix(p1, p2, t);
-    vec3 q2 = mix(p2, p3, t);
-    vec3 a =  mix(q0, q1, t)
-    vec3 b =  mix(q1, q2, t)
-    return mix(a, b, t);
-}
-
-vec2 UVInterpolate(vec2 uv[4], vec2 blendPosition) {
-    // Quadrilateral interpolation
-    vec2 a = mix(uv[0], uv[2], blendPosition.x);
-    vec2 b = mix(uv[1], uv[3], blendPosition.y);
-    return mix(a, b, blendPosition.y);
 }

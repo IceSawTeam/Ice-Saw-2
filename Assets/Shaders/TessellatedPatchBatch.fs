@@ -7,7 +7,7 @@ in vec2 fragTexCoord2;
 flat in int instanceId; // Used to index throught the uniforms below, 0 - 7
 
 // Input uniform values
-uniform sampler2D diffuseTextures[8];
+uniform sampler2D deffuseTextures[8];
 uniform sampler2D lightmapTextures[8];
 uniform int highlighted[8]; // 0 - false, 1 - true
 uniform int lightmapsEnabled; // 0 - false, 1 - true
