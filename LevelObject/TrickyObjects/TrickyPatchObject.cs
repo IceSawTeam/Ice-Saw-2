@@ -63,7 +63,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 for (int x = 0; x < 4; x++)
                 {
-                    vector3s.Add(WorldPoints[x, y]);
+                    vector3s.Add(WorldPoints[x, y]*WorldScale);
                 }
             }
 
