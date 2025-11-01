@@ -1,4 +1,7 @@
+using IceSaw2.Utilities;
+using Raylib_cs;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace IceSaw2.Renderer
 {
@@ -284,6 +287,7 @@ namespace IceSaw2.Renderer
                         var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
                         var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
                         Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, srcRect, destRect, Raylib_cs.Color.Black);
+                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.Black);
                     }
                 }
                 _paddedLightmaps.Add(Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap));

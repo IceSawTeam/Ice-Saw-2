@@ -60,6 +60,8 @@ namespace IceSaw2.EditorWindows
             //GenerateRenderList();
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
 
+            Renderer.TessellatedPatch.Instance.Render();
+
             //Render Objects
             for (int i = 0; i < RenderList.Length; i++)
             {
@@ -97,12 +99,10 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Outliner Panel", flags);
             ImGui.Text("Outliner");
 
-            Renderer.TessellatedPatch.Instance.Render();
-
-            //for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
-            //{
-            //    TrickyDataManager.LevelNodeTree[i].HierarchyRender();
-            //}
+            for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
+            {
+                TrickyDataManager.LevelNodeTree[i].HierarchyRender();
+            }
 
             ImGui.End();
             //ImGui.PopStyleVar(2);
@@ -169,7 +169,7 @@ namespace IceSaw2.EditorWindows
         {
             RenderItems = new List<BaseObject>();
 
-            RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
             RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
             RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
             RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
