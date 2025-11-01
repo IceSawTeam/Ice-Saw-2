@@ -286,7 +286,6 @@ namespace IceSaw2.Renderer
                         var srcRect = new Raylib_cs.Rectangle(x * 8, y * 8, 8, 8);
                         var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
                         var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
-                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, srcRect, destRect, Raylib_cs.Color.Black);
                         Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.Black);
                     }
                 }
