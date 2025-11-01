@@ -165,66 +165,71 @@ namespace IceSaw2.Renderer
             int StandardBatchSize = 8;
             while (true)
             {
-                int batchSize = Math.Min(StandardBatchSize, _drawList.InstanceMatrix.Count - drawListIndex*8);
+                int batchSize = Math.Min(StandardBatchSize, _drawList.InstanceMatrix.Count - drawListIndex * 8);
                 if (batchSize <= 0) break;
                 //for (int i = 0; i < batchSize; i++)
                 //{
-                    Raylib_cs.Raylib.SetShaderValueV(
+                unsafe
+                {
+                    int* locs = _material.Shader.Locs;
+                    locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "instanceTransform");
+                }
+                Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints"),
-                        _drawList.Controlpoints.GetRange(drawListIndex * (16 * StandardBatchSize), 16*batchSize).ToArray(),
+                        _drawList.Controlpoints.GetRange(drawListIndex * (16 * StandardBatchSize), 16 * batchSize).ToArray(),
                         Raylib_cs.ShaderUniformDataType.Vec3,
                         16
                     );
-                    Raylib_cs.Raylib.SetShaderValueV(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs"),
-                        _drawList.TextureUV.GetRange(drawListIndex * (4 * StandardBatchSize), 4 * batchSize).ToArray(),
-                        Raylib_cs.ShaderUniformDataType.Vec2,
-                        4
-                    );
-                    Raylib_cs.Raylib.SetShaderValueV(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextures"),
-                        _drawList.Texture.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                        Raylib_cs.ShaderUniformDataType.Sampler2D,
-                        8
-                    );
+                Raylib_cs.Raylib.SetShaderValueV(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs"),
+                    _drawList.TextureUV.GetRange(drawListIndex * (4 * StandardBatchSize), 4 * batchSize).ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Vec2,
+                    4
+                );
+                Raylib_cs.Raylib.SetShaderValueV(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextures"),
+                    _drawList.Texture.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Sampler2D,
+                    8
+                );
 
-                    Raylib_cs.Texture2D[] lightmapTextures = new Raylib_cs.Texture2D[batchSize];
-                    for (int lmIndex = 0; lmIndex < batchSize; lmIndex++)
-                    {
-                        lightmapTextures[lmIndex] = _paddedLightmaps[_drawList.LightmapID[drawListIndex * StandardBatchSize + lmIndex]];
-                    }
-                    Raylib_cs.Raylib.SetShaderValueV(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextures"),
-                        lightmapTextures.ToArray(),
-                        Raylib_cs.ShaderUniformDataType.Sampler2D,
-                        8
-                    );
+                Raylib_cs.Texture2D[] lightmapTextures = new Raylib_cs.Texture2D[batchSize];
+                for (int lmIndex = 0; lmIndex < batchSize; lmIndex++)
+                {
+                    lightmapTextures[lmIndex] = _paddedLightmaps[_drawList.LightmapID[drawListIndex * StandardBatchSize + lmIndex]];
+                }
+                Raylib_cs.Raylib.SetShaderValueV(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextures"),
+                    lightmapTextures.ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Sampler2D,
+                    8
+                );
 
-                    Raylib_cs.Raylib.SetShaderValueV(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted"),
-                        _drawList.Highlighted.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                        Raylib_cs.ShaderUniformDataType.Sampler2D,
-                        8
-                    );
+                Raylib_cs.Raylib.SetShaderValueV(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted"),
+                    _drawList.Highlighted.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Sampler2D,
+                    8
+                );
 
-                    Raylib_cs.Raylib.SetShaderValue(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
-                        LightmapEnabled,
-                        Raylib_cs.ShaderUniformDataType.Int
-                    );
+                Raylib_cs.Raylib.SetShaderValue(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
+                    LightmapEnabled,
+                    Raylib_cs.ShaderUniformDataType.Int
+                );
 
-                    Raylib_cs.Raylib.DrawMeshInstanced(
-                        _mesh,
-                        _material,
-                        _drawList.InstanceMatrix.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                        batchSize
-                    );
+                Raylib_cs.Raylib.DrawMeshInstanced(
+                    _mesh,
+                    _material,
+                    _drawList.InstanceMatrix.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
+                    batchSize
+                );
                 //}
                 drawListIndex += 1;
             }
