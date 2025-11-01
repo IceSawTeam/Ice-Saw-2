@@ -27,8 +27,11 @@ namespace IceSaw2.Renderer
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
             GeneratePaddedLightmaps(lightmaps);
+            Raylib.SetTraceLogLevel(TraceLogLevel.All);
+
             var shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
                                             LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.fs", System.Text.Encoding.UTF8));
+            Raylib.SetTraceLogLevel(TraceLogLevel.Info);
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
         }
