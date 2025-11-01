@@ -97,10 +97,12 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Outliner Panel", flags);
             ImGui.Text("Outliner");
 
-            for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
-            {
-                TrickyDataManager.LevelNodeTree[i].HierarchyRender();
-            }
+            Renderer.TessellatedPatch.Instance.Render();
+
+            //for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
+            //{
+            //    TrickyDataManager.LevelNodeTree[i].HierarchyRender();
+            //}
 
             ImGui.End();
             //ImGui.PopStyleVar(2);

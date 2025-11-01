@@ -75,6 +75,15 @@ namespace IceSaw2.Manager.Tricky
             LoadSkybox();
 
             LoadTreeNode();
+
+            List<Image>? LightmapArray = new List<Image>();
+
+            for (int i = 0; i < lightmapTexture2Ds.Count; i++)
+            {
+                LightmapArray.Add(Raylib.LoadImageFromTexture(lightmapTexture2Ds[i].texture2D));
+            }
+
+            Renderer.TessellatedPatch.Instance.Init(LightmapArray);
         }
 
         public static void LoadTextureMesh()

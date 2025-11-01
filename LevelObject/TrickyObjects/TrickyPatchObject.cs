@@ -1,5 +1,6 @@
 ﻿using IceSaw2.Manager.Tricky;
 using IceSaw2.RayWarp;
+using IceSaw2.Renderer;
 using NURBS;
 using Raylib_cs;
 using SSXMultiTool.JsonFiles.Tricky;
@@ -22,6 +23,11 @@ namespace IceSaw2.LevelObject.TrickyObjects
         Surface? surface;
 
         bool MeshLoaded =false;
+
+        public TrickyPatchObject()
+        {
+            //Renderer.TessellatedPatch.Instance.AddPatch();
+        }
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
         {
@@ -51,7 +57,27 @@ namespace IceSaw2.LevelObject.TrickyObjects
             TexturePath = patchJson.TexturePath;
             LightmapID = patchJson.LightmapID;
 
-            GeneratePatch();
+            List<Vector3> vector3s = new List<Vector3>();
+
+            for (int y = 0; y < 4; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    vector3s.Add(WorldPoints[x, y]);
+                }
+            }
+
+            List<Vector2> vector2s = new List<Vector2>();
+
+            vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y));
+            vector2s.Add(new Vector2(LightMapPoint.X+ LightMapPoint.Z, LightMapPoint.Y));
+            vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W));
+            vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W));
+
+            TessellatedPatch.Instance.AddPatch(vector3s, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, LightmapID, vector2s, false);
+
+
+            //GeneratePatch();
         }
 
         public void GeneratePatch()
