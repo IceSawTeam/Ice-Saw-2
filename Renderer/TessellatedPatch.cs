@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 namespace IceSaw2.Renderer
 {
-    public class TesselatedPatch
+    public class TessellatedPatch
     {
-        private TesselatedPatch() { }
-        private static readonly TesselatedPatch _instance = new();
-        public static TesselatedPatch Instance { get { return _instance; } }
+        private TessellatedPatch() { }
+        private static readonly TessellatedPatch _instance = new();
+        public static TessellatedPatch Instance { get { return _instance; } }
 
         private const float LightmapPixelSize = 0.00625f; // Pixel size for a 160x160 lightmap;
 
@@ -26,8 +26,8 @@ namespace IceSaw2.Renderer
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
             GeneratePaddedLightmaps(lightmaps);
             var shader = Raylib_cs.Raylib.LoadShader(
-                "/home/eric/Documents/Github/Ice-Saw-2/Assets/Shaders/TesselatedPatchBatch.vs",
-                "/home/eric/Documents/Github/Ice-Saw-2/Assets/Shaders/TesselatedPatchBatch.fs"
+                "/home/eric/Documents/Github/Ice-Saw-2/Assets/Shaders/TessellatedPatchBatch.vs",
+                "/home/eric/Documents/Github/Ice-Saw-2/Assets/Shaders/TessellatedPatchBatch.fs"
             );
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
