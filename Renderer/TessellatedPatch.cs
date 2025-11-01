@@ -161,60 +161,40 @@ namespace IceSaw2.Renderer
                 //}
             }
 
-            if (8 - (_drawList.Texture.Count % 8) != 8)
-            {
-                var Count = _drawList.Texture.Count;
-                for (int i = 0; i < 8 - (Count % 8); i++)
-                {
-                    var entry = _patchEntries[i];
-                    _drawList.InstanceMatrix.Add(Matrix4x4.Identity);
-                    _drawList.Controlpoints.AddRange(entry.Controlpoints);
-                    _drawList.Texture.Add(entry.Texture);
-                    _drawList.TextureUV.AddRange(entry.TextureUV);
-                    _drawList.LightmapID.Add(entry.LightmapID);
-                    _drawList.LightmapUV.AddRange(entry.LightmapUV);
-                    _drawList.Highlighted.Add(entry.Highlighted);
-                }
-            }
-
             int drawListIndex = 0;
+            int StandardBatchSize = 8;
             while (true)
             {
-                int batchSize = Math.Min(8, _drawList.InstanceMatrix.Count - drawListIndex*8);
+                int batchSize = Math.Min(StandardBatchSize, _drawList.InstanceMatrix.Count - drawListIndex*8);
                 if (batchSize <= 0) break;
                 //for (int i = 0; i < batchSize; i++)
                 //{
-                    unsafe
-                    {
-                        int* locs = _material.Shader.Locs;
-                        locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "instanceTransform");
-                    }
                     Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints"),
-                        _drawList.Controlpoints.GetRange(drawListIndex * 16, 16).ToArray(),
+                        _drawList.Controlpoints.GetRange(drawListIndex * (16 * StandardBatchSize), 16*batchSize).ToArray(),
                         Raylib_cs.ShaderUniformDataType.Vec3,
                         16
                     );
                     Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs"),
-                        _drawList.TextureUV.GetRange(drawListIndex * 4, 4).ToArray(),
+                        _drawList.TextureUV.GetRange(drawListIndex * (4 * StandardBatchSize), 4 * batchSize).ToArray(),
                         Raylib_cs.ShaderUniformDataType.Vec2,
                         4
                     );
                     Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextures"),
-                        _drawList.Texture.GetRange(drawListIndex * 8, 8).ToArray(),
+                        _drawList.Texture.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
                         Raylib_cs.ShaderUniformDataType.Sampler2D,
                         8
                     );
 
-                    Raylib_cs.Texture2D[] lightmapTextures = new Raylib_cs.Texture2D[8];
-                    for (int lmIndex = 0; lmIndex < 8; lmIndex++)
+                    Raylib_cs.Texture2D[] lightmapTextures = new Raylib_cs.Texture2D[batchSize];
+                    for (int lmIndex = 0; lmIndex < batchSize; lmIndex++)
                     {
-                        lightmapTextures[lmIndex] = _paddedLightmaps[_drawList.LightmapID[drawListIndex * 8 + lmIndex]];
+                        lightmapTextures[lmIndex] = _paddedLightmaps[_drawList.LightmapID[drawListIndex * StandardBatchSize + lmIndex]];
                     }
                     Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
@@ -227,7 +207,7 @@ namespace IceSaw2.Renderer
                     Raylib_cs.Raylib.SetShaderValueV(
                         _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted"),
-                        _drawList.Highlighted.GetRange(drawListIndex * 8, 8).ToArray(),
+                        _drawList.Highlighted.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
                         Raylib_cs.ShaderUniformDataType.Sampler2D,
                         8
                     );
@@ -242,7 +222,7 @@ namespace IceSaw2.Renderer
                     Raylib_cs.Raylib.DrawMeshInstanced(
                         _mesh,
                         _material,
-                        _drawList.InstanceMatrix.GetRange(drawListIndex, batchSize).ToArray(),
+                        _drawList.InstanceMatrix.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
                         batchSize
                     );
                 //}
