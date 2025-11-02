@@ -127,51 +127,79 @@ namespace IceSaw2.EditorWindows
             var vp = ImGui.GetMainViewport();
             var vpPos = vp.Pos;
             var vpSize = vp.Size;
+            float menuBarHeight = ImGui.GetFrameHeight();
 
-            #region Secondary Top Bar
-            // Calculate position below main menu bar
-            float yOffset = ImGui.GetFrameHeight(); // Main menu height
 
-            ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, yOffset), ImGuiCond.Always);
-            ImGui.SetNextWindowSize(new System.Numerics.Vector2(vpSize.X, 16f/*yOffset-20*/));
+            // --- SUB TABS ---
 
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
-            //ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new System.Numerics.Vector2(8, 9));
-            //ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0.6f, 0.6f, 0.6f, 1f)); // color test
+            ImGui.SetNextWindowPos(new Vector2(vpPos.X, vpPos.Y + menuBarHeight));
+            ImGui.SetNextWindowSize(new Vector2(vpSize.X, menuBarHeight + 2));
+
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(4, 0));
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(4, 2));
+            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Vector2(0, 0)); // prevent min height override
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, ImGui.GetColorU32(ImGuiCol.MenuBarBg));
 
             ImGui.Begin("TabStrip", ImGuiWindowFlags.NoTitleBar |
-                                     ImGuiWindowFlags.NoResize |
-                                     ImGuiWindowFlags.NoMove |
-                                     ImGuiWindowFlags.NoScrollbar |
-                                     ImGuiWindowFlags.NoSavedSettings |
-                                     ImGuiWindowFlags.NoCollapse);
+                                    ImGuiWindowFlags.NoResize |
+                                    ImGuiWindowFlags.NoMove |
+                                    ImGuiWindowFlags.NoScrollbar |
+                                    ImGuiWindowFlags.NoSavedSettings |
+                                    ImGuiWindowFlags.NoCollapse |
+                                    ImGuiWindowFlags.NoBringToFrontOnFocus |
+                                    ImGuiWindowFlags.NoNavFocus |
+                                    ImGuiWindowFlags.NoDocking);
+
+            // centered
+            float totalWidth = 0f;
+            for (int i = 0; i < tabs.Length; i++)
+            {
+                Vector2 textSize = ImGui.CalcTextSize(tabs[i]);
+                float buttonWidth = textSize.X + ImGui.GetStyle().FramePadding.X * 2f;
+                totalWidth += buttonWidth;
+                if (i < tabs.Length - 1)
+                    totalWidth += ImGui.GetStyle().ItemSpacing.X;
+            }
+
+            float availWidth = ImGui.GetWindowSize().X;
+            float startX = (availWidth - totalWidth) * 0.5f;
+            if (startX < 0) startX = 0;
+
+            ImGui.SetCursorPosX(startX);
+
 
             for (int i = 0; i < tabs.Length; i++)
             {
-                if (i > 0) ImGui.SameLine();
+                if (i == selectedTab)
+                    ImGui.PushStyleColor(ImGuiCol.Button, ImGui.GetColorU32(ImGuiCol.Header));
+                else
+                    ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 0f));
 
-                bool isSelected = (selectedTab == i);
-
-                if (ImGui.Selectable(tabs[i], isSelected, ImGuiSelectableFlags.None, new System.Numerics.Vector2(120, 0)))
-                {
+                if (ImGui.Button(tabs[i]))
                     selectedTab = i;
 
-                    ShowSkybox = selectedTab >= 2;
-                    ShowMaterials = selectedTab == 1 || selectedTab == 3;
-                }
+                ImGui.PopStyleColor();
+
+                if (i < tabs.Length - 1)
+                    ImGui.SameLine();
             }
 
             ImGui.End();
-            ImGui.PopStyleVar(2);
-            //ImGui.PopStyleColor(); // color test
-            #endregion
+
+            ImGui.PopStyleColor();
+            ImGui.PopStyleVar(5);
+
+            ShowSkybox = selectedTab >= 2;
+            ShowMaterials = selectedTab == 1 || selectedTab == 3;
 
 
 
+            // --- OUTLINER ---
 
             // Dimensions
-            float menuBarHeight = ImGui.GetFrameHeight() + 32; // Note: this includes both top bars.
+            menuBarHeight += 22; // Note: this includes both top bars.
             float outlinerWidth = 300;
             float inspectorWidth = 300;
             float viewportWidth = Math.Max(100f, vpSize.X - outlinerWidth - inspectorWidth);
@@ -184,7 +212,7 @@ namespace IceSaw2.EditorWindows
                              ImGuiWindowFlags.NoBringToFrontOnFocus |
                              ImGuiWindowFlags.NoFocusOnAppearing;
 
-            // --- OUTLINER ---
+            
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSize(new System.Numerics.Vector2(outlinerWidth, vpSize.Y /*Raylib.GetScreenHeight() - menuBarHeight*/), ImGuiCond.Always);
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
@@ -277,7 +305,7 @@ namespace IceSaw2.EditorWindows
             //                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
+            ImGui.TextWrapped("This is the viewport area. Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test End");
             ImGui.EndChild();
 
             ImGui.End();
