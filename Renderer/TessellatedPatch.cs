@@ -276,16 +276,13 @@ namespace IceSaw2.Renderer
                     indexCount += 6;
                 }
             }
-
-            var sus = Raylib_cs.Raylib.ExportMesh(_mesh, "/home/eric/Downloads/tessellated_patch_mesh.obj");
         }
 
         private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps)
         {
             foreach (var lightmap in lightmaps)
             {
-                var paddedLightmap = Raylib_cs.Raylib.GenImageColor(160, 160, Raylib_cs.Color.Black);
-
+                var paddedLightmap = Raylib_cs.Raylib.GenImageColor(160, 160, Raylib_cs.Color.Blank);
                 for (int y = 0; y < 16; y++)
                 {
                     for (int x = 0; x < 16; x++)
@@ -293,7 +290,7 @@ namespace IceSaw2.Renderer
                         var srcRect = new Raylib_cs.Rectangle(x * 8, y * 8, 8, 8);
                         var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
                         var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
-                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.Black);
+                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.White);
                     }
                 }
                 _paddedLightmaps.Add(Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap));
@@ -304,7 +301,7 @@ namespace IceSaw2.Renderer
         {
             var result = Raylib_cs.Raylib.GenImageColor(image.Width + padding * 2,
                                                         image.Height + padding * 2,
-                                                        Raylib_cs.Color.Black);
+                                                        Raylib_cs.Color.Blank);
 
             // Paste image's center
             var src = new Raylib_cs.Rectangle(0, 0, image.Width, image.Height);

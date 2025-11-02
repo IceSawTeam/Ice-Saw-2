@@ -75,7 +75,12 @@ void main() {
     }
 
     // Set the vertex position based on the control points.
-    vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
+    // vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
+    // fragPosition = pos.xyz;
+    // gl_Position = pos;
+
+    // Debug
+    vec4 pos = vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
     fragPosition = pos.xyz;
-    gl_Position = pos;
+    gl_Position = mvp * pos;
 }

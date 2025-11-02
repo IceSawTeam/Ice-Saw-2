@@ -82,4 +82,5 @@ void main() {
         texelColor *= HIGHLIGHT_TINT;
     }
     finalColor = texelColor;
+    finalColor = vec4(1, 0, 1, 1); // DEBUG
 }
