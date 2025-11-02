@@ -74,7 +74,10 @@ namespace IceSaw2.LevelObject.TrickyObjects
             vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W));
             vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W));
 
-            TessellatedPatch.Instance.AddPatch(vector3s, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, LightmapID, vector2s, false);
+            // if (TessellatedPatch.Instance.PatchCount() < 1)
+            // {
+                TessellatedPatch.Instance.AddPatch(vector3s, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, LightmapID, vector2s, false);
+            // }
 
 
             //GeneratePatch();

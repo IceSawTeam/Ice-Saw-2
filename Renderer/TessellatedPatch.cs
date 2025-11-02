@@ -12,14 +12,20 @@ namespace IceSaw2.Renderer
 
         private const float LightmapPixelSize = 0.00625f; // Pixel size for a 160x160 lightmap;
 
-        private Raylib_cs.Mesh _mesh = new();
-        private Raylib_cs.Material _material = new();
-        private readonly List<RenderPatchEntry?> _patchEntries = [];
+        private Raylib_cs.Mesh _mesh;
+        private Raylib_cs.Material _material;
         private readonly List<Raylib_cs.Texture2D> _paddedLightmaps = [];
-        private DrawList _drawList = new();
+        private readonly List<PatchEntry?> _patchEntries = [];
+        private readonly List<Batch> _drawList = [];
 
         public bool WireOverlayEnabled = false;
         public bool LightmapEnabled = true;
+
+        // DEBUG
+        public int PatchCount()
+        {
+            return _patchEntries.Count;
+        }
 
         public void Init(List<Raylib_cs.Image> lightmaps)
         {
@@ -64,7 +70,7 @@ namespace IceSaw2.Renderer
                 }
             }
 
-            RenderPatchEntry entry = new()
+            PatchEntry entry = new()
             {
                 Controlpoints = Controlpoints,
                 Texture = Texture,
@@ -80,16 +86,15 @@ namespace IceSaw2.Renderer
             entry.LightmapUV[2] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
             entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
 
-            //if (foundEmptySpot)
-            //{
-
-            //    _patchEntries[foundID] = entry;
-            //}
-            //else
-            //{
+            if (foundEmptySpot)
+            {
+               _patchEntries[foundID] = entry;
+            }
+            else
+            {
                 _patchEntries.Add(entry);
-            //    foundID = _patchEntries.Count - 1;
-            //}
+               foundID = _patchEntries.Count - 1;
+            }
             return foundID;
         }
 
@@ -140,97 +145,87 @@ namespace IceSaw2.Renderer
 
         public void Render()
         {
+            unsafe { if (_material.Shader.Locs == null) return; }
             _drawList.Clear();
-            var frustum = GetFrustum();
+            // var frustum = GetFrustum();
 
-            // Frustum cull and fill draw list
+            // Frustum cull and fill draw list by batching them
+            _drawList.Add(new());
             foreach (var entry in _patchEntries)
             {
+                if (_drawList.Last().PatchCount == 8) _drawList.Add(new());
+                Batch lastBatch = _drawList.Last();
+
                 if (entry == null) continue;
-                //if (SphereIn(frustum, entry.Sphere))
-                //{
-                    _drawList.InstanceMatrix.Add(Matrix4x4.Identity);
-                    _drawList.Controlpoints.AddRange(entry.Controlpoints);
-                    _drawList.Texture.Add(entry.Texture);
-                    _drawList.TextureUV.AddRange(entry.TextureUV);
-                    _drawList.LightmapID.Add(entry.LightmapID);
-                    _drawList.LightmapUV.AddRange(entry.LightmapUV);
-                    _drawList.Highlighted.Add(entry.Highlighted);
-                    //break;
-                //}
+                // if (SphereIn(frustum, entry.Sphere)) TODO
+                // {
+                    lastBatch.Patches.Add(entry);
+                    lastBatch.PatchCount++;
+                // }
             }
 
-            int drawListIndex = 0;
-            int StandardBatchSize = 8;
-            while (true)
+            foreach (var batch in _drawList)
             {
-                int batchSize = Math.Min(StandardBatchSize, _drawList.InstanceMatrix.Count - drawListIndex * 8);
-                if (batchSize <= 0) break;
-                //for (int i = 0; i < batchSize; i++)
-                //{
-                unsafe
-                {
-                    int* locs = _material.Shader.Locs;
-                    locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "instanceTransform");
-                }
-                Raylib_cs.Raylib.SetShaderValueV(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints"),
-                        _drawList.Controlpoints.GetRange(drawListIndex * (16 * StandardBatchSize), 16 * batchSize).ToArray(),
-                        Raylib_cs.ShaderUniformDataType.Vec3,
-                        16
-                    );
+                unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform");}
+
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs"),
-                    _drawList.TextureUV.GetRange(drawListIndex * (4 * StandardBatchSize), 4 * batchSize).ToArray(),
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
+                    batch.GetMergedControlPoints().ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Vec3,
+                    128
+                );
+                Raylib_cs.Raylib.SetShaderValueV(
+                    _material.Shader,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]"),
+                    batch.GetMergedDiffuseTextureUVs().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
-                    4
+                    32
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextures"),
-                    _drawList.Texture.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                    Raylib_cs.ShaderUniformDataType.Sampler2D,
-                    8
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]"),
+                    batch.GetMergedLightmapTextureUVs().ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Vec2,
+                    32
                 );
 
-                Raylib_cs.Texture2D[] lightmapTextures = new Raylib_cs.Texture2D[batchSize];
-                for (int lmIndex = 0; lmIndex < batchSize; lmIndex++)
+                // Textures
+                for (int i = 0; i < batch.PatchCount; i++)
                 {
-                    lightmapTextures[lmIndex] = _paddedLightmaps[_drawList.LightmapID[drawListIndex * StandardBatchSize + lmIndex]];
+                    Raylib_cs.Raylib.SetShaderValueTexture(
+                        _material.Shader,
+                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"diffuseTextures[{i}]"),
+                        batch.Patches[i].Texture
+                    );
+                    Raylib_cs.Raylib.SetShaderValueTexture(
+                        _material.Shader,
+                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"lightmapTextures[{i}]"),
+                        _paddedLightmaps[batch.Patches[i].LightmapID]
+                    );
                 }
-                Raylib_cs.Raylib.SetShaderValueV(
-                    _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextures"),
-                    lightmapTextures.ToArray(),
-                    Raylib_cs.ShaderUniformDataType.Sampler2D,
-                    8
-                );
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted"),
-                    _drawList.Highlighted.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                    Raylib_cs.ShaderUniformDataType.Sampler2D,
+                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]"),
+                    batch.GetMergedHighlighted().ToArray(),
+                    Raylib_cs.ShaderUniformDataType.Int,
                     8
                 );
-
                 Raylib_cs.Raylib.SetShaderValue(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
-                    LightmapEnabled,
+                    LightmapEnabled ? 1 : 0,
                     Raylib_cs.ShaderUniformDataType.Int
                 );
 
+                Matrix4x4[] identities = new Matrix4x4[batch.PatchCount];
                 Raylib_cs.Raylib.DrawMeshInstanced(
                     _mesh,
                     _material,
-                    _drawList.InstanceMatrix.GetRange(drawListIndex * StandardBatchSize, batchSize).ToArray(),
-                    batchSize
+                    identities,
+                    batch.PatchCount
                 );
-                //}
-                drawListIndex += 1;
             }
         }
 
@@ -379,7 +374,7 @@ namespace IceSaw2.Renderer
             return plane.X * position.X + plane.Y * position.Y + plane.Z * position.Z + plane.W;
         }
 
-        private class RenderPatchEntry
+        private class PatchEntry
         {
             public List<Vector3> Controlpoints = [];
             public Raylib_cs.Texture2D Texture;
@@ -415,25 +410,61 @@ namespace IceSaw2.Renderer
             public Vector3 Position = position;
             public float Radius = radius;
         }
-
-        private class DrawList
+    
+        private class Batch
         {
-            public List<Matrix4x4> InstanceMatrix = []; // 1 per patch. Always identity.
-            public List<Vector3> Controlpoints = []; // 16 per patch
-            public List<Raylib_cs.Texture2D> Texture = []; // 1 per patch
-            public List<Vector2> TextureUV = []; // 4 per patch
-            public List<int> LightmapID = []; // 1 per patch
-            public List<Vector2> LightmapUV = []; // 4 per patch
-            public List<bool> Highlighted = []; // 1 per patch
+            // This class only holds data for 8 or less patches.
+            public int PatchCount = 0;
+            public List<PatchEntry> Patches = [];
 
-            public void Clear()
+            public List<Vector3> GetMergedControlPoints()
             {
-                InstanceMatrix.Clear();
-                Controlpoints.Clear();
-                Texture.Clear();
-                TextureUV.Clear();
-                LightmapUV.Clear();
-                Highlighted.Clear();
+                List<Vector3> output = [];
+                foreach (var patch in Patches)
+                {
+                    output.AddRange(patch.Controlpoints);
+                }
+                return output;
+            }
+
+            public List<Vector2> GetMergedDiffuseTextureUVs()
+            {
+                List<Vector2> output = [];
+                foreach (var patch in Patches)
+                {
+                    output.AddRange(patch.TextureUV);
+                }
+                return output;
+            }
+
+            public List<Vector2> GetMergedLightmapTextureUVs()
+            {
+                List<Vector2> output = [];
+                foreach (var patch in Patches)
+                {
+                    output.AddRange(patch.LightmapUV);
+                }
+                return output;
+            }
+
+            public List<int> GetMergedLightmapIDs()
+            {
+                List<int> output = [];
+                foreach (var patch in Patches)
+                {
+                    output.Add(patch.LightmapID);
+                }
+                return output;
+            }
+
+            public List<int> GetMergedHighlighted()
+            {
+                List<int> output = [];
+                foreach (var patch in Patches)
+                {
+                    output.Add(patch.Highlighted ? 1 : 0);
+                }
+                return output;
             }
         }
     }

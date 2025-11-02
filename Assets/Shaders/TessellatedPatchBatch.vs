@@ -66,21 +66,18 @@ void main() {
     for (int i = 0; i < 4; i++) {
         vertexLightmapTextureUVs[i] = lightmapTextureUVs[gl_InstanceID * 4 + i];
     }
-    fragTexCoord = UVInterpolate(vertexLightmapTextureUVs, vertexTexCoord2);
+    fragTexCoord2 = UVInterpolate(vertexLightmapTextureUVs, vertexTexCoord2);
 
     // Get the control points
     vec3 vertexControlPoints[16];
     for (int i = 0; i < 16; i++) {
         vertexControlPoints[i] = controlPoints[gl_InstanceID * 16 + gl_VertexID];
+        // vertexControlPoints[i] = controlPoints[gl_InstanceID * 16 + i];
     }
 
     // Set the vertex position based on the control points.
-    // vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
-    // fragPosition = pos.xyz;
-    // gl_Position = pos;
-
-    // Debug
     vec4 pos = vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
-    fragPosition = pos.xyz;
+    // pos *= 1000.0;
+    // fragPosition = pos.xyz;
     gl_Position = mvp * pos;
 }
