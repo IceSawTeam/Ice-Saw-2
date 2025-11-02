@@ -1,5 +1,4 @@
 using IceSaw2.Utilities;
-using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -13,7 +12,7 @@ namespace IceSaw2.Renderer
 
         private const float LightmapPixelSize = 0.00625f; // Pixel size for a 160x160 lightmap;
 
-        private Raylib_cs.Mesh _mesh = new(64, 98);
+        private Raylib_cs.Mesh _mesh = new();
         private Raylib_cs.Material _material = new();
         private readonly List<RenderPatchEntry?> _patchEntries = [];
         private readonly List<Raylib_cs.Texture2D> _paddedLightmaps = [];
@@ -27,11 +26,11 @@ namespace IceSaw2.Renderer
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
             GeneratePaddedLightmaps(lightmaps);
-            Raylib.SetTraceLogLevel(TraceLogLevel.All);
+            Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.All);
 
-            var shader = Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
+            var shader = Raylib_cs.Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
                                             LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.fs", System.Text.Encoding.UTF8));
-            Raylib.SetTraceLogLevel(TraceLogLevel.Info);
+            Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.Info);
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
         }
@@ -147,7 +146,7 @@ namespace IceSaw2.Renderer
             // Frustum cull and fill draw list
             foreach (var entry in _patchEntries)
             {
-                //if (entry == null) continue;
+                if (entry == null) continue;
                 //if (SphereIn(frustum, entry.Sphere))
                 //{
                     _drawList.InstanceMatrix.Add(Matrix4x4.Identity);
@@ -237,6 +236,7 @@ namespace IceSaw2.Renderer
 
         private void GenerateMesh()
         {
+            _mesh = new(64, 98);
             _mesh.AllocVertices();
             _mesh.AllocIndices();
             _mesh.AllocTexCoords();
@@ -251,9 +251,9 @@ namespace IceSaw2.Renderer
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    verts[y * 8 + x] = new Vector3(x, y, 0);
-                    texcoords[y * 8 + x] = new Vector2(x, y);
-                    texcoords2[y * 8 + x] = new Vector2(x, y);
+                    verts[y * 8 + x] = new Vector3(x / 7.0f, y / 7.0f, 0);
+                    texcoords[y * 8 + x] = new Vector2(x / 7.0f, y / 7.0f);
+                    texcoords2[y * 8 + x] = new Vector2(x / 7.0f, y / 7.0f);
                 }
             }
 
@@ -269,12 +269,15 @@ namespace IceSaw2.Renderer
                     indices[indexCount] = vertexIndex;
                     indices[indexCount + 1] = (ushort)(vertexIndex + 8);
                     indices[indexCount + 2] = (ushort)(vertexIndex + 8 + 1);
-
+                    
                     indices[indexCount + 3] = vertexIndex;
                     indices[indexCount + 4] = (ushort)(vertexIndex + 8 + 1);
                     indices[indexCount + 5] = (ushort)(vertexIndex + 1);
+                    indexCount += 6;
                 }
             }
+
+            var sus = Raylib_cs.Raylib.ExportMesh(_mesh, "/home/eric/Downloads/tessellated_patch_mesh.obj");
         }
 
         private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps)
@@ -290,7 +293,7 @@ namespace IceSaw2.Renderer
                         var srcRect = new Raylib_cs.Rectangle(x * 8, y * 8, 8, 8);
                         var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
                         var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
-                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.Black);
+                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.Black);
                     }
                 }
                 _paddedLightmaps.Add(Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap));

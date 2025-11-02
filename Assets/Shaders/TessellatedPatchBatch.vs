@@ -15,10 +15,11 @@ uniform vec2 diffuseTextureUVs[patchCount * 4];
 uniform vec2 lightmapTextureUVs[patchCount * 4];
 
 // Output vertex attributes (to fragment shader)
-out vec4 fragPosition;
+out vec3 fragPosition;
 out vec2 fragTexCoord;
 out vec2 fragTexCoord2;
 flat out int instanceId;
+
 
 vec2 UVInterpolate(vec2 uv[4], vec2 blendPosition) {
     // Quadrilateral interpolation
@@ -75,6 +76,6 @@ void main() {
 
     // Set the vertex position based on the control points.
     vec4 pos = mvp * instanceTransform * vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
-    fragPosition = pos;
+    fragPosition = pos.xyz;
     gl_Position = pos;
 }
