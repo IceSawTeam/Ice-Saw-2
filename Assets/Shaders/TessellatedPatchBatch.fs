@@ -1,7 +1,6 @@
 #version 330
 
 // Input vertex attributes (from vertex shader)
-in vec3 fragPosition;
 in vec2 fragTexCoord;
 in vec2 fragTexCoord2;
 flat in int instanceId; // Used to index throught the uniforms below, 0 - 7
@@ -78,9 +77,8 @@ void main() {
     // if (lightmapsEnabled == 1) {
     //     texelColor *= lightmapColor;
     // }
-    // if (highlighted[instanceId] == 1){
-    //     texelColor *= HIGHLIGHT_TINT;
-    // }
+    if (highlighted[instanceId] == 1){
+        texelColor *= HIGHLIGHT_TINT;
+    }
     finalColor = texelColor;
-    // finalColor = vec4(1, 0, 1, 1); // DEBUG
 }

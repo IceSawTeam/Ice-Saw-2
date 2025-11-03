@@ -76,7 +76,7 @@ namespace IceSaw2.Manager.Tricky
 
             LoadTreeNode();
 
-            List<Image>? LightmapArray = new List<Image>();
+            List<Image>? LightmapArray = new();
 
             for (int i = 0; i < lightmapTexture2Ds.Count; i++)
             {

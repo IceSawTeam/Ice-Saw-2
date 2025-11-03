@@ -220,6 +220,7 @@ namespace IceSaw2.Renderer
                 );
 
                 Matrix4x4[] identities = new Matrix4x4[batch.PatchCount];
+                identities = [.. identities.Select(x => Matrix4x4.Identity)];
                 Raylib_cs.Raylib.DrawMeshInstanced(
                     _mesh,
                     _material,
