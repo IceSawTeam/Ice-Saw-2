@@ -188,33 +188,26 @@ namespace IceSaw2.Renderer
                 for (int i = 0; i < batch.PatchCount; i++)
                 {
                     Raylib_cs.Rlgl.ActiveTextureSlot(i + 12);
+                    Raylib_cs.Rlgl.DisableTexture();
                     Raylib_cs.Rlgl.EnableTexture(batch.Patches[i].Texture.Id);
 
-                    Raylib_cs.Rlgl.SetUniformSampler(
+                    Raylib_cs.Raylib.SetShaderValue(
+                        _material.Shader,
                         Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"diffuseTextures[{i}]"),
-                        batch.Patches[i].Texture.Id
+                        i + 12,
+                        Raylib_cs.ShaderUniformDataType.Sampler2D
                     );
 
-                    // Raylib_cs.Rlgl.ActiveTextureSlot(8 + i);
-                    // Raylib_cs.Rlgl.EnableTexture(_paddedLightmaps[batch.Patches[i].LightmapID].Id);
-                    // Raylib_cs.Rlgl.SetUniformSampler(
-                    //     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"lightmapTextures[{i}]"),
-                    //     _paddedLightmaps[batch.Patches[i].LightmapID].Id
-                    // );
+                    Raylib_cs.Rlgl.ActiveTextureSlot(i + 12 + 8);
+                    Raylib_cs.Rlgl.DisableTexture();
+                    Raylib_cs.Rlgl.EnableTexture(_paddedLightmaps[batch.Patches[i].LightmapID].Id);
 
-
-
-
-                    // Raylib_cs.Raylib.SetShaderValueTexture(
-                    //     _material.Shader,
-                    //     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"diffuseTextures[{i}]"),
-                    //     batch.Patches[i].Texture
-                    // );
-                    // Raylib_cs.Raylib.SetShaderValueTexture(
-                    //     _material.Shader,
-                    //     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"lightmapTextures[{i}]"),
-                    //     _paddedLightmaps[batch.Patches[i].LightmapID]
-                    // );
+                    Raylib_cs.Raylib.SetShaderValue(
+                        _material.Shader,
+                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"lightmapTextures[{i}]"),
+                        i + 12 + 8,
+                        Raylib_cs.ShaderUniformDataType.Sampler2D
+                    );
                 }
 
                 Raylib_cs.Raylib.SetShaderValueV(

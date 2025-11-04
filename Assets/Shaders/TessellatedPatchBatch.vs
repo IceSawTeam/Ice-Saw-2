@@ -73,6 +73,8 @@ void main() {
         vertexControlPoints[i] = controlPoints[gl_InstanceID * 16 + i];
     }
 
+    instanceId = gl_InstanceID;
+
     // Set the vertex position based on the control points.
     vec4 pos = vec4(EvaluateBezierSurface(vertexControlPoints, vertexPosition.xy), 1.0);
     gl_Position = mvp * instanceTransform * pos;
