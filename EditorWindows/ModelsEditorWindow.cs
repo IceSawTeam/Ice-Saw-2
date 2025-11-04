@@ -13,8 +13,8 @@ namespace IceSaw2.EditorWindows
         bool ShowMaterials;
 
         Camera3D camera3D = new Camera3D();
-        int ActiveModelIndex = 0;
-        int ActiveSkyboxIndex = 0;
+        int ActiveModelIndex = -1;
+        int ActiveSkyboxIndex = -1;
         int ActiveMaterialIndex = -1;
 
         List<int> selectedModelIndices = new List<int>();
@@ -91,7 +91,7 @@ namespace IceSaw2.EditorWindows
         {
             if (!ShowSkybox)
             {
-                if (TrickyDataManager.trickyModelObjects.Count != 0)
+                if (ActiveModelIndex != -1)
                 {
                     Raylib.DrawText(TrickyDataManager.trickyModelObjects[ActiveModelIndex].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
@@ -100,7 +100,7 @@ namespace IceSaw2.EditorWindows
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
-                if (TrickyDataManager.trickyModelObjects.Count != 0)
+                if (ActiveModelIndex != -1)
                 {
                     TrickyDataManager.trickyModelObjects[ActiveModelIndex].Render();
                 }
@@ -109,7 +109,7 @@ namespace IceSaw2.EditorWindows
             }
             else
             {
-                if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
+                if (ActiveSkyboxIndex != -1)
                 {
                     Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
@@ -118,7 +118,7 @@ namespace IceSaw2.EditorWindows
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
-                if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
+                if (ActiveSkyboxIndex != -1)
                 {
                     TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Render();
                 }
@@ -413,15 +413,13 @@ namespace IceSaw2.EditorWindows
                         ImGui.Text("\t- " + flipBook);
                     }
 
-                    
-
-
-
-
-
-
-
                 }
+            } else if (ActiveModelIndex != -1)
+            {
+                var activeMdl = TrickyDataManager.trickyModelObjects[ActiveModelIndex];
+                ImGui.SetNextItemWidth(-1);
+                ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
+
             }
 
 
