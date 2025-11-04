@@ -43,6 +43,14 @@ namespace IceSaw2.Renderer
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
             identities = [.. identities.Select(x => Matrix4x4.Identity)];
+
+            unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform"); }
+
+            int tex0Loc = Raylib.GetShaderLocation(_material.Shader, "defuseTexture");
+            Raylib.SetShaderValue(_material.Shader, tex0Loc, 12, ShaderUniformDataType.Sampler2D);
+
+            int tex1Loc = Raylib.GetShaderLocation(_material.Shader, "lightmap");
+            Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, ShaderUniformDataType.Sampler2D);
         }
 
         public void Clear()
@@ -195,8 +203,6 @@ namespace IceSaw2.Renderer
             {
                 var batch = _drawList[a];
 
-                unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform"); }
-
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
@@ -220,29 +226,13 @@ namespace IceSaw2.Renderer
                 );
 
                 // Textures
-                //Raylib.SetMaterialTexture(ref _material, MaterialMapIndex.Diffuse, batch.Patches[0].Texture);
-                int tex0Loc = Raylib.GetShaderLocation(_material.Shader, "defuseTexture");
-                Raylib.SetShaderValue(_material.Shader, tex0Loc, 12, ShaderUniformDataType.Sampler2D);
                 Rlgl.ActiveTextureSlot(12);
                 Rlgl.DisableTexture();
                 Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
 
-                int tex1Loc = Raylib.GetShaderLocation(_material.Shader, "lightmap");
-                Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, ShaderUniformDataType.Sampler2D);
                 Rlgl.ActiveTextureSlot(13);
                 Rlgl.DisableTexture();
                 Rlgl.EnableTexture(_paddedLightmaps[batch.Patches[0].LightmapID].Id);
-
-                //Raylib_cs.Raylib.SetShaderValueTexture(
-                //     _material.Shader,
-                //     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "texture0"),
-                //     batch.Patches[0].Texture
-                // );
-                //Raylib_cs.Raylib.SetShaderValueTexture(
-                //    _material.Shader,
-                //    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmap"),
-                //    _paddedLightmaps[batch.Patches[0].LightmapID]
-                //);
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
