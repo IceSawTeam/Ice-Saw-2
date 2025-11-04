@@ -105,6 +105,7 @@ namespace IceSaw2.Manager.Tricky
 
             lightmapTexture2Ds = new List<TextureData>();
             string[] LightmapFiles = Directory.GetFiles(Path.Combine(LoadPath, "Lightmaps"), "*.png", SearchOption.AllDirectories);
+            var result = LightmapFiles.OrderBy(x => x);
             for (int i = 0; i < LightmapFiles.Length; i++)
             {
                 TextureData textureData = new TextureData();
