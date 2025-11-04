@@ -2,6 +2,7 @@
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
+using rlImGui_cs;
 using System.Numerics;
 
 namespace IceSaw2.EditorWindows
@@ -12,8 +13,9 @@ namespace IceSaw2.EditorWindows
         bool ShowMaterials;
 
         Camera3D camera3D = new Camera3D();
-        int PrefabSelection = 0;
-        int SkyboxSelection = 0;
+        int ActiveModel = 0;
+        int ActiveSkybox = 0;
+        int ActiveMaterial = -1;
 
         // Store selected tab index persistently
         int selectedTab = 0; // Make this a field or property in your UI state
@@ -35,19 +37,19 @@ namespace IceSaw2.EditorWindows
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
-                    PrefabSelection -= 1;
-                    if (PrefabSelection == -1)
+                    ActiveModel -= 1;
+                    if (ActiveModel == -1) 
                     {
-                        PrefabSelection = TrickyDataManager.trickyModelObjects.Count - 1;
+                        ActiveModel = TrickyDataManager.trickyModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
-                    PrefabSelection += 1;
-                    if (PrefabSelection == TrickyDataManager.trickyModelObjects.Count)
+                    ActiveModel += 1;
+                    if (ActiveModel == TrickyDataManager.trickyModelObjects.Count)
                     {
-                        PrefabSelection = 0;
+                        ActiveModel = 0;
                     }
                 }
             }
@@ -55,19 +57,19 @@ namespace IceSaw2.EditorWindows
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
-                    SkyboxSelection -= 1;
-                    if (SkyboxSelection == -1)
+                    ActiveSkybox -= 1;
+                    if (ActiveSkybox == -1)
                     {
-                        SkyboxSelection = TrickyDataManager.trickySkyboxModelObjects.Count - 1;
+                        ActiveSkybox = TrickyDataManager.trickySkyboxModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
-                    SkyboxSelection += 1;
-                    if (SkyboxSelection == TrickyDataManager.trickySkyboxModelObjects.Count)
+                    ActiveSkybox += 1;
+                    if (ActiveSkybox == TrickyDataManager.trickySkyboxModelObjects.Count)
                     {
-                        SkyboxSelection = 0;
+                        ActiveSkybox = 0;
                     }
                 }
             }
@@ -86,7 +88,7 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickyModelObjects[PrefabSelection].Name, 12, 60, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickyModelObjects[ActiveModel].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
@@ -95,7 +97,7 @@ namespace IceSaw2.EditorWindows
 
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickyModelObjects[PrefabSelection].Render();
+                    TrickyDataManager.trickyModelObjects[ActiveModel].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -104,7 +106,7 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[SkyboxSelection].Name, 12, 60, 20, Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[ActiveSkybox].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
@@ -113,7 +115,7 @@ namespace IceSaw2.EditorWindows
 
                 if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickySkyboxModelObjects[SkyboxSelection].Render();
+                    TrickyDataManager.trickySkyboxModelObjects[ActiveSkybox].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -226,7 +228,12 @@ namespace IceSaw2.EditorWindows
                 {
                     for (int i = 0; i < TrickyDataManager.trickyMaterialObject.Count; i++)
                     {
-                        TrickyDataManager.trickyMaterialObject[i].HierarchyRender();
+                        var _id = TrickyDataManager.trickyMaterialObject[i].HierarchyRender();
+                        if (_id != -1)
+                        {
+                            ActiveMaterial = i;
+                            Console.WriteLine(ActiveMaterial);
+                        }
                     }
                 }
                 else
@@ -269,6 +276,20 @@ namespace IceSaw2.EditorWindows
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Inspector Panel", flags);
             ImGui.Text("Inspector");
+
+
+            if (ShowMaterials && ActiveMaterial != -1)
+            {
+                if (!ShowSkybox)
+                {
+                    ImGui.Text("Name | " + TrickyDataManager.trickyMaterialObject[ActiveMaterial].Name);
+                    ImGui.Text(TrickyDataManager.trickyMaterialObject[ActiveMaterial].TexturePath);
+                    rlImGui.Image(TrickyDataManager.worldTextureData[ActiveMaterial].texture2D);
+
+                }
+            }
+
+
             ImGui.End();
             //ImGui.PopStyleVar(2);
 

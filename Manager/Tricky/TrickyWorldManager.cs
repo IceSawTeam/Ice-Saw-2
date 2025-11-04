@@ -151,6 +151,19 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.EndMenu();
                 }
 
+                if (ImGui.MenuItem("[Load last level]"))
+                {
+                    string selectedPath = Settings.General.Instance.data.LastLoad + "/ConfigTricky.ssx";
+                    if (File.Exists(selectedPath))
+                    {
+                        TrickyDataManager.LoadProject(selectedPath);
+                        Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                        Settings.General.Instance.Save();
+                        Settings.KeyBinding.Instance.Save();
+                        levelEditorWindow.GenerateRenderList();
+                    }
+                }
+
                 ImGui.SameLine(Raylib.GetScreenWidth()-170);
 
                 if (ImGui.MenuItem("Level", "", windowMode==WindowMode.World))
