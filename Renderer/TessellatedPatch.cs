@@ -100,6 +100,11 @@ namespace IceSaw2.Renderer
             entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
             entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
 
+            entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
+            entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
+            entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
+            entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+
             if (foundEmptySpot)
             {
                _patchEntries[foundID] = entry;
