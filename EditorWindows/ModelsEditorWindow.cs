@@ -284,7 +284,7 @@ namespace IceSaw2.EditorWindows
                 {
                     ImGui.Text("Name | " + TrickyDataManager.trickyMaterialObject[ActiveMaterial].Name);
                     ImGui.Text(TrickyDataManager.trickyMaterialObject[ActiveMaterial].TexturePath);
-                    rlImGui.Image(TrickyDataManager.worldTextureData[ActiveMaterial].texture2D);
+                    rlImGui.Image(TrickyDataManager.ReturnTexture(TrickyDataManager.trickyMaterialObject[ActiveMaterial].TexturePath, ShowSkybox));
 
                 }
             }
