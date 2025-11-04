@@ -1,4 +1,5 @@
 using IceSaw2.Utilities;
+using Raylib_cs;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -21,6 +22,8 @@ namespace IceSaw2.Renderer
         public bool WireOverlayEnabled = false;
         public bool LightmapEnabled = true;
 
+        Matrix4x4[] identities = new Matrix4x4[8];
+
         // DEBUG
         public int PatchCount()
         {
@@ -39,6 +42,7 @@ namespace IceSaw2.Renderer
             Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.Info);
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
+            identities = [.. identities.Select(x => Matrix4x4.Identity)];
         }
 
         public void Clear()
@@ -150,60 +154,95 @@ namespace IceSaw2.Renderer
             // var frustum = GetFrustum();
 
             // Frustum cull and fill draw list by batching them
-            _drawList.Add(new());
+
+            List<Batch> drawList = new List<Batch>();
+
             foreach (var entry in _patchEntries)
             {
-                if (_drawList.Last().PatchCount == 8) _drawList.Add(new());
-                Batch lastBatch = _drawList.Last();
+                int ID = -1;
+                //Check drawList for Free space
+                for (global::System.Int32 i = 0; i < drawList.Count; i++)
+                {
+                    if (drawList[i].Patches[0].Texture.Id == entry.Texture.Id && drawList[i].Patches[0].LightmapID == entry.LightmapID)
+                    {
+                        ID = i;
+                        drawList[i].Patches.Add(entry);
+                        drawList[i].PatchCount++;
+                        break;
+                    }
+                }
 
-                if (entry == null) continue;
-                // if (SphereIn(frustum, entry.Sphere)) TODO
-                // {
-                    lastBatch.Patches.Add(entry);
-                    lastBatch.PatchCount++;
-                // }
+                //If no list found make new list
+                if (ID == -1)
+                {
+                    Batch batch = new Batch();
+                    batch.Patches.Add(entry);
+                    batch.PatchCount++;
+                    drawList.Add(batch);
+                    ID = drawList.Count-1;
+                }
+
+                if (drawList[ID].Patches.Count == 8)
+                {
+                    _drawList.Add(drawList[ID]);
+                    drawList.RemoveAt(ID);
+                }
             }
 
-            foreach (var batch in _drawList)
+            _drawList.AddRange(drawList);
+
+            for (int a = 0; a < _drawList.Count; a++)
             {
-                unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform");}
+                var batch = _drawList[a];
+
+                unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform"); }
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
                     batch.GetMergedControlPoints().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Vec3,
-                    128
+                    batch.PatchCount*16
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]"),
                     batch.GetMergedDiffuseTextureUVs().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
-                    32
+                    batch.PatchCount * 4
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]"),
                     batch.GetMergedLightmapTextureUVs().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
-                    32
+                    batch.PatchCount * 4
                 );
 
                 // Textures
-                for (int i = 0; i < batch.PatchCount; i++)
-                {
-                    Raylib_cs.Raylib.SetShaderValueTexture(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"diffuseTextures[{i}]"),
-                        batch.Patches[i].Texture
-                    );
-                    Raylib_cs.Raylib.SetShaderValueTexture(
-                        _material.Shader,
-                        Raylib_cs.Raylib.GetShaderLocation(_material.Shader, $"lightmapTextures[{i}]"),
-                        _paddedLightmaps[batch.Patches[i].LightmapID]
-                    );
-                }
+                //Raylib.SetMaterialTexture(ref _material, MaterialMapIndex.Diffuse, batch.Patches[0].Texture);
+                int tex0Loc = Raylib.GetShaderLocation(_material.Shader, "defuseTexture");
+                Raylib.SetShaderValue(_material.Shader, tex0Loc, 12, ShaderUniformDataType.Sampler2D);
+                Rlgl.ActiveTextureSlot(12);
+                Rlgl.DisableTexture();
+                Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
+
+                int tex1Loc = Raylib.GetShaderLocation(_material.Shader, "lightmap");
+                Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, ShaderUniformDataType.Sampler2D);
+                Rlgl.ActiveTextureSlot(13);
+                Rlgl.DisableTexture();
+                Rlgl.EnableTexture(_paddedLightmaps[batch.Patches[0].LightmapID].Id);
+
+                //Raylib_cs.Raylib.SetShaderValueTexture(
+                //     _material.Shader,
+                //     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "texture0"),
+                //     batch.Patches[0].Texture
+                // );
+                //Raylib_cs.Raylib.SetShaderValueTexture(
+                //    _material.Shader,
+                //    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmap"),
+                //    _paddedLightmaps[batch.Patches[0].LightmapID]
+                //);
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
@@ -219,8 +258,6 @@ namespace IceSaw2.Renderer
                     Raylib_cs.ShaderUniformDataType.Int
                 );
 
-                Matrix4x4[] identities = new Matrix4x4[batch.PatchCount];
-                identities = [.. identities.Select(x => Matrix4x4.Identity)];
                 Raylib_cs.Raylib.DrawMeshInstanced(
                     _mesh,
                     _material,
