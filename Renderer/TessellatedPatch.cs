@@ -24,6 +24,8 @@ namespace IceSaw2.Renderer
 
         Matrix4x4[] identities = new Matrix4x4[8];
 
+        Matrix4x4 PreviousView = new Matrix4x4();
+
         // DEBUG
         public int PatchCount()
         {
@@ -187,46 +189,68 @@ namespace IceSaw2.Renderer
         public void Render()
         {
             unsafe { if (_material.Shader.Locs == null) return; }
-            _drawList.Clear();
-            // var frustum = GetFrustum();
 
-            // Frustum cull and fill draw list by batching them
+            //If Camera in same place dont regenerate drawlist
+            //Can add other checks for if its updated
+            Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
 
-            List<Batch> drawList = new List<Batch>();
-
-            foreach (var entry in _patchEntries)
+            if (PreviousView != projection)
             {
-                int ID = -1;
-                //Check drawList for Free space
-                for (global::System.Int32 i = 0; i < drawList.Count; i++)
+                PreviousView = projection;
+                _drawList.Clear();
+                // var frustum = GetFrustum();
+
+                List<Batch> drawList = new List<Batch>();
+
+                foreach (var entry in _patchEntries)
                 {
-                    if (drawList[i].Patches[0].Texture.Id == entry.Texture.Id && drawList[i].Patches[0].LightmapID == entry.LightmapID)
+                    // Frustum cull and fill draw list by batching them
+
+                    int ID = -1;
+                    //Check drawList for Free space
+                    for (global::System.Int32 i = 0; i < drawList.Count; i++)
                     {
-                        ID = i;
-                        drawList[i].Patches.Add(entry);
-                        drawList[i].PatchCount++;
-                        break;
+                        if (drawList[i].TextureID == entry.Texture.Id && drawList[i].LightmapID == _paddedLightmaps[entry.LightmapID].Id)
+                        {
+                            ID = i;
+                            drawList[i].Patches.Add(entry);
+                            drawList[i].PatchCount++;
+                            break;
+                        }
+                    }
+
+                    //If no list found make new list
+                    if (ID == -1)
+                    {
+                        Batch batch = new Batch();
+                        batch.Patches.Add(entry);
+                        batch.PatchCount++;
+                        batch.TextureID = entry.Texture.Id;
+                        batch.LightmapID = _paddedLightmaps[entry.LightmapID].Id;
+                        drawList.Add(batch);
+                        ID = drawList.Count - 1;
+                    }
+                    //If list full add to main draw list
+                    else if (drawList[ID].Patches.Count == 8)
+                    {
+                        _drawList.Add(drawList[ID]);
+                        drawList.RemoveAt(ID);
                     }
                 }
 
-                //If no list found make new list
-                if (ID == -1)
-                {
-                    Batch batch = new Batch();
-                    batch.Patches.Add(entry);
-                    batch.PatchCount++;
-                    drawList.Add(batch);
-                    ID = drawList.Count-1;
-                }
-
-                if (drawList[ID].Patches.Count == 8)
-                {
-                    _drawList.Add(drawList[ID]);
-                    drawList.RemoveAt(ID);
-                }
+                _drawList.AddRange(drawList);
             }
 
-            _drawList.AddRange(drawList);
+            //Set if lightmap is enabled
+            Raylib_cs.Raylib.SetShaderValue(
+            _material.Shader,
+            Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
+            LightmapEnabled ? 1 : 0,
+            Raylib_cs.ShaderUniformDataType.Int
+            );
+
+            uint PrevTextureID = 0;
+            uint PrevLightmapID = 0;
 
             for (int a = 0; a < _drawList.Count; a++)
             {
@@ -255,13 +279,22 @@ namespace IceSaw2.Renderer
                 );
 
                 // Textures
-                Rlgl.ActiveTextureSlot(12);
-                Rlgl.DisableTexture();
-                Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
+                //If texture ID Different Set ID update
+                if (PrevTextureID != batch.TextureID)
+                {
+                    PrevTextureID = batch.TextureID;
+                    Rlgl.ActiveTextureSlot(12);
+                    Rlgl.DisableTexture();
+                    Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
+                }
 
-                Rlgl.ActiveTextureSlot(13);
-                Rlgl.DisableTexture();
-                Rlgl.EnableTexture(_paddedLightmaps[batch.Patches[0].LightmapID].Id);
+                if (PrevLightmapID != batch.LightmapID)
+                {
+                    PrevLightmapID = batch.LightmapID;
+                    Rlgl.ActiveTextureSlot(13);
+                    Rlgl.DisableTexture();
+                    Rlgl.EnableTexture(PrevLightmapID);
+                }
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
@@ -269,12 +302,6 @@ namespace IceSaw2.Renderer
                     batch.GetMergedHighlighted().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Int,
                     batch.PatchCount
-                );
-                Raylib_cs.Raylib.SetShaderValue(
-                    _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
-                    LightmapEnabled ? 1 : 0,
-                    Raylib_cs.ShaderUniformDataType.Int
                 );
 
                 Raylib_cs.Raylib.DrawMeshInstanced(
@@ -477,6 +504,8 @@ namespace IceSaw2.Renderer
             // This class only holds data for 8 or less patches.
             public int PatchCount = 0;
             public List<PatchEntry> Patches = [];
+            public uint TextureID;
+            public uint LightmapID;
 
             public List<Vector3> GetMergedControlPoints()
             {
