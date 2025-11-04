@@ -20,7 +20,7 @@ namespace IceSaw2.Renderer
         private readonly List<Batch> _drawList = [];
 
         public bool WireOverlayEnabled = false;
-        public bool LightmapEnabled = true;
+        public bool LightmapEnabled = false;
 
         Matrix4x4[] identities = new Matrix4x4[8];
 
@@ -239,7 +239,7 @@ namespace IceSaw2.Renderer
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]"),
                     batch.GetMergedHighlighted().ToArray(),
                     Raylib_cs.ShaderUniformDataType.Int,
-                    8
+                    batch.PatchCount
                 );
                 Raylib_cs.Raylib.SetShaderValue(
                     _material.Shader,

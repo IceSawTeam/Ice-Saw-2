@@ -21,10 +21,10 @@ void main() {
     vec4 lightmapColor = texture(lightmap, fragTexCoord2);
 
     const vec4 HIGHLIGHT_TINT = vec4(1, 1, 1, 1);
-    vec4 texelColor = textureColor * lightmapColor;
-    // if (lightmapsEnabled == 1) {
-    //     texelColor *= lightmapColor;
-    // }
+    vec4 texelColor = textureColor;
+     if (lightmapsEnabled == 1) {
+         texelColor *= lightmapColor;
+    }
     if (highlighted[instanceId] == 1){
         texelColor *= HIGHLIGHT_TINT;
     }
