@@ -93,10 +93,12 @@ namespace IceSaw2.Renderer
             };
             entry.UpdateBoundingSphere();
 
-            entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[1] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[2] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
-            entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+            //Readjust points for padding tiles
+
+            entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
+            entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
+            entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
+            entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
 
             if (foundEmptySpot)
             {
@@ -108,6 +110,28 @@ namespace IceSaw2.Renderer
                foundID = _patchEntries.Count - 1;
             }
             return foundID;
+        }
+
+        Vector2 ConvertLightmapUV(Vector2 uv)
+        {
+            float oldTextureSize = 128f;
+            float newTextureSize = 160f;
+            float oldTileSize = 8f;
+            float newTileSize = 10f;
+
+            // Convert UV to pixel space
+            float oldPixelX = uv.X * oldTextureSize;
+            float oldPixelY = uv.Y * oldTextureSize;
+
+            // Map pixels to new texture with padding
+            float newPixelX = (oldPixelX / oldTileSize) * newTileSize;
+            float newPixelY = (oldPixelY / oldTileSize) * newTileSize;
+
+            // Convert back to normalized UVs
+            float newUVX = newPixelX / newTextureSize;
+            float newUVY = newPixelY / newTextureSize;
+
+            return new Vector2(newUVX, newUVY);
         }
 
         public void DeletePatch(int patchID)
@@ -137,10 +161,10 @@ namespace IceSaw2.Renderer
             Debug.Assert(entry != null);
             entry.LightmapID = lightmapID;
             entry.LightmapUV = lightmapUV;
-            entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[1] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[2] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
-            entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+            entry.LightmapUV[0] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+            entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
+            entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
+            entry.LightmapUV[3] += new Vector2(LightmapPixelSize, LightmapPixelSize);
         }
 
         public void UpdatePatchHighlight(int patchID, bool Highlight)
@@ -316,7 +340,11 @@ namespace IceSaw2.Renderer
                         Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.White);
                     }
                 }
-                _paddedLightmaps.Add(Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap));
+                var TempLightmap = Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap);
+
+                Raylib.SetTextureFilter(TempLightmap, TextureFilter.Bilinear);
+
+                _paddedLightmaps.Add(TempLightmap);
             }
         }
 
