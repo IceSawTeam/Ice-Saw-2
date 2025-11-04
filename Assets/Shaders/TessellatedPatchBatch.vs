@@ -23,7 +23,7 @@ flat out int instanceId;
 vec2 UVInterpolate(vec2 uv[4], vec2 blendPosition) {
     // Quadrilateral interpolation
     vec2 a = mix(uv[0], uv[2], blendPosition.x);
-    vec2 b = mix(uv[1], uv[3], blendPosition.y);
+    vec2 b = mix(uv[1], uv[3], blendPosition.x);
     return mix(a, b, blendPosition.y);
 }
 
