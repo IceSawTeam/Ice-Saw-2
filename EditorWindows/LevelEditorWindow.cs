@@ -65,7 +65,7 @@ namespace IceSaw2.EditorWindows
             //Render Objects
             for (int i = 0; i < RenderList.Length; i++)
             {
-                RenderList[i].Render();
+                // RenderList[i].Render();
             }
 
             Raylib.EndMode3D();
