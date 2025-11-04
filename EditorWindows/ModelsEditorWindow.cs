@@ -267,7 +267,19 @@ namespace IceSaw2.EditorWindows
                         if (isSelected)
                             _flags |= ImGuiTreeNodeFlags.Selected;
 
+                        if (i == ActiveModelIndex)
+                        {
+                            ImGui.PushStyleColor(ImGuiCol.Header, new System.Numerics.Vector4(0.717f, 0.435f, 0.156f, 1.0f));
+                            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                            ImGui.PushStyleColor(ImGuiCol.HeaderActive, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                        }
+
                         bool nodeOpen = ImGui.TreeNodeEx($"##Model{i}", _flags, TrickyDataManager.trickyModelObjects[i].Name);
+
+                        if (i == ActiveModelIndex)
+                        {
+                            ImGui.PopStyleColor(3);
+                        }
 
                         if (ImGui.IsItemClicked())
                         {
@@ -305,6 +317,8 @@ namespace IceSaw2.EditorWindows
                         {
                             ActiveModelIndex = selectedModelIndices[selectedModelIndices.Count - 1];
                         }
+
+                        
 
                         if (nodeOpen)
                         {
@@ -420,6 +434,8 @@ namespace IceSaw2.EditorWindows
                 ImGui.SetNextItemWidth(-1);
                 ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
 
+                ImGui.DragInt("UnknownInt3", ref activeMdl.Unknown3, 0.3f, -1, 99999);
+                ImGui.DragFloat("AnimTime", ref activeMdl.AnimTime, 0.025f, 0, 99999);
             }
 
 
