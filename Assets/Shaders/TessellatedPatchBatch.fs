@@ -23,7 +23,8 @@ void main() {
     const vec4 HIGHLIGHT_TINT = vec4(1, 1, 1, 1);
     vec4 texelColor = textureColor;
      if (lightmapsEnabled == 1) {
-         texelColor *= lightmapColor;
+         texelColor = (textureColor - lightmapColor) * lightmapColor.w;
+         texelColor.w = 1;
     }
     if (highlighted[instanceId] == 1){
         texelColor *= HIGHLIGHT_TINT;
