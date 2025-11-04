@@ -17,6 +17,8 @@ namespace IceSaw2.EditorWindows
         int ActiveSkyboxIndex = 0;
         int ActiveMaterialIndex = -1;
 
+        List<int> selectedModelIndices = new List<int>();
+
         // Store selected tab index persistently
         int selectedTab = 0; // Make this a field or property in your UI state
 
@@ -235,16 +237,88 @@ namespace IceSaw2.EditorWindows
                         if (_id != -1)
                         {
                             ActiveMaterialIndex = i;
-                            Console.WriteLine(ActiveMaterialIndex);
                         }
                     }
                 }
                 else
                 {
+                    //for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
+                    //{
+                        //var _id = TrickyDataManager.trickyModelObjects[i].HierarchyRender();
+                        //if (_id != -1)
+                        //{
+                        //    ActiveModelIndex = i;
+                        //}
+
+                    //}
+                       
+
+
                     for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
                     {
-                        TrickyDataManager.trickyModelObjects[i].HierarchyRender();
+                        var _modelChildren = TrickyDataManager.trickyModelObjects[i].Children;
+                        bool isSelected = selectedModelIndices.Contains(i);
+
+                        var _flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+
+                        if (_modelChildren.Count == 0)
+                            _flags |= ImGuiTreeNodeFlags.Leaf;
+
+                        if (isSelected)
+                            _flags |= ImGuiTreeNodeFlags.Selected;
+
+                        bool nodeOpen = ImGui.TreeNodeEx($"##Model{i}", _flags, TrickyDataManager.trickyModelObjects[i].Name);
+
+                        if (ImGui.IsItemClicked())
+                        {
+                            bool ctrl = ImGui.GetIO().KeyCtrl;
+                            bool shift = ImGui.GetIO().KeyShift;
+
+                            if (shift && ActiveModelIndex >= 0)
+                            {
+                                int start = Math.Min(ActiveModelIndex, i);
+                                int end = Math.Max(ActiveModelIndex, i);
+
+                                for (int j = start; j <= end; j++)
+                                {
+                                    if (!selectedModelIndices.Contains(j))
+                                        selectedModelIndices.Add(j);
+                                }
+                            }
+                            else if (ctrl)
+                            {
+                                if (isSelected)
+                                    selectedModelIndices.Remove(i);
+                                else
+                                    selectedModelIndices.Add(i);
+                            }
+                            else
+                            {
+                                selectedModelIndices.Clear();
+                                selectedModelIndices.Add(i);
+                            }
+
+                            ActiveModelIndex = i;
+                        }
+
+                        if (!selectedModelIndices.Contains(ActiveModelIndex) && selectedModelIndices.Count != 0)
+                        {
+                            ActiveModelIndex = selectedModelIndices[selectedModelIndices.Count - 1];
+                        }
+
+                        if (nodeOpen)
+                        {
+                            for (int j = 0; j < _modelChildren.Count; j++)
+                            {
+                                _modelChildren[j].HierarchyRender();
+                            }
+                            ImGui.TreePop();
+                        }
                     }
+
+
+
+                    
                 }
             }
             else
