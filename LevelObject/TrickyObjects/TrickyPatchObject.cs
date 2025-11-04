@@ -70,8 +70,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
             List<Vector2> vector2s = new List<Vector2>();
 
             vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y));
-            vector2s.Add(new Vector2(LightMapPoint.X+ LightMapPoint.Z, LightMapPoint.Y));
             vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W));
+            vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y));
             vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W));
 
             // if (TessellatedPatch.Instance.PatchCount() < 1)

@@ -20,7 +20,7 @@ namespace IceSaw2.Renderer
         private readonly List<Batch> _drawList = [];
 
         public bool WireOverlayEnabled = false;
-        public bool LightmapEnabled = false;
+        public bool LightmapEnabled = true;
 
         Matrix4x4[] identities = new Matrix4x4[8];
 
