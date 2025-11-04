@@ -61,19 +61,7 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            // if (Raylib.IsKeyPressed(Settings.KeyBinding.Instance.data.LogicWindow))
-            if (Input.IsActionPressed("LogicSwitch"))
-            {
-                windowMode = WindowMode.Logic;
-            }
-            if (Input.IsActionPressed("ModelSwitch"))
-            {
-                windowMode = WindowMode.Prefabs;
-            }
-            if (Input.IsActionPressed("LevelSwitch"))
-            {
-                windowMode = WindowMode.World;
-            }
+            
         }
 
         public void UpdateRender()
