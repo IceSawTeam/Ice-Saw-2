@@ -13,14 +13,17 @@ namespace IceSaw2.EditorWindows
         bool ShowMaterials;
 
         Camera3D camera3D = new Camera3D();
-        int ActiveModel = 0;
-        int ActiveSkybox = 0;
-        int ActiveMaterial = -1;
+        int ActiveModelIndex = 0;
+        int ActiveSkyboxIndex = 0;
+        int ActiveMaterialIndex = -1;
 
         // Store selected tab index persistently
         int selectedTab = 0; // Make this a field or property in your UI state
 
         string[] tabs = { "Models", "Materials", "Skybox Models", "Skybox Materials" };
+
+        //private byte[] _nameBuffer = new byte[128];
+        //private int _bufferEntityIndex = -1;
 
         public void Initilize()
         {
@@ -37,19 +40,19 @@ namespace IceSaw2.EditorWindows
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
-                    ActiveModel -= 1;
-                    if (ActiveModel == -1) 
+                    ActiveModelIndex -= 1;
+                    if (ActiveModelIndex == -1)
                     {
-                        ActiveModel = TrickyDataManager.trickyModelObjects.Count - 1;
+                        ActiveModelIndex = TrickyDataManager.trickyModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
-                    ActiveModel += 1;
-                    if (ActiveModel == TrickyDataManager.trickyModelObjects.Count)
+                    ActiveModelIndex += 1;
+                    if (ActiveModelIndex == TrickyDataManager.trickyModelObjects.Count)
                     {
-                        ActiveModel = 0;
+                        ActiveModelIndex = 0;
                     }
                 }
             }
@@ -57,19 +60,19 @@ namespace IceSaw2.EditorWindows
             {
                 if (Raylib.IsKeyPressed(KeyboardKey.Left))
                 {
-                    ActiveSkybox -= 1;
-                    if (ActiveSkybox == -1)
+                    ActiveSkyboxIndex -= 1;
+                    if (ActiveSkyboxIndex == -1)
                     {
-                        ActiveSkybox = TrickyDataManager.trickySkyboxModelObjects.Count - 1;
+                        ActiveSkyboxIndex = TrickyDataManager.trickySkyboxModelObjects.Count - 1;
                     }
                 }
 
                 if (Raylib.IsKeyPressed(KeyboardKey.Right))
                 {
-                    ActiveSkybox += 1;
-                    if (ActiveSkybox == TrickyDataManager.trickySkyboxModelObjects.Count)
+                    ActiveSkyboxIndex += 1;
+                    if (ActiveSkyboxIndex == TrickyDataManager.trickySkyboxModelObjects.Count)
                     {
-                        ActiveSkybox = 0;
+                        ActiveSkyboxIndex = 0;
                     }
                 }
             }
@@ -88,7 +91,7 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickyModelObjects[ActiveModel].Name, 300, 90, 20, Raylib_cs.Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickyModelObjects[ActiveModelIndex].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
@@ -97,7 +100,7 @@ namespace IceSaw2.EditorWindows
 
                 if (TrickyDataManager.trickyModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickyModelObjects[ActiveModel].Render();
+                    TrickyDataManager.trickyModelObjects[ActiveModelIndex].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -106,7 +109,7 @@ namespace IceSaw2.EditorWindows
             {
                 if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[ActiveSkybox].Name, 300, 90, 20, Raylib_cs.Color.Black);
+                    Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
 
                 Raylib.BeginMode3D(camera3D);
@@ -115,7 +118,7 @@ namespace IceSaw2.EditorWindows
 
                 if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
                 {
-                    TrickyDataManager.trickySkyboxModelObjects[ActiveSkybox].Render();
+                    TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Render();
                 }
 
                 Raylib.EndMode3D();
@@ -214,7 +217,7 @@ namespace IceSaw2.EditorWindows
                              ImGuiWindowFlags.NoBringToFrontOnFocus |
                              ImGuiWindowFlags.NoFocusOnAppearing;
 
-            
+
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, menuBarHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSize(new System.Numerics.Vector2(outlinerWidth, vpSize.Y /*Raylib.GetScreenHeight() - menuBarHeight*/), ImGuiCond.Always);
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
@@ -231,8 +234,8 @@ namespace IceSaw2.EditorWindows
                         var _id = TrickyDataManager.trickyMaterialObject[i].HierarchyRender();
                         if (_id != -1)
                         {
-                            ActiveMaterial = i;
-                            Console.WriteLine(ActiveMaterial);
+                            ActiveMaterialIndex = i;
+                            Console.WriteLine(ActiveMaterialIndex);
                         }
                     }
                 }
@@ -262,7 +265,7 @@ namespace IceSaw2.EditorWindows
                 }
             }
 
-                // Add your sidebar content here
+            // Add your sidebar content here
 
             ImGui.End();
             //ImGui.PopStyleVar(2);
@@ -278,13 +281,71 @@ namespace IceSaw2.EditorWindows
             ImGui.Text("Inspector");
 
 
-            if (ShowMaterials && ActiveMaterial != -1)
+            if (ShowMaterials && ActiveMaterialIndex != -1)
             {
                 if (!ShowSkybox)
                 {
-                    ImGui.Text("Name | " + TrickyDataManager.trickyMaterialObject[ActiveMaterial].Name);
-                    ImGui.Text(TrickyDataManager.trickyMaterialObject[ActiveMaterial].TexturePath);
-                    rlImGui.Image(TrickyDataManager.ReturnTexture(TrickyDataManager.trickyMaterialObject[ActiveMaterial].TexturePath, ShowSkybox));
+                    var activeMat = TrickyDataManager.trickyMaterialObject[ActiveMaterialIndex];
+
+                    //bool selectionChanged = ActiveMaterialIndex != _bufferEntityIndex;
+                    //bool inputActive = ImGui.IsAnyItemActive();
+
+                    //if (selectionChanged && !inputActive)
+                    //{
+                    //    _bufferEntityIndex = ActiveMaterialIndex;
+                    //    Array.Clear(_nameBuffer, 0, _nameBuffer.Length);
+
+                    //    var nameBytes = System.Text.Encoding.UTF8.GetBytes(activeMat.Name);
+                    //    Array.Copy(nameBytes, _nameBuffer, Math.Min(nameBytes.Length, _nameBuffer.Length - 1));
+                    //}
+
+                    //if (ImGui.InputText("##Material Name", _nameBuffer, (uint)_nameBuffer.Length))
+                    //{
+                    //    int nullIndex = Array.IndexOf(_nameBuffer, (byte)0);
+                    //    if (nullIndex < 0) nullIndex = _nameBuffer.Length;
+                    //    activeMat.Name = System.Text.Encoding.UTF8.GetString(_nameBuffer, 0, nullIndex);
+                    //}
+
+                    ImGui.SetNextItemWidth(-1);
+                    ImGui.InputTextWithHint($"##Material Name {ActiveMaterialIndex}", "Enter material name...", ref activeMat.Name, 128);
+                    //ImGui.Text("Name | " + activeMat.Name);
+                    ImGui.Text("Main Texture | " + activeMat.TexturePath);
+                    rlImGui.Image(TrickyDataManager.ReturnTexture(activeMat.TexturePath, ShowSkybox));
+
+                    ImGui.DragInt("UnknownInt2", ref activeMat.UnknownInt2, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt3", ref activeMat.UnknownInt3, 0.3f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat1", ref activeMat.UnknownFloat1, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat2", ref activeMat.UnknownFloat2, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat3", ref activeMat.UnknownFloat3, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat4", ref activeMat.UnknownFloat4, 0.25f, -1, 99999);
+                    ImGui.DragInt("UnknownInt8", ref activeMat.UnknownInt8, 0.3f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat5", ref activeMat.UnknownFloat5, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat6", ref activeMat.UnknownFloat6, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat7", ref activeMat.UnknownFloat7, 0.25f, -1, 99999);
+                    ImGui.DragFloat("UnknownFloat8", ref activeMat.UnknownFloat8, 0.25f, -1, 99999);
+                    ImGui.DragInt("UnknownInt13", ref activeMat.UnknownInt13, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt14", ref activeMat.UnknownInt14, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt15", ref activeMat.UnknownInt15, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt16", ref activeMat.UnknownInt16, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt17", ref activeMat.UnknownInt17, 0.3f, -1, 99999);
+                    ImGui.DragInt("UnknownInt18", ref activeMat.UnknownInt18, 0.3f, -1, 99999);
+
+                    ImGui.DragInt("UnknownInt20", ref activeMat.UnknownInt20, 0.3f, -1, 99999);
+
+                    ImGui.Text("Texture Flipbook:");
+
+                    foreach (string flipBook in activeMat.TextureFlipbook)
+                    {
+                        ImGui.Text("\t- " + flipBook);
+                    }
+
+                    
+
+
+
+
+
+
 
                 }
             }
@@ -335,5 +396,35 @@ namespace IceSaw2.EditorWindows
 
 
         }
+
+
+        public void BetterInputInt(string val_name, ref int val, int min, int max)
+        {
+            if (ImGui.Button(" - "))
+            {
+                val -= 1;
+            }
+            ImGui.SameLine();
+            if (ImGui.Button(" + "))
+            {
+                val += 1;
+            }
+            ImGui.SameLine();
+            ImGui.InputInt(val_name, ref val, min, max);
+        }
+
+        //private void UpdateBufferFromEntityName(string name)
+        //{
+        //    Array.Clear(_nameBuffer, 0, _nameBuffer.Length);
+        //    var bytes = System.Text.Encoding.UTF8.GetBytes(name);
+        //    Array.Copy(bytes, _nameBuffer, Math.Min(bytes.Length, _nameBuffer.Length - 1));
+        //}
+
+        //private string GetStringFromBuffer()
+        //{
+        //    int nullIndex = Array.IndexOf(_nameBuffer, (byte)0);
+        //    if (nullIndex < 0) nullIndex = _nameBuffer.Length;
+        //    return System.Text.Encoding.UTF8.GetString(_nameBuffer, 0, nullIndex);
+        //}
     }
 }
