@@ -284,7 +284,6 @@ namespace IceSaw2.Renderer
                 {
                     PrevTextureID = batch.TextureID;
                     Rlgl.ActiveTextureSlot(12);
-                    Rlgl.DisableTexture();
                     Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
                 }
 
@@ -292,7 +291,6 @@ namespace IceSaw2.Renderer
                 {
                     PrevLightmapID = batch.LightmapID;
                     Rlgl.ActiveTextureSlot(13);
-                    Rlgl.DisableTexture();
                     Rlgl.EnableTexture(PrevLightmapID);
                 }
 
@@ -311,6 +309,10 @@ namespace IceSaw2.Renderer
                     batch.PatchCount
                 );
             }
+            Rlgl.ActiveTextureSlot(12);
+            Rlgl.DisableTexture();
+            Rlgl.ActiveTextureSlot(13);
+            Rlgl.DisableTexture();
         }
 
         private void GenerateMesh()
