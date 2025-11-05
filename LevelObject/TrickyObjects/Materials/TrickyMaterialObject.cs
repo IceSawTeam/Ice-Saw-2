@@ -13,7 +13,7 @@ namespace IceSaw2.LevelObject.Materials
             get { return ObjectType.Material; }
         }
 
-        public string _texturePath = "";
+        private string _texturePath = "";
         public string TexturePath 
         { 
             get 
