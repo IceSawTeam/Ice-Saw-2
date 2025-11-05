@@ -516,10 +516,10 @@ namespace IceSaw2.Manager.Tricky
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
             trickySkyboxPrefabObjects = new List<TrickyModelObject>();
 
-            for (int i = 0; i < trickyPatchObjects.Count; i++)
-            {
-                Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
-            }
+            //for (int i = 0; i < trickyPatchObjects.Count; i++)
+            //{
+            //    Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
+            //}
 
             trickyPatchObjects = new List<TrickyPatchObject>();
 
