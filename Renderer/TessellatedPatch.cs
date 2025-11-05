@@ -1,5 +1,6 @@
 using IceSaw2.Utilities;
 using Raylib_cs;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -259,21 +260,21 @@ namespace IceSaw2.Renderer
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
-                    batch.GetMergedControlPoints().ToArray(),
+                    batch.GetMergedControlPoints(),
                     Raylib_cs.ShaderUniformDataType.Vec3,
                     batch.PatchCount*16
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]"),
-                    batch.GetMergedDiffuseTextureUVs().ToArray(),
+                    batch.GetMergedDiffuseTextureUVs(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
                     batch.PatchCount * 4
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]"),
-                    batch.GetMergedLightmapTextureUVs().ToArray(),
+                    batch.GetMergedLightmapTextureUVs(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
                     batch.PatchCount * 4
                 );
@@ -297,7 +298,7 @@ namespace IceSaw2.Renderer
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]"),
-                    batch.GetMergedHighlighted().ToArray(),
+                    batch.GetMergedHighlighted(),
                     Raylib_cs.ShaderUniformDataType.Int,
                     batch.PatchCount
                 );
@@ -509,32 +510,32 @@ namespace IceSaw2.Renderer
             public uint TextureID;
             public uint LightmapID;
 
-            public List<Vector3> GetMergedControlPoints()
+            public Vector3[] GetMergedControlPoints()
             {
-                List<Vector3> output = [];
-                foreach (var patch in Patches)
+                Vector3[] output = new Vector3[PatchCount*16];
+                for (int i = 0; i < PatchCount; i++)
                 {
-                    output.AddRange(patch.Controlpoints);
+                    Patches[i].Controlpoints.CopyTo(output, i*16);
                 }
                 return output;
             }
 
-            public List<Vector2> GetMergedDiffuseTextureUVs()
+            public Vector2[] GetMergedDiffuseTextureUVs()
             {
-                List<Vector2> output = [];
-                foreach (var patch in Patches)
+                Vector2[] output = new Vector2[PatchCount * 4];
+                for (int i = 0; i < PatchCount; i++)
                 {
-                    output.AddRange(patch.TextureUV);
+                    Patches[i].TextureUV.CopyTo(output, i * 4);
                 }
                 return output;
             }
 
-            public List<Vector2> GetMergedLightmapTextureUVs()
+            public Vector2[] GetMergedLightmapTextureUVs()
             {
-                List<Vector2> output = [];
-                foreach (var patch in Patches)
+                Vector2[] output = new Vector2[PatchCount * 4];
+                for (int i = 0; i < PatchCount; i++)
                 {
-                    output.AddRange(patch.LightmapUV);
+                    Patches[i].LightmapUV.CopyTo(output, i * 4);
                 }
                 return output;
             }
@@ -549,12 +550,12 @@ namespace IceSaw2.Renderer
                 return output;
             }
 
-            public List<int> GetMergedHighlighted()
+            public int[] GetMergedHighlighted()
             {
-                List<int> output = [];
-                foreach (var patch in Patches)
+                int[] output = new int[PatchCount];
+                for (int i = 0; i < PatchCount; i++)
                 {
-                    output.Add(patch.Highlighted ? 1 : 0);
+                    output[i] = Patches[i].Highlighted ? 1 : 0;
                 }
                 return output;
             }
