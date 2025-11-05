@@ -1,6 +1,4 @@
 using IceSaw2.Utilities;
-using Raylib_cs;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -49,11 +47,11 @@ namespace IceSaw2.Renderer
 
             unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform"); }
 
-            int tex0Loc = Raylib.GetShaderLocation(_material.Shader, "defuseTexture");
-            Raylib.SetShaderValue(_material.Shader, tex0Loc, 12, ShaderUniformDataType.Sampler2D);
+            int tex0Loc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTexture");
+            Raylib_cs.Raylib.SetShaderValue(_material.Shader, tex0Loc, 12, Raylib_cs.ShaderUniformDataType.Sampler2D);
 
-            int tex1Loc = Raylib.GetShaderLocation(_material.Shader, "lightmap");
-            Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, ShaderUniformDataType.Sampler2D);
+            int tex1Loc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmap");
+            Raylib_cs.Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, Raylib_cs.ShaderUniformDataType.Sampler2D);
         }
 
         public void Clear()
@@ -284,15 +282,15 @@ namespace IceSaw2.Renderer
                 if (PrevTextureID != batch.TextureID)
                 {
                     PrevTextureID = batch.TextureID;
-                    Rlgl.ActiveTextureSlot(12);
-                    Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
+                    Raylib_cs.Rlgl.ActiveTextureSlot(12);
+                    Raylib_cs.Rlgl.EnableTexture(batch.Patches[0].Texture.Id);
                 }
 
                 if (PrevLightmapID != batch.LightmapID)
                 {
                     PrevLightmapID = batch.LightmapID;
-                    Rlgl.ActiveTextureSlot(13);
-                    Rlgl.EnableTexture(PrevLightmapID);
+                    Raylib_cs.Rlgl.ActiveTextureSlot(13);
+                    Raylib_cs.Rlgl.EnableTexture(PrevLightmapID);
                 }
 
                 Raylib_cs.Raylib.SetShaderValueV(
@@ -310,10 +308,10 @@ namespace IceSaw2.Renderer
                     batch.PatchCount
                 );
             }
-            Rlgl.ActiveTextureSlot(12);
-            Rlgl.DisableTexture();
-            Rlgl.ActiveTextureSlot(13);
-            Rlgl.DisableTexture();
+            Raylib_cs.Rlgl.ActiveTextureSlot(12);
+            Raylib_cs.Rlgl.DisableTexture();
+            Raylib_cs.Rlgl.ActiveTextureSlot(13);
+            Raylib_cs.Rlgl.DisableTexture();
         }
 
         private void GenerateMesh()
@@ -377,7 +375,7 @@ namespace IceSaw2.Renderer
                 }
                 var TempLightmap = Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap);
 
-                Raylib.SetTextureFilter(TempLightmap, TextureFilter.Bilinear);
+                Raylib_cs.Raylib.SetTextureFilter(TempLightmap, Raylib_cs.TextureFilter.Bilinear);
 
                 _paddedLightmaps.Add(TempLightmap);
             }
