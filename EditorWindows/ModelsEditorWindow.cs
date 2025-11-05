@@ -399,7 +399,7 @@ namespace IceSaw2.EditorWindows
                     //ImGui.Text("Name | " + activeMat.Name);
                     ImGui.Text("Main Texture | " + activeMat.TexturePath);
                     rlImGui.Image(TrickyDataManager.ReturnTexture(activeMat.TexturePath, ShowSkybox));
-
+                    activeMat.TexturePath = ImGUIUtil.TextInput(activeMat.TexturePath, 99999);
                     ImGui.DragInt("UnknownInt2", ref activeMat.UnknownInt2, 0.3f, -1, 99999);
                     ImGui.DragInt("UnknownInt3", ref activeMat.UnknownInt3, 0.3f, -1, 99999);
                     ImGui.DragFloat("UnknownFloat1", ref activeMat.UnknownFloat1, 0.25f, -1, 99999);

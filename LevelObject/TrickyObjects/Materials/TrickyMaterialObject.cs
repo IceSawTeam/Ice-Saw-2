@@ -13,7 +13,22 @@ namespace IceSaw2.LevelObject.Materials
             get { return ObjectType.Material; }
         }
 
-        public string TexturePath = "";
+        public string _texturePath = "";
+        public string TexturePath 
+        { 
+            get 
+            { 
+                return _texturePath; 
+            } 
+            set {
+                if (_texturePath != value)
+                {
+                    _texturePath = value;
+                    GenerateMaterial();
+                }
+            } 
+        }
+
         public int UnknownInt2;
         public int UnknownInt3;
 
@@ -114,7 +129,10 @@ namespace IceSaw2.LevelObject.Materials
         {
             Texture2D ReturnTexture = TrickyDataManager.ReturnTexture(TexturePath, Skybox);
 
-            materialRef = new RayWarp.MaterialRef(Raylib.LoadMaterialDefault());
+            if (materialRef == null)
+            {
+                materialRef = new RayWarp.MaterialRef(Raylib.LoadMaterialDefault());
+            }
 
             Raylib.SetMaterialTexture(ref materialRef.Material, MaterialMapIndex.Diffuse, ReturnTexture);
 
