@@ -63,10 +63,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
         }
 
-        Surface? surface;
-
-        bool MeshLoaded = false;
-
         public TrickyPatchObject()
         {
             List<Vector3> TempPoints = new List<Vector3>();

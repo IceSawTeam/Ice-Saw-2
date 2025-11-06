@@ -60,6 +60,19 @@ namespace IceSaw2.EditorWindows
             //GenerateRenderList();
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
 
+
+            //Terrible things to computer
+            Random random = new Random();
+            for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
+            {
+
+                for (global::System.Int32 j = 0; j < 16; j++)
+                {
+                    TrickyDataManager.trickyPatchObjects[i].controlPoints[j] += new Vector3((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
+                }
+            }
+
+
             Renderer.TessellatedPatch.Instance.Render();
 
             //Render Objects
