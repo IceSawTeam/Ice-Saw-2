@@ -9,26 +9,75 @@ using System.Numerics;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
-    public class TrickyPatchObject : MeshBaseObject
+    public class TrickyPatchObject : BaseObject
     {
         private int TesPatchID;
+        //private bool _holdUpdate;
 
-        public Vector4 LightMapPoint;
+        private Vector4 _lightmapPoint;
+        public Vector4 LightMapPoint 
+        {
+            get { return _lightmapPoint; }
+            set 
+            {
+                if (_lightmapPoint != value)
+                {
+                    _lightmapPoint = value;
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
+                }
+            }
+        }
+
+        public ControlPoints controlPoints;
+
         public Vector2[] UVPoints = new Vector2[4];
-        public Vector3[] WorldPoints = new Vector3[16];
 
         public int SurfaceType;
         public bool TrickOnlyPatch;
-        public string TexturePath = "";
-        public int LightmapID;
+
+        public string _texturePath = "";
+        public string TexturePath
+        {
+            get { return _texturePath; }
+            set
+            {
+                if (_texturePath != value)
+                {
+                    _texturePath = value;
+                    TessellatedPatch.Instance.UpdatePatchTexture(TesPatchID, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList());
+                }
+            }
+        }
+
+        private int _lightmapID;
+        public int LightmapID
+        {
+            get { return _lightmapID; }
+            set
+            {
+                if (_lightmapID != value)
+                {
+                    _lightmapID = value;
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
+                }
+            }
+        }
 
         Surface? surface;
 
-        bool MeshLoaded =false;
+        bool MeshLoaded = false;
 
         public TrickyPatchObject()
         {
-            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(WorldPoints.ToList(), TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList(), 0, ReturnLightmapPoints(), false);
+            List<Vector3> TempPoints = new List<Vector3>();
+            for (int i = 0; i < 16; i++)
+            {
+                TempPoints.Add(Vector3.Zero);
+            }
+
+            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(TempPoints.ToList(), TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList(), 0, ReturnLightmapPoints(), false);
+
+            controlPoints = new ControlPoints(TesPatchID);
         }
 
         public void LoadPatch(PatchesJsonHandler.PatchJson patchJson)
@@ -37,36 +86,24 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             LightMapPoint = new Vector4(patchJson.LightMapPoint[0], patchJson.LightMapPoint[1], patchJson.LightMapPoint[2], patchJson.LightMapPoint[3]);
 
-            UVPoints = new Vector2[4];
+            //UVPoints = new Vector2[4];
             
             for (int i = 0; i < 4; i++)
             {
                 UVPoints[i] = new Vector2(patchJson.UVPoints[i, 0], patchJson.UVPoints[i, 1]);
             }
 
-            WorldPoints = new Vector3[16];
+            //WorldPoints = new Vector3[16];
 
             for (int y = 0; y < 16; y++)
             {
-                WorldPoints[y] = new Vector3(patchJson.Points[y, 0], patchJson.Points[y, 1], patchJson.Points[y, 2]);
+                controlPoints[y] = new Vector3(patchJson.Points[y, 0], patchJson.Points[y, 1], patchJson.Points[y, 2]);
             }
 
             SurfaceType = patchJson.SurfaceType;
             TrickOnlyPatch = patchJson.TrickOnlyPatch;
             TexturePath = patchJson.TexturePath;
             LightmapID = patchJson.LightmapID;
-
-            List<Vector3> tempPoints= new List<Vector3>();
-            //Replace Tessellated Patch Matrix with Correct One
-            for (int i = 0; i < 16; i++)
-            {
-                tempPoints.Add(WorldPoints[i] * WorldScale);
-            }
-
-
-            TessellatedPatch.Instance.UpdatePatchControlPoints(TesPatchID, tempPoints);
-            TessellatedPatch.Instance.UpdatePatchTexture(TesPatchID, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList());
-            TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
             //GeneratePatch();
         }
 
@@ -162,9 +199,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
             for (int y = 0; y < 16; y++)
             {
-                patch.Points[y, 0] = WorldPoints[y].X;
-                patch.Points[y, 1] = WorldPoints[y].Y;
-                patch.Points[y, 2] = WorldPoints[y].Z;
+                patch.Points[y, 0] = controlPoints[y].X;
+                patch.Points[y, 1] = controlPoints[y].Y;
+                patch.Points[y, 2] = controlPoints[y].Z;
             }
 
             patch.SurfaceType = (int)SurfaceType;
@@ -185,6 +222,55 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
 
             return NewList;
+        }
+
+        public struct ControlPoints
+        {
+            int _tesPatchID = -1;
+            public ControlPoints(int TesPatchID)
+            {
+                _tesPatchID = TesPatchID;
+            }
+
+            private Vector3[] _worldPoints = new Vector3[16];
+            public Vector3 this[int index]
+            {
+                get 
+                {
+                    if (index >= 0 && index < _worldPoints.Length)
+                    {
+                        return _worldPoints[index];
+                    }
+                    throw new IndexOutOfRangeException("Index is out of bounds.");
+                }
+                set
+                {
+                    if (index >= 0 && index < _worldPoints.Length)
+                    {
+                        if (_worldPoints[index] != value)
+                        {
+                            _worldPoints[index] = value;
+                            TessellatedPatch.Instance.UpdatePatchControlPoints(_tesPatchID, ReturnControlPoints());
+                        }
+                    }
+                    else
+                    {
+                        throw new IndexOutOfRangeException("Index is out of bounds.");
+                    }
+                }
+            }
+
+            public List<Vector3> ReturnControlPoints()
+            {
+                List<Vector3> tempPoints = new List<Vector3>();
+                //Replace Tessellated Patch Matrix with Correct One
+                for (int i = 0; i < 16; i++)
+                {
+                    tempPoints.Add(_worldPoints[i] * WorldScale);
+                }
+
+                return tempPoints;
+            }
         }
     }
 }
