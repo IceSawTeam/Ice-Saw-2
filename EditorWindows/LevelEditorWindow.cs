@@ -68,7 +68,7 @@ namespace IceSaw2.EditorWindows
 
                 for (global::System.Int32 j = 0; j < 16; j++)
                 {
-                    TrickyDataManager.trickyPatchObjects[i].controlPoints[j] += new Vector3((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
+                    TrickyDataManager.trickyPatchObjects[i].controlPoints[j] += new Vector3((float)(random.NextDouble()-0.5f)*100, (float)(random.NextDouble() - 0.5f) * 100, (float)(random.NextDouble() - 0.5f) * 100);
                 }
             }
 
