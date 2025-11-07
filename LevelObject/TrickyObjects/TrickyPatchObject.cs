@@ -217,7 +217,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
         public struct ControlPoints
         {
             int _tesPatchID = -1;
-            public ControlPoints(int TesPatchID)
+            public ControlPoints(int TesPatchID = -1)
             {
                 _tesPatchID = TesPatchID;
             }
@@ -240,7 +240,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                         if (_worldPoints[index] != value)
                         {
                             _worldPoints[index] = value;
-                            TessellatedPatch.Instance.UpdatePatchControlPoints(_tesPatchID, ReturnControlPoints());
+                            TessellatedPatch.Instance.UpdatePatchControlPoints(_tesPatchID, _worldPoints);
                         }
                     }
                     else

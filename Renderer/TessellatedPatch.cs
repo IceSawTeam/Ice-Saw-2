@@ -1,3 +1,4 @@
+using IceSaw2.LevelObject;
 using IceSaw2.Utilities;
 using System.Diagnostics;
 using System.Numerics;
@@ -43,7 +44,7 @@ namespace IceSaw2.Renderer
             Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.Info);
             _material = Raylib_cs.Raylib.LoadMaterialDefault();
             _material.Shader = shader;
-            identities = [.. identities.Select(x => Matrix4x4.Identity)];
+            identities = [.. identities.Select(x => BaseObject.Default)];
 
             unsafe { _material.Shader.Locs[(int)Raylib_cs.ShaderLocationIndex.MatrixModel] = Raylib_cs.Raylib.GetShaderLocationAttrib(_material.Shader, "instanceTransform"); }
 
