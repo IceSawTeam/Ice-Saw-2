@@ -241,10 +241,12 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.SetNextWindowSize(new System.Numerics.Vector2(160, 300), ImGuiCond.FirstUseEver);
                     ImGui.Begin("Profiler (ms)", ref showProfiler);
 
-                    ImGui.Text($"Input: {Program.InputTime:F3}");
-                    ImGui.Text($"Logic: {Program.LogicTime:F3}");
-                    ImGui.Text($"Render: {Program.RenderTime:F3}");
-                    ImGui.Text($"Total: {Program.TotalTime:F3}");
+                    float spacing = 55;
+
+                    ImGui.Text("Input:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.InputTime:F3}");
+                    ImGui.Text("Logic:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.LogicTime:F3}");
+                    ImGui.Text("Render:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.RenderTime:F3}");
+                    ImGui.Text("Total:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.TotalTime:F3}");
 
                     ImGui.Separator();
 
