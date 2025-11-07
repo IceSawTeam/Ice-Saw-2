@@ -51,13 +51,13 @@ namespace IceSaw2
 
             for (int i = 0; i < profiles.Count; i++)
             {
-                var Profile = profiles[i];
-                if (!Profile.Hide)
+                if (!profiles[i].Hide)
                 {
+                    var Profile = profiles[i];
                     ImGui.Text(Profile.Name + ":"); ImGui.SameLine(spacing); ImGui.Text($"{Profile.Time:F3}");
+                    Profile.Hide = true;
+                    profiles[i] = Profile;
                 }
-                Profile.Hide = true;
-                profiles[i] = Profile;
             }
 
             ImGui.Separator();
