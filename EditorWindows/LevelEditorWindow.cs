@@ -1,5 +1,4 @@
 ﻿using IceSaw2.LevelObject;
-using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using ImGuiNET;
 using Raylib_cs;
@@ -57,7 +56,20 @@ namespace IceSaw2.EditorWindows
             Raylib.DrawLine3D(new Vector3(0, -axisLineSize, 0), new Vector3(0, axisLineSize, 0), new Color(17, 212, 4));
             Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
-            //GenerateRenderList();
+            Profiler.SetStartTime("-Patches");
+            for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
+            {
+                TrickyDataManager.trickyPatchObjects[i].Render();
+            }
+            Profiler.UpdateTime("-Patches");
+
+            Profiler.SetStartTime("-Instances");
+            for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
+            {
+                TrickyDataManager.trickyModelObjects[i].Render();
+            }
+            Profiler.UpdateTime("-Instances");
+
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
 
             //Render Objects
@@ -119,7 +131,6 @@ namespace IceSaw2.EditorWindows
 
 
 
-
             // --- VIEWPORT ---
             float centerX = vpPos.X + outlinerWidth;
             ImGui.SetNextWindowPos(new Vector2(centerX, vpPos.Y + menuBarHeight), ImGuiCond.Always);
@@ -167,8 +178,8 @@ namespace IceSaw2.EditorWindows
         {
             RenderItems = new List<BaseObject>();
 
-            RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
             RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
             RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
             RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);

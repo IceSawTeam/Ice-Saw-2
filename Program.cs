@@ -4,32 +4,34 @@ namespace IceSaw2
 {
     internal class Program
     {
-        public static float InputTime;
-        public static float LogicTime;
-        public static float RenderTime;
-        public static float TotalTime;
-
-        private static double InitialStartTime;
-        private static double StartTime;
 
         public static void Main()
         {
+            //Initalize
+            Profiler.AddProfile("Input");
+            Profiler.AddProfile("Logic");
+            Profiler.AddProfile("Render");
+            Profiler.AddProfile("-Patches");
+            Profiler.AddProfile("-Instances");
+
             Core engineCore = new();
             while (engineCore.isRunning && !Raylib.WindowShouldClose())
             {
-                InitialStartTime = Raylib.GetTime();
+                Profiler.InitialStartTime = Raylib.GetTime();
+
+                Profiler.SetStartTime("Input");
                 engineCore.InputProccessing();
-                InputTime = (float)((Raylib.GetTime() - InitialStartTime) * 1000);
+                Profiler.UpdateTime("Input");
 
-                StartTime = Raylib.GetTime();
+                Profiler.SetStartTime("Logic");
                 engineCore.LogicProccessing();
-                LogicTime = (float)((Raylib.GetTime() - StartTime) * 1000);
+                Profiler.UpdateTime("Logic");
 
-                StartTime = Raylib.GetTime();
+                Profiler.SetStartTime("Render");
                 engineCore.RenderProcessing();
-                RenderTime = (float)((Raylib.GetTime() - StartTime) * 1000);
+                Profiler.UpdateTime("Render");
 
-                TotalTime = (float)((Raylib.GetTime() - InitialStartTime) * 1000);
+                Profiler.TotalTime = (float)((Raylib.GetTime() - Profiler.InitialStartTime) * 1000);
             }
             engineCore.Exiting();
         }

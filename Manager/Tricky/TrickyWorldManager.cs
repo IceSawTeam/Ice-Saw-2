@@ -31,10 +31,6 @@ namespace IceSaw2.Manager.Tricky
         bool showImGuiDemo = false;
         bool showProfiler = true;
 
-        const int FRAME_TIME_HISTORY_SIZE = 100;
-        static float[] frameTimes = new float[FRAME_TIME_HISTORY_SIZE];
-        static int frameIndex = 0;
-
         public TrickyWorldManager()
         {
             instance = this;
@@ -241,38 +237,7 @@ namespace IceSaw2.Manager.Tricky
                 
                 if (showProfiler)
                 {
-                    ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, Raylib.GetScreenHeight() - 300), ImGuiCond.FirstUseEver);
-                    ImGui.SetNextWindowSize(new System.Numerics.Vector2(160, 300), ImGuiCond.FirstUseEver);
-                    ImGui.Begin("Profiler (ms)", ref showProfiler);
-
-                    float spacing = 55;
-
-                    ImGui.Text("Input:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.InputTime:F3}");
-                    ImGui.Text("Logic:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.LogicTime:F3}");
-                    ImGui.Text("Render:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.RenderTime:F3}");
-                    ImGui.Text("Total:"); ImGui.SameLine(spacing); ImGui.Text($"{Program.TotalTime:F3}");
-
-                    ImGui.Separator();
-
-                    float frameTime = Raylib.GetFrameTime() * 1000.0f;
-
-                    ImGui.Text($"FrameTime (Delta): {frameTime:F3}");
-
-                    frameTimes[frameIndex] = frameTime;
-                    frameIndex = (frameIndex + 1) % FRAME_TIME_HISTORY_SIZE;
-
-                    ImGui.PlotLines(
-                        label: "##FrameTimeGraph",
-                        values: ref frameTimes[0],
-                        values_count: FRAME_TIME_HISTORY_SIZE,
-                        values_offset: frameIndex,
-                        overlay_text: "ms/frame",
-                        scale_min: 0,
-                        scale_max: 63.3f, // ~60 FPS
-                        graph_size: new Vector2(0, 80)
-                    );
-
-                    ImGui.End();
+                    Profiler.Render();
                 }
 
             }
