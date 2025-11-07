@@ -137,6 +137,10 @@ namespace IceSaw2.Manager.Tricky
                         }
                         Settings.General.Instance.Save();
                     }
+                    if (ImGui.MenuItem("Profiler"))
+                    {
+                        showProfiler = !showProfiler;
+                    }
                     if (ImGui.MenuItem("ImGui Demo"))
                     {
                         showImGuiDemo = !showImGuiDemo;
@@ -271,7 +275,7 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.End();
                 }
 
-                }
+            }
             ImGui.PopStyleVar(2);
         }
 
