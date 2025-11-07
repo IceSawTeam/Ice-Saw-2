@@ -64,11 +64,11 @@ namespace IceSaw2.Renderer
         }
 
         public int AddPatch(
-                List<Vector3> Controlpoints,
+                Vector3[] Controlpoints,
                 Raylib_cs.Texture2D Texture,
-                List<Vector2> TextureUV,
+                Vector2[] TextureUV,
                 int LightmapID,
-                List<Vector2> LightmapUV,
+                Vector2[] LightmapUV,
                 bool Highlighted)
         {
             bool foundEmptySpot = false;
@@ -145,7 +145,7 @@ namespace IceSaw2.Renderer
             _patchEntries[patchID] = null;
         }
 
-        public void UpdatePatchControlPoints(int patchID, List<Vector3> Controlpoints)
+        public void UpdatePatchControlPoints(int patchID, Vector3[] Controlpoints)
         {
             var entry = _patchEntries[patchID];
             Debug.Assert(entry != null);
@@ -153,7 +153,7 @@ namespace IceSaw2.Renderer
             entry.UpdateBoundingSphere();
         }
 
-        public void UpdatePatchTexture(int patchID, Raylib_cs.Texture2D texture, List<Vector2> textureUV)
+        public void UpdatePatchTexture(int patchID, Raylib_cs.Texture2D texture, Vector2[] textureUV)
         {
             var entry = _patchEntries[patchID];
             Debug.Assert(entry != null);
@@ -161,7 +161,7 @@ namespace IceSaw2.Renderer
             entry.TextureUV = textureUV;
         }
 
-        public void UpdatePatchLightmap(int patchID, int lightmapID, List<Vector2> lightmapUV)
+        public void UpdatePatchLightmap(int patchID, int lightmapID, Vector2[] lightmapUV)
         {
             var entry = _patchEntries[patchID];
             Debug.Assert(entry != null);
@@ -470,11 +470,11 @@ namespace IceSaw2.Renderer
 
         private class PatchEntry
         {
-            public List<Vector3> Controlpoints = [];
+            public Vector3[] Controlpoints = new Vector3[16];
             public Raylib_cs.Texture2D Texture;
-            public List<Vector2> TextureUV = []; // List count is 4
+            public Vector2[] TextureUV = new Vector2[4]; // List count is 4
             public int LightmapID;
-            public List<Vector2> LightmapUV = []; // List count is 4
+            public Vector2[] LightmapUV = new Vector2[4]; // List count is 4
             public bool Highlighted;
             public BoundingSphere Sphere = new(new Vector3(0), 0);
 
@@ -485,7 +485,7 @@ namespace IceSaw2.Renderer
                 {
                     centerOfMass += controlPoint;
                 }
-                centerOfMass /= Controlpoints.Count;
+                centerOfMass /= Controlpoints.Length;
 
                 float furthestDistance = 0;
                 foreach (var controlPoint in Controlpoints)

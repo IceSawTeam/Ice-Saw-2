@@ -44,7 +44,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 if (_texturePath != value)
                 {
                     _texturePath = value;
-                    TessellatedPatch.Instance.UpdatePatchTexture(TesPatchID, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList());
+                    TessellatedPatch.Instance.UpdatePatchTexture(TesPatchID, TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints);
                 }
             }
         }
@@ -65,13 +65,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public TrickyPatchObject()
         {
-            List<Vector3> TempPoints = new List<Vector3>();
-            for (int i = 0; i < 16; i++)
-            {
-                TempPoints.Add(Vector3.Zero);
-            }
-
-            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(TempPoints.ToList(), TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints.ToList(), 0, ReturnLightmapPoints(), false);
+            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, 0, ReturnLightmapPoints(), false);
 
             controlPoints = new ControlPoints(TesPatchID);
         }
@@ -103,14 +97,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
             //GeneratePatch();
         }
 
-        public List<Vector2> ReturnLightmapPoints()
+        public Vector2[] ReturnLightmapPoints()
         {
-            List<Vector2> vector2s = new List<Vector2>();
+            Vector2[] vector2s = new Vector2[4];
 
-            vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y));
-            vector2s.Add(new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W));
-            vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y));
-            vector2s.Add(new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W));
+            vector2s[0] = new Vector2(LightMapPoint.X, LightMapPoint.Y);
+            vector2s[1] = new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W);
+            vector2s[2] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y);
+            vector2s[3] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W);
 
             return vector2s;
         }
@@ -256,13 +250,16 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 }
             }
 
-            public List<Vector3> ReturnControlPoints()
+            public Vector3[] ReturnControlPoints()
             {
-                List<Vector3> tempPoints = new List<Vector3>();
+                Vector3[] tempPoints = new Vector3[16];
                 //Replace Tessellated Patch Matrix with Correct One
-                for (int i = 0; i < 16; i++)
+                if (_tesPatchID != -1)
                 {
-                    tempPoints.Add(_worldPoints[i] * WorldScale);
+                    for (int i = 0; i < 16; i++)
+                    {
+                        tempPoints[i] = _worldPoints[i] * WorldScale;
+                    }
                 }
 
                 return tempPoints;
