@@ -4,6 +4,7 @@ using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
 using System.Diagnostics;
+using System.Numerics;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -28,6 +29,11 @@ namespace IceSaw2.Manager.Tricky
 
         bool showAboutWindow = false;
         bool showImGuiDemo = false;
+        bool showProfiler = true;
+
+        const int FRAME_TIME_HISTORY_SIZE = 100;
+        static float[] frameTimes = new float[FRAME_TIME_HISTORY_SIZE];
+        static int frameIndex = 0;
 
         public TrickyWorldManager()
         {
@@ -66,7 +72,7 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateRender()
         {
-            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30, 75, 24, Raylib.GetColor(0x0000009d));
+            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2 - 8, Raylib.GetScreenHeight() - 32, 95, 26, Raylib.GetColor(0x000000FF));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
@@ -226,7 +232,44 @@ namespace IceSaw2.Manager.Tricky
 
                     ImGui.End();
                 }
-            }
+
+                
+                
+                if (showProfiler)
+                {
+                    ImGui.SetNextWindowPos(new System.Numerics.Vector2(0, Raylib.GetScreenHeight() - 300), ImGuiCond.FirstUseEver);
+                    ImGui.SetNextWindowSize(new System.Numerics.Vector2(160, 300), ImGuiCond.FirstUseEver);
+                    ImGui.Begin("Profiler (ms)", ref showProfiler);
+
+                    ImGui.Text($"Input: {Program.InputTime:F3}");
+                    ImGui.Text($"Logic: {Program.LogicTime:F3}");
+                    ImGui.Text($"Render: {Program.RenderTime:F3}");
+                    ImGui.Text($"Total: {Program.TotalTime:F3}");
+
+                    ImGui.Separator();
+
+                    float frameTime = Raylib.GetFrameTime() * 1000.0f;
+
+                    ImGui.Text($"FrameTime (Delta): {frameTime:F3}");
+
+                    frameTimes[frameIndex] = frameTime;
+                    frameIndex = (frameIndex + 1) % FRAME_TIME_HISTORY_SIZE;
+
+                    ImGui.PlotLines(
+                        label: "##FrameTimeGraph",
+                        values: ref frameTimes[0],
+                        values_count: FRAME_TIME_HISTORY_SIZE,
+                        values_offset: frameIndex,
+                        overlay_text: "ms/frame",
+                        scale_min: 0,
+                        scale_max: 63.3f, // ~60 FPS
+                        graph_size: new Vector2(0, 80)
+                    );
+
+                    ImGui.End();
+                }
+
+                }
             ImGui.PopStyleVar(2);
         }
 
