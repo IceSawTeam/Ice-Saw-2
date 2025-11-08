@@ -79,9 +79,19 @@ public class TrickyLightObject : BaseObject
         Texture2D lightIcon = worldManInstance.LightIcons[(int)lightType];
 
         Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
-        Vector2 size = new Vector2(1.0f, (float)lightIcon.Height / lightIcon.Width); // maintain aspect
+        Vector2 size = new Vector2(0.55f, 0.55f);
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(worldManInstance.levelEditorWindow.viewCamera3D, lightIcon, sourceRec, Position* WorldScale, worldManInstance.levelEditorWindow.viewCamera3D.Up, size, origin, 0f, Color.White);
+        Raylib.DrawBillboardPro(
+            worldManInstance.levelEditorWindow.viewCamera3D, 
+            lightIcon,
+            sourceRec,
+            Position* WorldScale,
+            worldManInstance.levelEditorWindow.viewCamera3D.Up,
+            size,
+            origin,
+            0f,
+            Color.White
+        );
     }
 
 public enum LightType
