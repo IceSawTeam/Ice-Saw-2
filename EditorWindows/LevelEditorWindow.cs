@@ -28,6 +28,7 @@ namespace IceSaw2.EditorWindows
         public ShadingType shadingType;
         public bool showWireframeOverlay = false;
         public bool showLightColors = true;
+        public bool backFaceCulling = false;
 
         public List<BaseObject> RenderItems = new List<BaseObject>();
 
@@ -42,6 +43,15 @@ namespace IceSaw2.EditorWindows
 
         public override void RenderUpdate()
         {
+            if (backFaceCulling)
+            {
+                Rlgl.EnableBackfaceCulling();
+            }
+            else
+            {
+                Rlgl.DisableBackfaceCulling();
+            }
+
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
 
@@ -205,7 +215,7 @@ namespace IceSaw2.EditorWindows
                     ImGui.Checkbox("Wireframe Overlay", ref showWireframeOverlay);
                     ImGui.EndDisabled();
 
-                    ImGui.Checkbox("Backface Culling", ref showWireframeOverlay);
+                    ImGui.Checkbox("Backface Culling", ref backFaceCulling);
                     ImGui.Checkbox("Light Colors", ref showLightColors);
 
 
