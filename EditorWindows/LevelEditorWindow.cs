@@ -80,7 +80,11 @@ namespace IceSaw2.EditorWindows
 
             Raylib.EndMode3D();
 
+            RenderUI();
+        }
 
+        public void RenderUI()
+        {
             //Render UI
 
             // Dimensions
@@ -167,11 +171,6 @@ namespace IceSaw2.EditorWindows
             ImGui.End();
             ImGui.PopStyleColor();
             ImGui.PopStyleVar(2);
-
-
-
-
-
         }
 
         public void GenerateRenderList()
