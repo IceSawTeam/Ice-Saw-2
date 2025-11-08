@@ -20,6 +20,7 @@ namespace IceSaw2.EditorWindows
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }
 
         private float axisLineSize = 1000f;
+        private float placeholderFloat = 0.5f;
 
         public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
@@ -36,7 +37,6 @@ namespace IceSaw2.EditorWindows
             viewCamera3D.Up = new Vector3(0, 0, 1);
             viewCamera3D.FovY = 65f;
             viewCamera3D.Projection = CameraProjection.Perspective;
-
         }
 
         public override void RenderUpdate()
@@ -146,56 +146,95 @@ namespace IceSaw2.EditorWindows
             ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0f, 0f, 0f, 0f));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-            ImGui.Begin("Viewport", flags);
+            ImGui.PushStyleColor(ImGuiCol.MenuBarBg, new Vector4(0.0f, 0.0f, 0.0f, 0.6f));
+            ImGui.Begin("Viewport", flags |= ImGuiWindowFlags.MenuBar);
 
             var drawList = ImGui.GetWindowDrawList();
             var winPos = ImGui.GetWindowPos();
             var winSize = ImGui.GetWindowSize();
 
-            Vector2 headerTL = new Vector2(winPos.X, winPos.Y);
-            Vector2 headerBR = new Vector2(winPos.X + winSize.X, winPos.Y + viewportHeaderHeight);
-            uint headerCol = ImGui.ColorConvertFloat4ToU32(new Vector4(0.08f, 0.08f, 0.08f, 0.5f));
-            drawList.AddRectFilled(headerTL, headerBR, headerCol);
+            //Vector2 headerTL = new Vector2(winPos.X, winPos.Y);
+            //Vector2 headerBR = new Vector2(winPos.X + winSize.X, winPos.Y + viewportHeaderHeight);
+            //uint headerCol = ImGui.ColorConvertFloat4ToU32(new Vector4(0.08f, 0.08f, 0.08f, 0.5f));
+            //drawList.AddRectFilled(headerTL, headerBR, headerCol);
 
-            ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + 4));
-            ImGui.Text("Viewport Header");
+            //ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + 4));
+            //ImGui.Text("Viewport Header");
 
-            ImGui.SameLine();
+            //ImGui.SameLine();
+
             
-            if (ImGui.BeginMenu("VPS")) // Viewport quick settings. TODO: replace with icon
+            if (ImGui.BeginMenuBar())
             {
-                ImGui.PushItemFlag(ImGuiItemFlags.AutoClosePopups, false);
+                ImGui.Text("Viewport Header");
 
-                if (ImGui.MenuItem("Solid", "", shadingType == ShadingType.Solid))
+                ImGui.SetCursorScreenPos(new Vector2((winPos.X + winSize.X) - 88, winPos.Y));
+
+                if (ImGui.BeginMenu("VPS")) // Viewport quick settings. TODO: replace with icon
                 {
-                    shadingType = ShadingType.Solid;
+                    ImGui.Text("Viewport General");
+
+                    ImGui.Separator();
+
+                    ImGui.PushItemFlag(ImGuiItemFlags.AutoClosePopups, false);
+
+                    if (ImGui.MenuItem("Solid", "", shadingType == ShadingType.Solid))
+                    {
+                        shadingType = ShadingType.Solid;
+                    }
+                    if (ImGui.MenuItem("Textured", "", shadingType == ShadingType.Textured))
+                    {
+                        shadingType = ShadingType.Textured;
+                    }
+                    if (ImGui.MenuItem("Textured Baked", "", shadingType == ShadingType.TexturedBaked))
+                    {
+                        shadingType = ShadingType.TexturedBaked;
+                    }
+                    if (ImGui.MenuItem("Wireframe", "", shadingType == ShadingType.Wireframe)) // wireframe only. no solids.
+                    {
+                        shadingType = ShadingType.Wireframe;
+                        //showWireframeOverlay = false;
+                    }
+
+                    ImGui.PopItemFlag();
+
+                    ImGui.Separator();
+
+                    ImGui.BeginDisabled(shadingType == ShadingType.Wireframe);
+                    ImGui.Checkbox("Wireframe Overlay", ref showWireframeOverlay);
+                    ImGui.EndDisabled();
+
+                    ImGui.Checkbox("Backface Culling", ref showWireframeOverlay);
+
+
+                    ImGui.EndMenu();
                 }
-                if (ImGui.MenuItem("Textured", "", shadingType == ShadingType.Textured))
+
+                if (ImGui.BeginMenu("CMS")) // Camera quick settings. TODO: replace with icon
                 {
-                    shadingType = ShadingType.Textured;
+                    ImGui.Text("Viewport Camera");
+
+                    ImGui.Separator();
+
+                    if (ImGui.RadioButton("Perspective", viewCamera3D.Projection == CameraProjection.Perspective))
+                    {
+                        viewCamera3D.Projection = CameraProjection.Perspective;
+                    }
+                    ImGui.SameLine();
+                    if (ImGui.RadioButton("Orthographic", viewCamera3D.Projection == CameraProjection.Orthographic))
+                    {
+                        viewCamera3D.Projection = CameraProjection.Orthographic;
+                    }
+
+                    ImGui.DragFloat("Near Clip", ref placeholderFloat, 0.01f, 0.000001f, 10000f);
+                    ImGui.DragFloat("Far Clip", ref placeholderFloat, 1f, 0.000002f, 100000f);
+
+                    ImGui.EndMenu();
                 }
-                if (ImGui.MenuItem("Textured Baked", "", shadingType == ShadingType.TexturedBaked))
-                {
-                    shadingType = ShadingType.TexturedBaked;
-                }
-                if (ImGui.MenuItem("Wireframe", "", shadingType == ShadingType.Wireframe)) // wireframe only. no solids.
-                {
-                    shadingType = ShadingType.Wireframe;
-                    //showWireframeOverlay = false;
-                }
 
-                ImGui.PopItemFlag();
-
-                ImGui.Separator();
-
-                ImGui.BeginDisabled(shadingType == ShadingType.Wireframe);
-                ImGui.Checkbox("Wireframe Overlay", ref showWireframeOverlay);
-                ImGui.EndDisabled();
-
-
-                ImGui.EndMenu();
+                ImGui.EndMenuBar();
             }
-            
+
 
             ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + viewportHeaderHeight + 8));
 
@@ -209,7 +248,7 @@ namespace IceSaw2.EditorWindows
             ImGui.EndChild();
 
             ImGui.End();
-            ImGui.PopStyleColor();
+            ImGui.PopStyleColor(2);
             ImGui.PopStyleVar(2);
         }
 
