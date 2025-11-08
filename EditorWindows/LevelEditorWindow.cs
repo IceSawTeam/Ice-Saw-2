@@ -27,6 +27,7 @@ namespace IceSaw2.EditorWindows
 
         public ShadingType shadingType;
         public bool showWireframeOverlay = false;
+        public bool showLightColors = true;
 
         public List<BaseObject> RenderItems = new List<BaseObject>();
 
@@ -205,6 +206,7 @@ namespace IceSaw2.EditorWindows
                     ImGui.EndDisabled();
 
                     ImGui.Checkbox("Backface Culling", ref showWireframeOverlay);
+                    ImGui.Checkbox("Light Colors", ref showLightColors);
 
 
                     ImGui.EndMenu();

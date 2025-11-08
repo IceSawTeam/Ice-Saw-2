@@ -81,17 +81,36 @@ public class TrickyLightObject : BaseObject
         Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
         Vector2 size = new Vector2(0.55f, 0.55f);
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(
-            worldManInstance.levelEditorWindow.viewCamera3D, 
-            lightIcon,
-            sourceRec,
-            Position* WorldScale,
-            worldManInstance.levelEditorWindow.viewCamera3D.Up,
-            size,
-            origin,
-            0f,
-            Color.White
-        );
+
+        if (worldManInstance.levelEditorWindow.showLightColors)
+        {
+            Vector3 rgbNorm = Raymath.Vector3Normalize(Colour);
+            Color color = new Color(rgbNorm.X, rgbNorm.Y, rgbNorm.Z);
+            Raylib.DrawBillboardPro(
+                worldManInstance.levelEditorWindow.viewCamera3D,
+                lightIcon,
+                sourceRec,
+                Position * WorldScale,
+                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                size,
+                origin,
+                0f,
+                color
+            );
+        } else
+        {
+            Raylib.DrawBillboardPro(
+                worldManInstance.levelEditorWindow.viewCamera3D,
+                lightIcon,
+                sourceRec,
+                Position * WorldScale,
+                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                size,
+                origin,
+                0f,
+                Color.White
+            );
+        }
     }
 
 public enum LightType
