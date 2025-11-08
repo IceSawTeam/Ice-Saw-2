@@ -62,9 +62,12 @@ public class TrickyPaticleInstanceObject : BaseObject
 
     public override void Render()
     {
-        Rectangle sourceRec = new Rectangle(0, 0, TrickyWorldManager.instance.ParticleIcon.Width, TrickyWorldManager.instance.ParticleIcon.Height);
-        Vector2 size = new Vector2(1.0f, (float)TrickyWorldManager.instance.ParticleIcon.Height / TrickyWorldManager.instance.ParticleIcon.Width); // maintain aspect
+        var worldManInstance = TrickyWorldManager.instance;
+        Texture2D particleIcon = worldManInstance.ParticleIcon;
+
+        Rectangle sourceRec = new Rectangle(0, 0, particleIcon.Width, particleIcon.Height);
+        Vector2 size = new Vector2(1.0f, (float)particleIcon.Height / particleIcon.Width); // maintain aspect
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(TrickyWorldManager.instance.levelEditorWindow.viewCamera3D, TrickyWorldManager.instance.ParticleIcon, sourceRec, Position * WorldScale, new Vector3(0, 0, 1), size, origin, 0f, Color.White);
+        Raylib.DrawBillboardPro(worldManInstance.levelEditorWindow.viewCamera3D, particleIcon, sourceRec, Position * WorldScale, worldManInstance.levelEditorWindow.viewCamera3D.Up, size, origin, 0f, Color.White);
     }
 }

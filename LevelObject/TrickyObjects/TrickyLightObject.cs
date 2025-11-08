@@ -75,13 +75,16 @@ public class TrickyLightObject : BaseObject
 
     public override void Render()
     {
-        Rectangle sourceRec = new Rectangle(0, 0, TrickyWorldManager.instance.LightIcon.Width, TrickyWorldManager.instance.LightIcon.Height);
-        Vector2 size = new Vector2(1.0f, (float)TrickyWorldManager.instance.LightIcon.Height / TrickyWorldManager.instance.LightIcon.Width); // maintain aspect
+        var worldManInstance = TrickyWorldManager.instance;
+        Texture2D lightIcon = worldManInstance.LightIcon;
+
+        Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
+        Vector2 size = new Vector2(1.0f, (float)lightIcon.Height / lightIcon.Width); // maintain aspect
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(TrickyWorldManager.instance.levelEditorWindow.viewCamera3D, TrickyWorldManager.instance.LightIcon, sourceRec, Position * WorldScale, new Vector3(0,0,1) , size, origin,0f, Color.White);
+        Raylib.DrawBillboardPro(worldManInstance.levelEditorWindow.viewCamera3D, lightIcon, sourceRec, Position* WorldScale, worldManInstance.levelEditorWindow.viewCamera3D.Up, size, origin, 0f, Color.White);
     }
 
-    public enum LightType
+public enum LightType
     {
         Directional,
         U0,

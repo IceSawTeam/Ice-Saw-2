@@ -211,6 +211,8 @@ namespace IceSaw2.EditorWindows
                 Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
                 Vector3 up = Raymath.Vector3CrossProduct(forward, right);
 
+                viewCamera3D.Up = up;
+
                 // Movement
                 Vector3 newPosition = new Vector3(0, 0, 0);
                 // Vector3 newPosition = Raymath.Vector3Zero();
