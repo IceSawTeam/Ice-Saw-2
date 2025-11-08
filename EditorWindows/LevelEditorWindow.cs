@@ -24,6 +24,9 @@ namespace IceSaw2.EditorWindows
         public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
 
+        public ShadingType shadingType;
+        public bool showWireframeOverlay = false;
+
         public List<BaseObject> RenderItems = new List<BaseObject>();
 
         public void Initilize()
@@ -157,6 +160,43 @@ namespace IceSaw2.EditorWindows
             ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + 4));
             ImGui.Text("Viewport Header");
 
+            ImGui.SameLine();
+            
+            if (ImGui.BeginMenu("VPS")) // Viewport quick settings. TODO: replace with icon
+            {
+                ImGui.PushItemFlag(ImGuiItemFlags.AutoClosePopups, false);
+
+                if (ImGui.MenuItem("Solid", "", shadingType == ShadingType.Solid))
+                {
+                    shadingType = ShadingType.Solid;
+                }
+                if (ImGui.MenuItem("Textured", "", shadingType == ShadingType.Textured))
+                {
+                    shadingType = ShadingType.Textured;
+                }
+                if (ImGui.MenuItem("Textured Baked", "", shadingType == ShadingType.TexturedBaked))
+                {
+                    shadingType = ShadingType.TexturedBaked;
+                }
+                if (ImGui.MenuItem("Wireframe", "", shadingType == ShadingType.Wireframe)) // wireframe only. no solids.
+                {
+                    shadingType = ShadingType.Wireframe;
+                    //showWireframeOverlay = false;
+                }
+
+                ImGui.PopItemFlag();
+
+                ImGui.Separator();
+
+                ImGui.BeginDisabled(shadingType == ShadingType.Wireframe);
+                ImGui.Checkbox("Wireframe Overlay", ref showWireframeOverlay);
+                ImGui.EndDisabled();
+
+
+                ImGui.EndMenu();
+            }
+            
+
             ImGui.SetCursorScreenPos(new Vector2(winPos.X + 8, winPos.Y + viewportHeaderHeight + 8));
 
             // Here you can render your scene texture / draw calls.
@@ -238,6 +278,14 @@ namespace IceSaw2.EditorWindows
             {
                 Raylib.ShowCursor();
             }
+        }
+
+        public enum ShadingType
+        {
+            Solid,
+            Textured,
+            TexturedBaked,
+            Wireframe,
         }
     }
 }
