@@ -76,7 +76,7 @@ public class TrickyLightObject : BaseObject
     public override void Render()
     {
         var worldManInstance = TrickyWorldManager.instance;
-        Texture2D lightIcon = worldManInstance.LightIcon;
+        Texture2D lightIcon = worldManInstance.LightIcons[(int)lightType];
 
         Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
         Vector2 size = new Vector2(1.0f, (float)lightIcon.Height / lightIcon.Width); // maintain aspect

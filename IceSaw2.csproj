@@ -23,7 +23,10 @@
     <None Remove="Assets\icon.png" />
     <None Remove="Assets\Textures\CameraIcon.png" />
     <None Remove="Assets\Textures\Error.png" />
-    <None Remove="Assets\Textures\LightIcon.png" />
+    <None Remove="Assets\Textures\LightDirectionalIcon.png" />
+    <None Remove="Assets\Textures\LightSpotIcon.png" />
+    <None Remove="Assets\Textures\LightPointIcon.png" />
+    <None Remove="Assets\Textures\LightAmbientIcon.png" />
     <None Remove="Assets\Textures\ParticleIcon.png" />
     <None Remove="Assets\Shaders\Instance.fs" />
     <None Remove="Assets\Shaders\Instance.vs" />
@@ -37,7 +40,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Assets\Textures\CameraIcon.png" />
     <EmbeddedResource Include="Assets\Textures\Error.png" />
-    <EmbeddedResource Include="Assets\Textures\LightIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\LightDirectionalIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\LightSpotIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\LightPointIcon.png" />
+    <EmbeddedResource Include="Assets\Textures\LightAmbientIcon.png" />
     <EmbeddedResource Include="Assets\Textures\ParticleIcon.png" />
     <EmbeddedResource Include="Assets\Shaders\Instance.fs" />
     <EmbeddedResource Include="Assets\Shaders\Instance.vs" />

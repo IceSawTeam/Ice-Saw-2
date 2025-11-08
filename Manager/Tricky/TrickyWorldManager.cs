@@ -2,9 +2,7 @@
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
-using rlImGui_cs;
 using System.Diagnostics;
-using System.Numerics;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -21,7 +19,7 @@ namespace IceSaw2.Manager.Tricky
         static IMGuiFilePicker filePicker = new();
 
         //Icon List
-        public Texture2D LightIcon = new();
+        public List<Texture2D> LightIcons = new List<Texture2D>();
         public Texture2D CameraIcon = new();
         public Texture2D ParticleIcon = new();
 
@@ -54,7 +52,10 @@ namespace IceSaw2.Manager.Tricky
 
         public void InitalizeAssets()
         {
-            LightIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightIcon.png"));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightDirectionalIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightSpotIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightPointIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightAmbientIcon.png")));
             CameraIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.CameraIcon.png"));
             ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.ParticleIcon.png"));
 
