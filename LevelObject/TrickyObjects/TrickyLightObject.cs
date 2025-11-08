@@ -87,8 +87,8 @@ public class TrickyLightObject : BaseObject
 public enum LightType
     {
         Directional,
-        U0,
-        U1,
+        Spot,
+        Point,
         Ambient,
     }
 }
