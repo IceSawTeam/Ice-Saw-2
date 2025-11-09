@@ -195,38 +195,51 @@ namespace IceSaw2.Renderer
         {
             unsafe { if (_material.Shader.Locs == null) return; }
 
+            var aspect = Raylib_cs.Raylib.GetScreenWidth() / Raylib_cs.Raylib.GetScreenHeight();
+            var camProj = Raylib_cs.Raylib.GetCameraProjectionMatrix(ref camera, aspect);
+            var camView = Raylib_cs.Raylib.GetCameraViewMatrix(ref camera);
+
             Vector3 camForward = Vector3.Normalize(camera.Target - camera.Position);
             Vector3 camRight = Vector3.Normalize(Vector3.Cross(camForward, camera.Up));
             Vector3 camUp = Vector3.Normalize(Vector3.Cross(camRight, camForward));
             float nearDist = (float)Raylib_cs.Rlgl.GetCullDistanceNear();
 
             // Is origin visible
-            var origin = Vector3.Zero;
-            var originScreenSpace = Raylib_cs.Raylib.GetWorldToScreen(origin, camera);
-            var originZ = Vector3.Dot(origin - camera.Position, camForward);
-            var radius = 10f;
-            var originRadiusPoint = origin + (camRight * radius);
-            var originRadiusScreenSpace = Raylib_cs.Raylib.GetWorldToScreen(originRadiusPoint, camera);
-            var pixelDistance = Vector2.Distance(originScreenSpace, originRadiusScreenSpace);
+            var originWorldPos = Vector3.Zero;
+            var origin = new Quaternion(originWorldPos, 1);
+            origin = Raylib_cs.Raymath.QuaternionTransform(origin, camView);
+            origin = Raylib_cs.Raymath.QuaternionTransform(origin, camProj);
 
-            if (originZ + radius > nearDist &&
-                originScreenSpace.X + pixelDistance > 0 &&
-                originScreenSpace.Y + pixelDistance > 0 &&
-                originScreenSpace.X - pixelDistance < Raylib_cs.Raylib.GetScreenWidth() &&
-                originScreenSpace.Y - pixelDistance < Raylib_cs.Raylib.GetScreenHeight())
-            {
-                Console.WriteLine("Collision");
-                // Console.WriteLine(pixelDistance);
-                // Console.WriteLine(camera.Position);
-            }
-            else
-            {
-                Console.WriteLine("No Collision");
-            }
+            var originRadiusSample = new Quaternion(originWorldPos + (camRight * 10f), 1);
+            Raylib_cs.Raylib.DrawSphere(new Vector3(originRadiusSample.X, originRadiusSample.Y, originRadiusSample.Z), 0.4f, Raylib_cs.Color.Yellow);
+            
+            originRadiusSample = Raylib_cs.Raymath.QuaternionTransform(originRadiusSample, camView);
+            originRadiusSample = Raylib_cs.Raymath.QuaternionTransform(originRadiusSample, camProj);
+            var originClipPos = new Vector3(origin.X / origin.W, origin.Y / origin.W, origin.Z / origin.W);
+            var radiusSampleClipPos = new Vector3(originRadiusSample.X / originRadiusSample.W,
+                                                  originRadiusSample.Y / originRadiusSample.W,
+                                                  originRadiusSample.Z / originRadiusSample.W);
 
-            Console.WriteLine(originScreenSpace);
-            // Console.WriteLine(screenRadius);
+            var sphereClippedRadius = Vector3.Distance(originClipPos, radiusSampleClipPos);
 
+
+
+            Raylib_cs.Raylib.DrawSphereWires(Vector3.Zero, 10, 64, 64, Raylib_cs.Color.Red);
+
+            // if (originZ + radius > nearDist &&
+            //     originScreenSpace.X + pixelDistance > 0 &&
+            //     originScreenSpace.Y + pixelDistance > 0 &&
+            //     originScreenSpace.X - pixelDistance < Raylib_cs.Raylib.GetScreenWidth() &&
+            //     originScreenSpace.Y - pixelDistance < Raylib_cs.Raylib.GetScreenHeight())
+            // {
+            //     // Console.WriteLine("Collision");
+            //     // Console.WriteLine(pixelDistance);
+            //     // Console.WriteLine(camera.Position);
+            // }
+            // else
+            // {
+            //     // Console.WriteLine("No Collision");
+            // }
 
             Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
             if (PreviousView != projection)
