@@ -59,7 +59,7 @@ namespace IceSaw2.EditorWindows
 
             //GenerateRenderList();
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
-           Renderer.TessellatedPatch.Instance.Render();
+           Renderer.TessellatedPatch.Instance.Render(viewCamera3D);
 
             //Render Objects
             for (int i = 0; i < RenderList.Length; i++)

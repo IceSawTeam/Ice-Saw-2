@@ -191,29 +191,58 @@ namespace IceSaw2.Renderer
             GeneratePaddedLightmaps(lightmaps);
         }
 
-        public void Render()
+        public void Render(Raylib_cs.Camera3D camera)
         {
             unsafe { if (_material.Shader.Locs == null) return; }
 
-            //If Camera in same place dont regenerate drawlist
-            //Can add other checks for if its updated
-            Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
+            Vector3 camForward = Vector3.Normalize(camera.Target - camera.Position);
+            Vector3 camRight = Vector3.Normalize(Vector3.Cross(camForward, camera.Up));
+            Vector3 camUp = Vector3.Normalize(Vector3.Cross(camRight, camForward));
+            float nearDist = (float)Raylib_cs.Rlgl.GetCullDistanceNear();
 
+            // Is origin visible
+            var origin = Vector3.Zero;
+            var originScreenSpace = Raylib_cs.Raylib.GetWorldToScreen(origin, camera);
+            var originZ = Vector3.Dot(origin - camera.Position, camForward);
+            var radius = 10f;
+            var originRadiusPoint = origin + (camRight * radius);
+            var originRadiusScreenSpace = Raylib_cs.Raylib.GetWorldToScreen(originRadiusPoint, camera);
+            var pixelDistance = Vector2.Distance(originScreenSpace, originRadiusScreenSpace);
+
+            if (originZ + radius > nearDist &&
+                originScreenSpace.X + pixelDistance > 0 &&
+                originScreenSpace.Y + pixelDistance > 0 &&
+                originScreenSpace.X - pixelDistance < Raylib_cs.Raylib.GetScreenWidth() &&
+                originScreenSpace.Y - pixelDistance < Raylib_cs.Raylib.GetScreenHeight())
+            {
+                Console.WriteLine("Collision");
+                // Console.WriteLine(pixelDistance);
+                // Console.WriteLine(camera.Position);
+            }
+            else
+            {
+                Console.WriteLine("No Collision");
+            }
+
+            Console.WriteLine(originScreenSpace);
+            // Console.WriteLine(screenRadius);
+
+
+            Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
             if (PreviousView != projection)
             {
                 PreviousView = projection;
                 _drawList.Clear();
-                // var frustum = GetFrustum();
-
                 List<Batch> drawList = new List<Batch>();
 
                 foreach (var entry in _patchEntries)
                 {
-                    // Frustum cull and fill draw list by batching them
+                    if (entry == null) continue;
 
+                    // Frustum cull and fill draw list by batching them
                     int ID = -1;
                     //Check drawList for Free space
-                    for (global::System.Int32 i = 0; i < drawList.Count; i++)
+                    for (int i = 0; i < drawList.Count; i++)
                     {
                         if (drawList[i].TextureID == entry.Texture.Id && drawList[i].LightmapID == _paddedLightmaps[entry.LightmapID].Id)
                         {
@@ -266,7 +295,7 @@ namespace IceSaw2.Renderer
                     Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
                     batch.GetMergedControlPoints(),
                     Raylib_cs.ShaderUniformDataType.Vec3,
-                    batch.PatchCount*16
+                    batch.PatchCount * 16
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
