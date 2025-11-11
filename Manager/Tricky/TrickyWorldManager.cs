@@ -2,7 +2,6 @@
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
-using rlImGui_cs;
 using System.Diagnostics;
 
 namespace IceSaw2.Manager.Tricky
@@ -20,7 +19,7 @@ namespace IceSaw2.Manager.Tricky
         static IMGuiFilePicker filePicker = new();
 
         //Icon List
-        public Texture2D LightIcon = new();
+        public List<Texture2D> LightIcons = new List<Texture2D>();
         public Texture2D CameraIcon = new();
         public Texture2D ParticleIcon = new();
 
@@ -28,6 +27,7 @@ namespace IceSaw2.Manager.Tricky
 
         bool showAboutWindow = false;
         bool showImGuiDemo = false;
+        bool showProfiler = true;
 
         public TrickyWorldManager()
         {
@@ -52,7 +52,10 @@ namespace IceSaw2.Manager.Tricky
 
         public void InitalizeAssets()
         {
-            LightIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightIcon.png"));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightDirectionalIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightSpotIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightPointIcon.png")));
+            LightIcons.Add(Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.LightAmbientIcon.png")));
             CameraIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.CameraIcon.png"));
             ParticleIcon = Raylib.LoadTextureFromImage(LoadEmbeddedFile.LoadImage("Textures.ParticleIcon.png"));
 
@@ -61,24 +64,12 @@ namespace IceSaw2.Manager.Tricky
 
         public void UpdateLogic()
         {
-            // if (Raylib.IsKeyPressed(Settings.KeyBinding.Instance.data.LogicWindow))
-            if (Input.IsActionPressed("LogicSwitch"))
-            {
-                windowMode = WindowMode.Logic;
-            }
-            if (Input.IsActionPressed("ModelSwitch"))
-            {
-                windowMode = WindowMode.Prefabs;
-            }
-            if (Input.IsActionPressed("LevelSwitch"))
-            {
-                windowMode = WindowMode.World;
-            }
+            
         }
 
         public void UpdateRender()
         {
-            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30, 75, 24, Raylib.GetColor(0x0000009d));
+            Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2 - 8, Raylib.GetScreenHeight() - 32, 95, 26, Raylib.GetColor(0x000000FF));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
@@ -143,12 +134,29 @@ namespace IceSaw2.Manager.Tricky
                         }
                         Settings.General.Instance.Save();
                     }
+                    if (ImGui.MenuItem("Profiler"))
+                    {
+                        showProfiler = !showProfiler;
+                    }
                     if (ImGui.MenuItem("ImGui Demo"))
                     {
                         showImGuiDemo = !showImGuiDemo;
                     }
 
                     ImGui.EndMenu();
+                }
+
+                if (ImGui.MenuItem("[Load last level]"))
+                {
+                    string selectedPath = Settings.General.Instance.data.LastLoad + "/ConfigTricky.ssx";
+                    if (File.Exists(selectedPath))
+                    {
+                        TrickyDataManager.LoadProject(selectedPath);
+                        Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                        Settings.General.Instance.Save();
+                        Settings.KeyBinding.Instance.Save();
+                        levelEditorWindow.GenerateRenderList();
+                    }
                 }
 
                 ImGui.SameLine(Raylib.GetScreenWidth()-170);
@@ -225,6 +233,14 @@ namespace IceSaw2.Manager.Tricky
 
                     ImGui.End();
                 }
+
+                
+                
+                if (showProfiler)
+                {
+                    Profiler.Render();
+                }
+
             }
             ImGui.PopStyleVar(2);
         }

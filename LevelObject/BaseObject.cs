@@ -208,8 +208,9 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        public void HierarchyRender()
+        public int HierarchyRender()
         {
+            var _id = -1;
             if (VisibleHierarchy)
             {
                 var flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
@@ -223,6 +224,7 @@ namespace IceSaw2.LevelObject
                 if (ImGui.IsItemClicked())
                 {
                     Console.WriteLine($"Selected: " + Name + "###" + ID);
+                    _id = ID;
                 }
 
                 if (nodeOpen)
@@ -234,6 +236,7 @@ namespace IceSaw2.LevelObject
                     ImGui.TreePop();
                 }
             }
+            return _id;
         }
 
         public void GenerateBBoVertices(List<Vector3> vertices)

@@ -75,17 +75,49 @@ public class TrickyLightObject : BaseObject
 
     public override void Render()
     {
-        Rectangle sourceRec = new Rectangle(0, 0, TrickyWorldManager.instance.LightIcon.Width, TrickyWorldManager.instance.LightIcon.Height);
-        Vector2 size = new Vector2(1.0f, (float)TrickyWorldManager.instance.LightIcon.Height / TrickyWorldManager.instance.LightIcon.Width); // maintain aspect
+        var worldManInstance = TrickyWorldManager.instance;
+        Texture2D lightIcon = worldManInstance.LightIcons[(int)lightType];
+
+        Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
+        Vector2 size = new Vector2(0.55f, 0.55f);
         Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
-        Raylib.DrawBillboardPro(TrickyWorldManager.instance.levelEditorWindow.viewCamera3D, TrickyWorldManager.instance.LightIcon, sourceRec, Position * WorldScale, new Vector3(0,0,1) , size, origin,0f, Color.White);
+
+        if (worldManInstance.levelEditorWindow.showLightColors)
+        {
+            Vector3 rgbNorm = Raymath.Vector3Normalize(Colour);
+            Color color = new Color(rgbNorm.X, rgbNorm.Y, rgbNorm.Z);
+            Raylib.DrawBillboardPro(
+                worldManInstance.levelEditorWindow.viewCamera3D,
+                lightIcon,
+                sourceRec,
+                Position * WorldScale,
+                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                size,
+                origin,
+                0f,
+                color
+            );
+        } else
+        {
+            Raylib.DrawBillboardPro(
+                worldManInstance.levelEditorWindow.viewCamera3D,
+                lightIcon,
+                sourceRec,
+                Position * WorldScale,
+                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                size,
+                origin,
+                0f,
+                Color.White
+            );
+        }
     }
 
-    public enum LightType
+public enum LightType
     {
         Directional,
-        U0,
-        U1,
+        Spot,
+        Point,
         Ambient,
     }
 }
