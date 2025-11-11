@@ -14,8 +14,8 @@ namespace IceSaw2.Renderer
             Matrix4x4 proj = Matrix4x4.CreatePerspectiveFieldOfView(
             camera.FovY * Raylib.DEG2RAD,
             Raylib.GetScreenWidth() / (float)Raylib.GetScreenHeight(),
-            0.1f,
-            10000f
+            (float)Rlgl.GetCullDistanceNear(),
+            (float)Rlgl.GetCullDistanceFar()
             );
 
             Matrix4x4 m = Raymath.MatrixMultiply(proj, view);

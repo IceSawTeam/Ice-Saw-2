@@ -1,6 +1,7 @@
 ﻿using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
+using IceSaw2.Renderer;
 using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
@@ -41,7 +42,7 @@ namespace IceSaw2.EditorWindows
         {
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
-
+            FrustumCulling.UpdateFrustum(viewCamera3D);
             Rlgl.DisableDepthMask();
             //Render Skybox
 
@@ -59,7 +60,7 @@ namespace IceSaw2.EditorWindows
 
             //GenerateRenderList();
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
-           Renderer.TessellatedPatch.Instance.Render(viewCamera3D);
+            TessellatedPatch.Instance.Render();
 
             //Render Objects
             for (int i = 0; i < RenderList.Length; i++)

@@ -191,10 +191,9 @@ namespace IceSaw2.Renderer
             GeneratePaddedLightmaps(lightmaps);
         }
 
-        public void Render(Raylib_cs.Camera3D camera)
+        public void Render()
         {
             unsafe { if (_material.Shader.Locs == null) return; }
-            FrustumCulling.UpdateFrustum(camera);
 
             Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
             if (PreviousView != projection)
