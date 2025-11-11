@@ -194,50 +194,7 @@ namespace IceSaw2.Renderer
         public void Render(Raylib_cs.Camera3D camera)
         {
             unsafe { if (_material.Shader.Locs == null) return; }
-
-            var aspect = Raylib_cs.Raylib.GetScreenWidth() / Raylib_cs.Raylib.GetScreenHeight();
-            var camProj = Raylib_cs.Raylib.GetCameraProjectionMatrix(ref camera, aspect);
-            var camView = Raylib_cs.Raylib.GetCameraViewMatrix(ref camera);
-
-            Vector3 camForward = Vector3.Normalize(camera.Target - camera.Position);
-            Vector3 camRight = Vector3.Normalize(Vector3.Cross(camForward, camera.Up));
-            Vector3 camUp = Vector3.Normalize(Vector3.Cross(camRight, camForward));
-            float nearDist = (float)Raylib_cs.Rlgl.GetCullDistanceNear();
-
-            // Is origin visible
-            var originWorldPos = Vector3.Zero;
-            var origin = new Quaternion(originWorldPos, 1);
-            origin = Raylib_cs.Raymath.QuaternionTransform(origin, camView);
-            origin = Raylib_cs.Raymath.QuaternionTransform(origin, camProj);
-
-            var originRadiusSample = new Quaternion(originWorldPos + (camRight * 10f), 1);
-            // Raylib_cs.Raylib.DrawSphere(new Vector3(originRadiusSample.X, originRadiusSample.Y, originRadiusSample.Z), 0.4f, Raylib_cs.Color.Yellow);
-            
-            originRadiusSample = Raylib_cs.Raymath.QuaternionTransform(originRadiusSample, camView);
-            originRadiusSample = Raylib_cs.Raymath.QuaternionTransform(originRadiusSample, camProj);
-            var originClipPos = new Vector3(origin.X / origin.W, origin.Y / origin.W, origin.Z / origin.W);
-            var radiusSampleClipPos = new Vector3(originRadiusSample.X / originRadiusSample.W,
-                                                  originRadiusSample.Y / originRadiusSample.W,
-                                                  originRadiusSample.Z / originRadiusSample.W);
-
-            var sphereClippedRadius = Vector3.Distance(originClipPos, radiusSampleClipPos);
-
-
-            Raylib_cs.Raylib.DrawSphereWires(Vector3.Zero, 10, 64, 64, Raylib_cs.Color.Red);
-
-            var sphere = new BoundingSphere(Vector3.Zero, 10);
-            // sphere.Position = Vector3.Transform(sphere.Position, camView);
-            // sphere.Position = Vector3.Transform(sphere.Position, camProj);
-
-            var frustum = ExtractFrustum(ref camera);
-            if (PointIn(frustum, sphere.Position))
-            {
-                Console.WriteLine("Collision");
-            }
-            else
-            {
-                Console.WriteLine("No Collision");
-            }
+            FrustumCulling.UpdateFrustum(camera);
 
             Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
             if (PreviousView != projection)
@@ -251,35 +208,38 @@ namespace IceSaw2.Renderer
                     if (entry == null) continue;
 
                     // Frustum cull and fill draw list by batching them
-                    int ID = -1;
-                    //Check drawList for Free space
-                    for (int i = 0; i < drawList.Count; i++)
+                    if (FrustumCulling.IsSphereInFrustum(entry.Sphere.Position, entry.Sphere.Radius))
                     {
-                        if (drawList[i].TextureID == entry.Texture.Id && drawList[i].LightmapID == _paddedLightmaps[entry.LightmapID].Id)
+                        int ID = -1;
+                        //Check drawList for Free space
+                        for (int i = 0; i < drawList.Count; i++)
                         {
-                            ID = i;
-                            drawList[i].Patches.Add(entry);
-                            drawList[i].PatchCount++;
-                            break;
+                            if (drawList[i].TextureID == entry.Texture.Id && drawList[i].LightmapID == _paddedLightmaps[entry.LightmapID].Id)
+                            {
+                                ID = i;
+                                drawList[i].Patches.Add(entry);
+                                drawList[i].PatchCount++;
+                                break;
+                            }
                         }
-                    }
 
-                    //If no list found make new list
-                    if (ID == -1)
-                    {
-                        Batch batch = new Batch();
-                        batch.Patches.Add(entry);
-                        batch.PatchCount++;
-                        batch.TextureID = entry.Texture.Id;
-                        batch.LightmapID = _paddedLightmaps[entry.LightmapID].Id;
-                        drawList.Add(batch);
-                        ID = drawList.Count - 1;
-                    }
-                    //If list full add to main draw list
-                    else if (drawList[ID].Patches.Count == 8)
-                    {
-                        _drawList.Add(drawList[ID]);
-                        drawList.RemoveAt(ID);
+                        //If no list found make new list
+                        if (ID == -1)
+                        {
+                            Batch batch = new Batch();
+                            batch.Patches.Add(entry);
+                            batch.PatchCount++;
+                            batch.TextureID = entry.Texture.Id;
+                            batch.LightmapID = _paddedLightmaps[entry.LightmapID].Id;
+                            drawList.Add(batch);
+                            ID = drawList.Count - 1;
+                        }
+                        //If list full add to main draw list
+                        else if (drawList[ID].Patches.Count == 8)
+                        {
+                            _drawList.Add(drawList[ID]);
+                            drawList.RemoveAt(ID);
+                        }
                     }
                 }
 
@@ -470,136 +430,6 @@ namespace IceSaw2.Renderer
             return result;
         }
 
-        private static bool SphereIn(List<Plane> frustum, BoundingSphere sphere)
-        {
-            foreach (var plane in frustum)
-            {
-                if (DistanceToPlane(plane, sphere.Position) < -sphere.Radius)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static bool PointIn(List<Plane> frustum, Vector3 point)
-        {
-            foreach (var plane in frustum)
-            {
-                if (DistanceToPlane(plane, point) <= 0)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static List<Vector4> GetFrustum(Raylib_cs.Camera3D camera, float aspect)
-        {
-            Matrix4x4 camProj = Raylib_cs.Raylib.GetCameraProjectionMatrix(ref camera, aspect);
-            Matrix4x4 camView = Raylib_cs.Raylib.GetCameraViewMatrix(ref camera);
-            Matrix4x4 planes = camProj * camView;
-
-            List<Vector4> output = [];
-            var right = new Vector4(planes.M41 - planes.M11, planes.M42 - planes.M12, planes.M43 - planes.M13, planes.M44 - planes.M14);
-            output.Add(Vector4.Normalize(right));
-            var left = new Vector4(planes.M41 + planes.M11, planes.M42 + planes.M12, planes.M43 + planes.M13, planes.M44 + planes.M14);
-            output.Add(Vector4.Normalize(left));
-            var top = new Vector4(planes.M41 - planes.M21, planes.M42 - planes.M22, planes.M43 - planes.M23, planes.M44 - planes.M24);
-            output.Add(Vector4.Normalize(top));
-            var bottom = new Vector4(planes.M41 + planes.M21, planes.M42 + planes.M22, planes.M43 + planes.M23, planes.M44 + planes.M24);
-            output.Add(Vector4.Normalize(bottom));
-            var back = new Vector4(planes.M41 - planes.M31, planes.M42 - planes.M32, planes.M43 - planes.M33, planes.M44 - planes.M34);
-            output.Add(Vector4.Normalize(back));
-            var front = new Vector4(planes.M41 + planes.M31, planes.M42 + planes.M32, planes.M43 + planes.M33, planes.M44 + planes.M34);
-            output.Add(Vector4.Normalize(front));
-            return output;
-        }
-
-        private static List<Plane> ExtractFrustum(ref Raylib_cs.Camera3D camera)
-        {
-            var aspect = Raylib_cs.Raylib.GetScreenWidth() / Raylib_cs.Raylib.GetScreenHeight();
-            Matrix4x4 camProj = Raylib_cs.Raylib.GetCameraProjectionMatrix(ref camera, aspect);
-            Matrix4x4 camView = Raylib_cs.Raylib.GetCameraViewMatrix(ref camera);
-            Matrix4x4 clipMat = camProj * camView;
-
-            List<Plane> planes = [];
-            float t;
-
-            var rightPlane = new Plane();
-            rightPlane.Normal.X = clipMat.M44 - clipMat.M11;
-            rightPlane.Normal.Y = clipMat.M42 - clipMat.M12;
-            rightPlane.Normal.Z = clipMat.M43 - clipMat.M13;
-            rightPlane.Distance = clipMat.M44 - clipMat.M14;
-            t = Vector3.Distance(Vector3.Zero, rightPlane.Normal);
-            rightPlane.Normal /= t;
-            rightPlane.Distance /= t;
-            planes.Add(rightPlane);
-
-            var leftPlane = new Plane();
-            leftPlane.Normal.X = clipMat.M44 + clipMat.M11;
-            leftPlane.Normal.Y = clipMat.M42 + clipMat.M12;
-            leftPlane.Normal.Z = clipMat.M43 + clipMat.M13;
-            leftPlane.Distance = clipMat.M44 + clipMat.M14;
-            t = Vector3.Distance(Vector3.Zero, leftPlane.Normal);
-            leftPlane.Normal /= t;
-            leftPlane.Distance /= t;
-            planes.Add(leftPlane);
-
-            var bottomPlane = new Plane();
-            bottomPlane.Normal.X = clipMat.M44 + clipMat.M21;
-            bottomPlane.Normal.Y = clipMat.M42 + clipMat.M22;
-            bottomPlane.Normal.Z = clipMat.M43 + clipMat.M23;
-            bottomPlane.Distance = clipMat.M44 + clipMat.M24;
-            t = Vector3.Distance(Vector3.Zero, bottomPlane.Normal);
-            bottomPlane.Normal /= t;
-            bottomPlane.Distance /= t;
-            planes.Add(bottomPlane);
-
-            var topPlane = new Plane();
-            topPlane.Normal.X = clipMat.M44 - clipMat.M21;
-            topPlane.Normal.Y = clipMat.M42 - clipMat.M22;
-            topPlane.Normal.Z = clipMat.M43 - clipMat.M23;
-            topPlane.Distance = clipMat.M44 - clipMat.M24;
-            t = Vector3.Distance(Vector3.Zero, topPlane.Normal);
-            topPlane.Normal /= t;
-            topPlane.Distance /= t;
-            planes.Add(topPlane);
-
-            var farPlane = new Plane();
-            farPlane.Normal.X = clipMat.M44 - clipMat.M31;
-            farPlane.Normal.Y = clipMat.M42 - clipMat.M32;
-            farPlane.Normal.Z = clipMat.M43 - clipMat.M33;
-            farPlane.Distance = clipMat.M44 - clipMat.M34;
-            t = Vector3.Distance(Vector3.Zero, farPlane.Normal);
-            farPlane.Normal /= t;
-            farPlane.Distance /= t;
-            planes.Add(farPlane);
-
-            var nearPlane = new Plane();
-            nearPlane.Normal.X = clipMat.M44 + clipMat.M31;
-            nearPlane.Normal.Y = clipMat.M42 + clipMat.M32;
-            nearPlane.Normal.Z = clipMat.M43 + clipMat.M33;
-            nearPlane.Distance = clipMat.M44 + clipMat.M34;
-            t = Vector3.Distance(Vector3.Zero, nearPlane.Normal);
-            nearPlane.Normal /= t;
-            nearPlane.Distance /= t;
-            planes.Add(nearPlane);
-
-            return planes;
-        }
-
-        private struct Plane
-        {
-            public Vector3 Normal;
-            public float Distance;
-        }
-
-        private static float DistanceToPlane(Plane plane, Vector3 position)
-        {
-            return plane.Normal.X * position.X + plane.Normal.Y * position.Y + plane.Normal.Z * position.Z + plane.Distance;
-        }
-
         private class PatchEntry
         {
             public Vector3[] Controlpoints = new Vector3[16];
@@ -615,14 +445,14 @@ namespace IceSaw2.Renderer
                 Vector3 centerOfMass = new();
                 foreach (var controlPoint in Controlpoints)
                 {
-                    centerOfMass += controlPoint;
+                    centerOfMass += controlPoint * BaseObject.WorldScale;
                 }
                 centerOfMass /= Controlpoints.Length;
 
                 float furthestDistance = 0;
                 foreach (var controlPoint in Controlpoints)
                 {
-                    var dist = Vector3.DistanceSquared(controlPoint, centerOfMass);
+                    var dist = Vector3.DistanceSquared(controlPoint * BaseObject.WorldScale, centerOfMass);
                     furthestDistance = dist > furthestDistance ? dist : furthestDistance;
                 }
                 furthestDistance = MathF.Sqrt(furthestDistance);
