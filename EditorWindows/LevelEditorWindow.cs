@@ -72,10 +72,7 @@ namespace IceSaw2.EditorWindows
             Raylib.DrawLine3D(new Vector3(0, 0, -axisLineSize), new Vector3(0, 0, axisLineSize), new Color(2, 99, 224));
 
             Profiler.SetStartTime("-Patches");
-            for (int i = 0; i < TrickyDataManager.trickyPatchObjects.Count; i++)
-            {
-                TrickyDataManager.trickyPatchObjects[i].Render();
-            }
+            TessellatedPatch.Instance.Render();
             Profiler.UpdateTime("-Patches");
 
             Profiler.SetStartTime("-Instances");
@@ -86,7 +83,6 @@ namespace IceSaw2.EditorWindows
             Profiler.UpdateTime("-Instances");
 
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
-            TessellatedPatch.Instance.Render();
 
             //Render Objects
             for (int i = 0; i < RenderList.Length; i++)
