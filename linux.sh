@@ -11,6 +11,8 @@ fi
 
 case "$1" in
   run)
+    echo "Building ..."
+    dotnet build .
     ./bin/Debug/net8.0/IceSaw2
     ;;
   build)
@@ -20,6 +22,9 @@ case "$1" in
   *)
     echo "Unknown command: $1"
     echo "Usage: $0 {run|build}"
+    exit 1
+    ;;
+esac
     exit 1
     ;;
 esac
