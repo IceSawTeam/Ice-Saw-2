@@ -74,6 +74,15 @@ namespace IceSaw2.Manager.Tricky
             LoadSkybox();
 
             LoadTreeNode();
+
+            List<Image>? LightmapArray = new();
+
+            for (int i = 0; i < lightmapTexture2Ds.Count; i++)
+            {
+                LightmapArray.Add(Raylib.LoadImageFromTexture(lightmapTexture2Ds[i].texture2D));
+            }
+
+            Renderer.TessellatedPatch.Instance.Init(LightmapArray);
         }
 
         public static void LoadTextureMesh()
@@ -95,12 +104,12 @@ namespace IceSaw2.Manager.Tricky
 
             lightmapTexture2Ds = new List<TextureData>();
             string[] LightmapFiles = Directory.GetFiles(Path.Combine(LoadPath, "Lightmaps"), "*.png", SearchOption.AllDirectories);
-            for (int i = 0; i < LightmapFiles.Length; i++)
+            var result = LightmapFiles.OrderBy(x => x).ToArray();
+            for (int i = 0; i < result.Length; i++)
             {
                 TextureData textureData = new TextureData();
-
-                textureData.Name = Path.GetFileName(LightmapFiles[i]);
-                textureData.texture2D = Raylib.LoadTexture(LightmapFiles[i]);
+                textureData.Name = Path.GetFileName(result[i]);
+                textureData.texture2D = Raylib.LoadTexture(result[i]);
 
                 Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
 
@@ -335,15 +344,11 @@ namespace IceSaw2.Manager.Tricky
                 var Skybox = Batch.Skybox.FromLoaded(trickySkyboxModelObjects[0]);
 
                 meshSkybox = new MeshRef(Skybox.Item1);
-
                 Raylib.UploadMesh(ref meshSkybox.Mesh, false);
-
                 textureSkybox = Raylib.LoadTextureFromImage(Skybox.Item2);
-
                 Material material = Raylib.LoadMaterialDefault();
-
+                Raylib.SetTextureFilter(textureSkybox, TextureFilter.Bilinear);
                 Raylib.SetMaterialTexture(ref material, MaterialMapIndex.Albedo, textureSkybox);
-
                 materialSkybox = new MaterialRef(material);
             }
         }
@@ -511,10 +516,10 @@ namespace IceSaw2.Manager.Tricky
             trickySkyboxMaterialObject = new List<TrickyMaterialObject>();
             trickySkyboxModelObjects = new List<TrickyModelObject>();
 
-            for (int i = 0; i < trickyPatchObjects.Count; i++)
-            {
-                Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
-            }
+            //for (int i = 0; i < trickyPatchObjects.Count; i++)
+            //{
+            //    Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
+            //}
 
             trickyPatchObjects = new List<TrickyPatchObject>();
 
