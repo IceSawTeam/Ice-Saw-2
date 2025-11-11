@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 
-public class TrickyParticlePrefabObject : BaseObject
+public class TrickyParticleModelObject : BaseObject
 {
     public override ObjectType Type
     {

@@ -49,11 +49,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 splineSegment.Point3 = JsonUtil.Array2DToVector3(spline.Segments[i].Points, 2);
                 splineSegment.Point4 = JsonUtil.Array2DToVector3(spline.Segments[i].Points, 3);
 
-                splineSegment.U0 = spline.Segments[i].U0;
-                splineSegment.U1 = spline.Segments[i].U1;
-                splineSegment.U2 = spline.Segments[i].U2;
-                splineSegment.U3 = spline.Segments[i].U3;
-
                 splineSegments.Add(splineSegment);
             }
 
@@ -99,11 +94,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 Segment.Points[3, 0] = splineSegments[i].Point4.X;
                 Segment.Points[3, 1] = splineSegments[i].Point4.Y;
                 Segment.Points[3, 2] = splineSegments[i].Point4.Z;
-
-                Segment.U0 = splineSegments[i].U0;
-                Segment.U1 = splineSegments[i].U1;
-                Segment.U2 = splineSegments[i].U2;
-                Segment.U3 = splineSegments[i].U3;
 
                 spline.Segments.Add(Segment);
             }
@@ -174,10 +164,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             public Vector3 Point2;
             public Vector3 Point3;
             public Vector3 Point4;
-            public float U0;
-            public float U1;
-            public float U2;
-            public float U3;
 
             public Vector3 LocalPoint1;
             public Vector3 LocalPoint2;
