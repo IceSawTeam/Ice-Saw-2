@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <None Remove="Assets\icon.png" />
+    <None Remove="Assets\Shaders\TessellatedPatchBatch.fs" />
+    <None Remove="Assets\Shaders\TessellatedPatchBatch.vs" />
     <None Remove="Assets\Textures\CameraIcon.png" />
     <None Remove="Assets\Textures\Error.png" />
     <None Remove="Assets\Textures\LightIcon.png" />
@@ -35,6 +37,8 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </EmbeddedResource>
+    <EmbeddedResource Include="Assets\Shaders\TessellatedPatchBatch.fs" />
+    <EmbeddedResource Include="Assets\Shaders\TessellatedPatchBatch.vs" />
     <EmbeddedResource Include="Assets\Textures\CameraIcon.png" />
     <EmbeddedResource Include="Assets\Textures\Error.png" />
     <EmbeddedResource Include="Assets\Textures\LightIcon.png" />

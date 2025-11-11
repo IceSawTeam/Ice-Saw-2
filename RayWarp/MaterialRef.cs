@@ -9,6 +9,7 @@ namespace IceSaw2.RayWarp
     public class MaterialRef
     {
         public Raylib_cs.Material Material;
+        public MaterialRef() {}
         public MaterialRef(Raylib_cs.Material material)
         {
             Material = material;

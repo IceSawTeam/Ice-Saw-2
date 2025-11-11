@@ -9,6 +9,7 @@ namespace IceSaw2.RayWarp
     public class MeshRef
     {
         public Raylib_cs.Mesh Mesh;
+        public MeshRef() {}
         public MeshRef(Raylib_cs.Mesh mesh)
         {
             Mesh = mesh;
