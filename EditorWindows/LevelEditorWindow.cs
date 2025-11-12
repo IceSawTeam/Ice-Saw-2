@@ -54,6 +54,8 @@ namespace IceSaw2.EditorWindows
                 Rlgl.DisableBackfaceCulling();
             }
 
+            Rlgl.SetClipPlanes(nearClip, farClip);
+
             //Render 3D
             Raylib.BeginMode3D(viewCamera3D);
             FrustumCulling.UpdateFrustum(viewCamera3D);
@@ -249,11 +251,6 @@ namespace IceSaw2.EditorWindows
                     {
                         farClip = 0.001f;
                     }
-
-                    Rlgl.SetClipPlanes(nearClip, farClip);
-
-
-
 
                     ImGui.EndMenu();
                 }
