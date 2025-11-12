@@ -21,7 +21,8 @@ namespace IceSaw2.EditorWindows
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }
 
         private float axisLineSize = 1000f;
-        private float placeholderFloat = 0.5f;
+        private float nearClip = 0.1f;
+        private float farClip = 100000f;
 
         public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
@@ -236,8 +237,23 @@ namespace IceSaw2.EditorWindows
                         viewCamera3D.Projection = CameraProjection.Orthographic;
                     }
 
-                    ImGui.DragFloat("Near Clip", ref placeholderFloat, 0.01f, 0.000001f, 10000f);
-                    ImGui.DragFloat("Far Clip", ref placeholderFloat, 1f, 0.000002f, 100000f);
+                    ImGui.DragFloat("Near Clip", ref nearClip, 0.01f, 0.000001f, 10000f);
+                    ImGui.DragFloat("Far Clip", ref farClip, 1f, 0.000002f, 100000f);
+
+                    if(nearClip<=0)
+                    {
+                        nearClip = 0.001f;
+                    }
+
+                    if(farClip <= 0)
+                    {
+                        farClip = 0.001f;
+                    }
+
+                    Rlgl.SetClipPlanes(nearClip, farClip);
+
+
+
 
                     ImGui.EndMenu();
                 }
@@ -254,7 +270,7 @@ namespace IceSaw2.EditorWindows
             //                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
+            //ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
             ImGui.EndChild();
 
             ImGui.End();
