@@ -19,6 +19,8 @@ namespace IceSaw2.EditorWindows
         private const float moveSpeedStep = 0.008f;
         private int screenWidth { get { return Raylib.GetScreenWidth(); } }
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }
+        public Vector2 winPos;
+        public Vector2 winSize;
 
         private float axisLineSize = 1000f;
         private float nearClip = 0.1f;
@@ -95,7 +97,7 @@ namespace IceSaw2.EditorWindows
 
             Raylib.EndMode3D();
 
-            RenderUI();
+            // RenderUI();
         }
 
         public void RenderUI()
@@ -136,8 +138,6 @@ namespace IceSaw2.EditorWindows
             ImGui.End();
             //ImGui.PopStyleVar(2);
 
-
-
             // --- INSPECTOR ---
             ImGui.SetNextWindowPos(new System.Numerics.Vector2(vpPos.X + vpSize.X - inspectorWidth, menuBarHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSize(new System.Numerics.Vector2(inspectorWidth, vpSize.Y /*Raylib.GetScreenHeight() - menuBarHeight*/), ImGuiCond.Always);
@@ -147,8 +147,6 @@ namespace IceSaw2.EditorWindows
             ImGui.Text("Inspector");
             ImGui.End();
             //ImGui.PopStyleVar(2);
-
-
 
             // --- VIEWPORT ---
             float centerX = vpPos.X + outlinerWidth;
@@ -162,8 +160,8 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Viewport", flags |= ImGuiWindowFlags.MenuBar);
 
             var drawList = ImGui.GetWindowDrawList();
-            var winPos = ImGui.GetWindowPos();
-            var winSize = ImGui.GetWindowSize();
+            winPos = ImGui.GetWindowPos();
+            winSize = ImGui.GetWindowSize();
 
             //Vector2 headerTL = new Vector2(winPos.X, winPos.Y);
             //Vector2 headerBR = new Vector2(winPos.X + winSize.X, winPos.Y + viewportHeaderHeight);
@@ -174,7 +172,6 @@ namespace IceSaw2.EditorWindows
             //ImGui.Text("Viewport Header");
 
             //ImGui.SameLine();
-
             
             if (ImGui.BeginMenuBar())
             {
