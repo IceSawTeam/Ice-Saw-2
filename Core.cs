@@ -23,8 +23,8 @@ namespace IceSaw2
 
         public bool isRunning = true;
         private RenderTexture2D _viewportTexture;
-        private Vector2 _lastViewportPos = new();
-        private Vector2 _lastViewportSize = new();
+        private Vector2 _lastViewportPos = Vector2.Zero;
+        private Vector2 _lastViewportSize = Vector2.Zero;
 
         //--------------------- Manager/Module/System declarations here -------------------------
         public static TrickyWorldManager? worldManager = null;
@@ -122,6 +122,10 @@ namespace IceSaw2
                 {
                     winPos = worldManager.levelEditorWindow.winPos;
                     winSize = worldManager.levelEditorWindow.winSize;
+                } else if (worldManager.windowMode == TrickyWorldManager.WindowMode.Prefabs)
+                {
+                    winPos = worldManager.prefabEditorWindow.winPos;
+                    winSize = worldManager.prefabEditorWindow.winSize;
                 }
              }
 
@@ -134,7 +138,7 @@ namespace IceSaw2
                 _viewportTexture = Raylib.LoadRenderTexture((int)winSize.X, (int)winSize.Y);
                 _lastViewportPos = winPos;
                 _lastViewportSize = winSize;
-                // Note: Fov might not math since the camera is in the level editor class
+                // Note: Fov might not match since the camera is in the level editor class
                 Rlgl.SetMatrixProjection(Raymath.MatrixPerspective(65, winSize.X/winSize.Y, Rlgl.GetCullDistanceNear(), Rlgl.GetCullDistanceFar()));
             }
 
