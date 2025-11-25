@@ -127,8 +127,6 @@ namespace IceSaw2.EditorWindows
 
                 Raylib.EndMode3D();
             }
-
-            // RenderUI();
         }
 
         public void RenderUI()
