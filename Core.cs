@@ -12,7 +12,7 @@ using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
-using System.Diagnostics;
+using System.Numerics;
 
 namespace IceSaw2
 {
@@ -21,10 +21,12 @@ namespace IceSaw2
         public const int MaxFps = 120;
 
         public bool isRunning = true;
+        private RenderTexture2D _viewportTexture;
+        private Vector2 _lastViewportPos = Vector2.Zero;
+        private Vector2 _lastViewportSize = Vector2.Zero;
 
         //--------------------- Manager/Module/System declarations here -------------------------
-        public static TrickyWorldManager? worldManager = null;
-
+        private static TrickyWorldManager? _worldManager = null;
 
         public Core()
         {
@@ -43,11 +45,12 @@ namespace IceSaw2
                                  (int)Settings.General.Instance.data.windowPositionY);
             Raylib.SetWindowSize((int)Settings.General.Instance.data.windowWidth,
                                  (int)Settings.General.Instance.data.windowHeight);
+            Raylib.SetWindowMinSize(1280, 720);
             Raylib.SetWindowState(windowFlags);
 
-            FontLoader InterNewFont = new FontLoader();
+            FontLoader InterNewFont = new();
 
-            rlImGui.SetupUserFonts += (ImGuiIOPtr imGuiIo) =>
+            rlImGui.SetupUserFonts += imGuiIo =>
             {
                 var io = ImGui.GetIO();
                 io.Fonts.Clear();
@@ -61,9 +64,8 @@ namespace IceSaw2
             }
 
             //--------------------- Manager/Module/System initializations here -------------------------
-            worldManager = new TrickyWorldManager();
+            _worldManager = new TrickyWorldManager();
         }
-
 
         public void Exiting()
         {
@@ -72,7 +74,6 @@ namespace IceSaw2
             rlImGui.Shutdown();
             Raylib.CloseWindow();
         }
-        
 
         public void InputProccessing()
         {
@@ -83,25 +84,22 @@ namespace IceSaw2
             // Can change State from here.
         }
 
-
         public void LogicProccessing()
         {
             // Set the isRunning variable to exit loop.
             // Can change State from here.
             // Communicate with other modules and managers.
-
-            if (worldManager != null)
+            if (_worldManager != null)
             {
-                switch (worldManager.windowMode)
+                switch (_worldManager.windowMode)
                 {
-                    case TrickyWorldManager.WindowMode.World: worldManager.levelEditorWindow.LogicUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Prefabs: worldManager.prefabEditorWindow.LogicUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Logic: worldManager.logicEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.LogicUpdate(); break;
                 }
-                worldManager.UpdateLogic();
+                _worldManager.UpdateLogic();
             }
         }
-
 
         public void RenderProcessing()
         {
@@ -109,23 +107,68 @@ namespace IceSaw2
             // Render props, terrain, paths, wireframe, skybox, and bounding boxes.
             // Render Imgui. Lock or anchor the Imgui scale to 1080p, no need to big resolution flexibility.
 
-            Raylib.BeginDrawing();
-            rlImGui.Begin();
-            Raylib.ClearBackground(new Color(120, 120, 120));
+            // Update render texture if screen size changed
+            Vector2 winPos = Vector2.Zero;
+            Vector2 winSize = Vector2.Zero;
 
-            if (worldManager != null)
+            if (_worldManager != null)
             {
-                switch (worldManager.windowMode)
+                switch (_worldManager.windowMode)
                 {
-                    case TrickyWorldManager.WindowMode.World: worldManager.levelEditorWindow.RenderUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Prefabs: worldManager.prefabEditorWindow.RenderUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Logic: worldManager.logicEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.World:
+                        winPos = _worldManager.levelEditorWindow.winPos;
+                        winSize = _worldManager.levelEditorWindow.winSize;
+                        break;
+                    case TrickyWorldManager.WindowMode.Prefabs:
+                        winPos = _worldManager.prefabEditorWindow.winPos;
+                        winSize = _worldManager.prefabEditorWindow.winSize;
+                        break;
                 }
-                worldManager.UpdateRender();
-             }
+            }
 
+            if (winPos != _lastViewportPos || winSize != _lastViewportSize)
+            {
+                if (Raylib.IsRenderTextureValid(_viewportTexture)) Raylib.UnloadRenderTexture(_viewportTexture);
+                _viewportTexture = Raylib.LoadRenderTexture((int)winSize.X, (int)winSize.Y);
+                _lastViewportPos = winPos;
+                _lastViewportSize = winSize;
+                // Note: Fov might not match since the camera is in the level editor class - and not accesible here
+                Rlgl.SetMatrixProjection(Raymath.MatrixPerspective(65, winSize.X/winSize.Y, Rlgl.GetCullDistanceNear(), Rlgl.GetCullDistanceFar()));
+            }
+
+            // Render viewport to texture
+            Raylib.BeginTextureMode(_viewportTexture);
+            Raylib.ClearBackground(new Color(120, 120, 120));
+            if (_worldManager != null)
+            {
+                switch (_worldManager.windowMode)
+                {
+                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUpdate(); break;
+                }
+             }
+            Raylib.EndTextureMode();
+
+            // Render viewport texture and GUI
+            Raylib.BeginDrawing();
+            Raylib.DrawTexturePro(_viewportTexture.Texture,
+                    new Rectangle(0, 0, _viewportTexture.Texture.Width, -_viewportTexture.Texture.Height),
+                    new Rectangle(_lastViewportPos.X, _lastViewportPos.Y, _lastViewportSize.X, _lastViewportSize.Y),
+                    Vector2.Zero, 0, Color.White);
+            rlImGui.Begin();
+            if (_worldManager != null)
+            {
+                switch (_worldManager.windowMode)
+                {
+                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUI(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUI(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUpdate(); break;
+                }
+                _worldManager.UpdateRender();
+             }
             Raylib.DrawText("Beta Test", 12, Raylib.GetScreenWidth() - 20, 20, Color.Black);
             rlImGui.End();
+
             Raylib.EndDrawing();
         }
     }

@@ -16,6 +16,8 @@ namespace IceSaw2.EditorWindows
         int ActiveModelIndex = -1;
         int ActiveSkyboxIndex = -1;
         int ActiveMaterialIndex = -1;
+        public Vector2 winPos;
+        public Vector2 winSize;
 
         List<int> selectedModelIndices = new List<int>();
 
@@ -125,8 +127,6 @@ namespace IceSaw2.EditorWindows
 
                 Raylib.EndMode3D();
             }
-
-            RenderUI();
         }
 
         public void RenderUI()
@@ -176,8 +176,8 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Viewport", flags);
 
             var drawList = ImGui.GetWindowDrawList();
-            var winPos = ImGui.GetWindowPos();
-            var winSize = ImGui.GetWindowSize();
+            winPos = ImGui.GetWindowPos();
+            winSize = ImGui.GetWindowSize();
 
             Vector2 headerTL = new Vector2(winPos.X, winPos.Y);
             Vector2 headerBR = new Vector2(winPos.X + winSize.X, winPos.Y + viewportHeaderHeight);
