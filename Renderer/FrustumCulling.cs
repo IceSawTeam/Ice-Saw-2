@@ -55,9 +55,9 @@ namespace IceSaw2.Renderer
 
         public static bool IsSphereInFrustum(Vector3 center, float radius)
         {
-            foreach (var plane in frustumPlanes)
+            for (int i = 0; i < frustumPlanes.Length; i++)
             {
-                float distance = Vector3.Dot(plane.Normal, center) + plane.D;
+                float distance = Vector3.Dot(frustumPlanes[i].Normal, center) + frustumPlanes[i].D;
                 if (distance < -radius)
                     return false;
             }

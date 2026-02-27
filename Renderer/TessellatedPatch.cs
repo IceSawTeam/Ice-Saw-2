@@ -109,12 +109,12 @@ namespace IceSaw2.Renderer
 
             if (foundEmptySpot)
             {
-               _patchEntries[foundID] = entry;
+                _patchEntries[foundID] = entry;
             }
             else
             {
                 _patchEntries.Add(entry);
-               foundID = _patchEntries.Count - 1;
+                foundID = _patchEntries.Count - 1;
             }
             return foundID;
         }
@@ -202,21 +202,21 @@ namespace IceSaw2.Renderer
                 _drawList.Clear();
                 List<Batch> drawList = new List<Batch>();
 
-                foreach (var entry in _patchEntries)
+                for (int a = 0; a < _patchEntries.Count; a++)
                 {
-                    if (entry == null) continue;
+                    if (_patchEntries[a] == null) continue;
 
                     // Frustum cull and fill draw list by batching them
-                    if (FrustumCulling.IsSphereInFrustum(entry.Sphere.Position, entry.Sphere.Radius))
+                    if (FrustumCulling.IsSphereInFrustum(_patchEntries[a].Sphere.Position, _patchEntries[a].Sphere.Radius))
                     {
                         int ID = -1;
                         //Check drawList for Free space
                         for (int i = 0; i < drawList.Count; i++)
                         {
-                            if (drawList[i].TextureID == entry.Texture.Id && drawList[i].LightmapID == _paddedLightmaps[entry.LightmapID].Id)
+                            if (drawList[i].TextureID == _patchEntries[a].Texture.Id && drawList[i].LightmapID == _paddedLightmaps[_patchEntries[a].LightmapID].Id)
                             {
                                 ID = i;
-                                drawList[i].Patches.Add(entry);
+                                drawList[i].Patches.Add(_patchEntries[a]);
                                 drawList[i].PatchCount++;
                                 break;
                             }
@@ -226,10 +226,10 @@ namespace IceSaw2.Renderer
                         if (ID == -1)
                         {
                             Batch batch = new Batch();
-                            batch.Patches.Add(entry);
+                            batch.Patches.Add(_patchEntries[a]);
                             batch.PatchCount++;
-                            batch.TextureID = entry.Texture.Id;
-                            batch.LightmapID = _paddedLightmaps[entry.LightmapID].Id;
+                            batch.TextureID = _patchEntries[a].Texture.Id;
+                            batch.LightmapID = _paddedLightmaps[_patchEntries[a].LightmapID].Id;
                             drawList.Add(batch);
                             ID = drawList.Count - 1;
                         }
@@ -354,7 +354,7 @@ namespace IceSaw2.Renderer
                     indices[indexCount] = vertexIndex;
                     indices[indexCount + 1] = (ushort)(vertexIndex + 8);
                     indices[indexCount + 2] = (ushort)(vertexIndex + 8 + 1);
-                    
+
                     indices[indexCount + 3] = vertexIndex;
                     indices[indexCount + 4] = (ushort)(vertexIndex + 8 + 1);
                     indices[indexCount + 5] = (ushort)(vertexIndex + 1);
@@ -465,7 +465,7 @@ namespace IceSaw2.Renderer
             public Vector3 Position = position;
             public float Radius = radius;
         }
-    
+
         private class Batch
         {
             // This class only holds data for 8 or less patches.
@@ -476,10 +476,10 @@ namespace IceSaw2.Renderer
 
             public Vector3[] GetMergedControlPoints()
             {
-                Vector3[] output = new Vector3[PatchCount*16];
+                Vector3[] output = new Vector3[PatchCount * 16];
                 for (int i = 0; i < PatchCount; i++)
                 {
-                    Patches[i].Controlpoints.CopyTo(output, i*16);
+                    Patches[i].Controlpoints.CopyTo(output, i * 16);
                 }
                 return output;
             }
