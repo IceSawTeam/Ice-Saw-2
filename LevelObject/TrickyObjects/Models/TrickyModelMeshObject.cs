@@ -2,7 +2,7 @@ using IceSaw2.EditorWindows;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.RayWarp;
 using Raylib_cs;
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
 

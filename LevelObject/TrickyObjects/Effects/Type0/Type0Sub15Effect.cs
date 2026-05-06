@@ -1,4 +1,4 @@
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 
 
 public class Type0Sub15Effect : EffectBase

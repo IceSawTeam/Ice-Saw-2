@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -58,13 +58,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="SSX-Library\**" />
+    <EmbeddedResource Remove="SSX-Library\**" />
+    <None Remove="SSX-Library\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Fonts\Inter_New.ttf" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4-beta1" />
     <PackageReference Include="Raylib-cs" Version="7.0.1" />
     <PackageReference Include="rlImgui-cs" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="SSX-Library\SSX-Library\SSX-Library.csproj" />
   </ItemGroup>
 
   <ItemGroup>

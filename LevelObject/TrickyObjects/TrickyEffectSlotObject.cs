@@ -1,5 +1,5 @@
 using IceSaw2.LevelObject;
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;

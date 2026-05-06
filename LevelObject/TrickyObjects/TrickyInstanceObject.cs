@@ -2,7 +2,7 @@ using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using Raylib_cs;
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections.Generic;
 using System.Numerics;

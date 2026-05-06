@@ -1,7 +1,7 @@
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.RayWarp;
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using System.Numerics;
 
 namespace IceSaw2.Batch

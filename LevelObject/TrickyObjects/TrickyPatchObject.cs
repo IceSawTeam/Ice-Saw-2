@@ -3,7 +3,7 @@ using IceSaw2.RayWarp;
 using IceSaw2.Renderer;
 using NURBS;
 using Raylib_cs;
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
 

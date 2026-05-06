@@ -1,4 +1,4 @@
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {

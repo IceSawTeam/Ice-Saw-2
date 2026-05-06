@@ -1,7 +1,6 @@
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using System.Collections;
 using System.Collections.Generic;
-using static SSXMultiTool.JsonFiles.Tricky.SSFJsonHandler;
 
 public class InstanceRunEffect : EffectBase
 {

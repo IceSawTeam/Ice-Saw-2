@@ -1,4 +1,4 @@
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using System.Collections;
 using System.Collections.Generic;
 public class Type0Sub258Effect : EffectBase

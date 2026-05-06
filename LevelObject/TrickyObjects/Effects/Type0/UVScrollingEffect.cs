@@ -1,4 +1,4 @@
-using SSXMultiTool.JsonFiles.Tricky;
+using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Collections;
 using System.Collections.Generic;
