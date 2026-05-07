@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace IceSaw2
         private string? selectedFile;
         private bool isOpen;
         private Action<string>? onFileSelected;
+        private string fileType="";
+        private string title = "File Picker";
 
         public bool IsVisible => isOpen;
 
@@ -28,8 +31,10 @@ namespace IceSaw2
             isOpen = false;
         }
 
-        public void Show(Action<string> onSelected)
+        public void Show(string Title, string FileType, Action<string> onSelected)
         {
+            title = Title;
+            fileType = FileType;
             onFileSelected = onSelected;
             isOpen = true;
         }
@@ -40,7 +45,7 @@ namespace IceSaw2
                 return;
 
             ImGui.SetNextWindowSize(new System.Numerics.Vector2(700, 500), ImGuiCond.FirstUseEver);
-            if (ImGui.Begin("File Picker", ref isOpen))
+            if (ImGui.Begin(title, ref isOpen))
             {
                 ImGui.Text($"Current Path: {currentPath}");
 
@@ -70,7 +75,17 @@ namespace IceSaw2
                     foreach (var file in Directory.GetFiles(currentPath))
                     {
                         bool selected = selectedFile == file;
-                        if (file.EndsWith("ssx"))
+                        if (fileType != "")
+                        {
+                            if (file.EndsWith(fileType))
+                            {
+                                if (ImGui.Selectable(Path.GetFileName(file), selected))
+                                {
+                                    selectedFile = file;
+                                }
+                            }
+                        }
+                        else
                         {
                             if (ImGui.Selectable(Path.GetFileName(file), selected))
                             {
@@ -93,13 +108,17 @@ namespace IceSaw2
                     ImGui.Text("Selected: " + Path.GetFileName(selectedFile));
                     if (ImGui.Button("Accept"))
                     {
-                        onFileSelected?.Invoke(selectedFile);
                         Close();
+                        onFileSelected?.Invoke(selectedFile);
+                        onFileSelected = null;
+                        selectedFile = null;
                     }
                     ImGui.SameLine();
                     if (ImGui.Button("Cancel"))
                     {
                         Close();
+                        onFileSelected = null;
+                        selectedFile = null;
                     }
                 }
                 else
@@ -107,6 +126,8 @@ namespace IceSaw2
                     if (ImGui.Button("Cancel"))
                     {
                         Close();
+                        onFileSelected = null;
+                        selectedFile = null;
                     }
                 }
 
@@ -117,9 +138,7 @@ namespace IceSaw2
 
         private void Close()
         {
-            selectedFile = null;
             isOpen = false;
-            onFileSelected = null;
         }
     }
 }

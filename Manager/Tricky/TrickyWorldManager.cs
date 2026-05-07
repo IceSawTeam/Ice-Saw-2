@@ -2,6 +2,7 @@
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
+using SSXLibrary;
 using System.Diagnostics;
 
 namespace IceSaw2.Manager.Tricky
@@ -17,6 +18,7 @@ namespace IceSaw2.Manager.Tricky
         public WindowMode windowMode = WindowMode.World;
 
         static IMGuiFilePicker filePicker = new();
+        static IMGuiFolderPicker folderPicker = new();
 
         //Icon List
         public List<Texture2D> LightIcons = new List<Texture2D>();
@@ -34,6 +36,7 @@ namespace IceSaw2.Manager.Tricky
             instance = this;
 
             filePicker = new IMGuiFilePicker(Settings.General.Instance.data.LastLoad);
+            folderPicker = new IMGuiFolderPicker(Settings.General.Instance.data.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
@@ -72,6 +75,7 @@ namespace IceSaw2.Manager.Tricky
             Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2 - 8, Raylib.GetScreenHeight() - 32, 95, 26, Raylib.GetColor(0x000000FF));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
             filePicker.Render();
+            folderPicker.Render();
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             if (ImGui.BeginMainMenuBar())
@@ -80,7 +84,7 @@ namespace IceSaw2.Manager.Tricky
                 {
                     if (ImGui.MenuItem("Open..."))
                     {
-                        filePicker.Show((selectedPath) =>
+                        filePicker.Show("Select .SSX File", "ssx", (selectedPath) =>
                         {
                             TrickyDataManager.LoadProject(selectedPath);
                             Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
@@ -94,6 +98,27 @@ namespace IceSaw2.Manager.Tricky
                     }
 
                     if (ImGui.MenuItem("Save"))
+                    {
+                        // Handle save
+                    }
+
+                    if (ImGui.MenuItem("Extract"))
+                    {
+                        string LoadPath = "";
+                        string ExtractPath = "";
+                        // Handle save
+                        filePicker.Show("Load .MAP file", "map", (LoadPath) =>
+                        {
+                            folderPicker.Show("Select Extract Folder", (ExtractPath) =>
+                            {
+                                TrickyLevelInterface trickyLevelInterface = new TrickyLevelInterface();
+
+                                trickyLevelInterface.ExtractTrickyLevelFiles(LoadPath.Replace(".map", ""), ExtractPath);
+                            });
+                        });
+                    }
+
+                    if (ImGui.MenuItem("Rebuild"))
                     {
                         // Handle save
                     }
