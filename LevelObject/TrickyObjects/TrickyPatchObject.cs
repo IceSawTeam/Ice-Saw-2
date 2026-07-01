@@ -6,6 +6,7 @@ using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
+using static IceSaw2.LevelObject.TrickyObjects.TrickyPatchObject;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {
@@ -214,6 +215,68 @@ namespace IceSaw2.LevelObject.TrickyObjects
             return NewList;
         }
 
+        public ObjExporter.MassModelData GenerateModel()
+        {
+            ObjExporter.MassModelData TempModel = new ObjExporter.MassModelData();
+            TempModel.Name = Name;
+
+            var Points = controlPoints.ReturnControlPoints(true);
+
+            //Control points
+            ControlPoint[,] cps = new ControlPoint[4, 4];
+            int c = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Vector3 pos = Points[j + (i * 4)];
+                    cps[i, j] = new NURBS.ControlPoint(pos.X, pos.Y, pos.Z, 1);
+                    c++;
+                }
+            }
+
+            int degreeU = 3;
+            int degreeV = 3;
+
+            int resolutionU = Settings.General.Instance.data.PatchResolution;
+            int resolutionV = Settings.General.Instance.data.PatchResolution;
+
+            NURBS.Surface surface = new NURBS.Surface(cps, degreeU, degreeV);
+
+            //Build mesh (reusing Mesh to save GC allocation)
+            MeshRef meshRef = new MeshRef(surface.BuildMesh(resolutionU, resolutionV));
+
+            cps = new ControlPoint[2, 2];
+
+            //UVPoints = PointCorrection(UVPoints);
+
+            cps[0, 0] = new NURBS.ControlPoint(UVPoints[0].X, UVPoints[0].Y, 0, 1);
+            cps[1, 0] = new NURBS.ControlPoint(UVPoints[1].X, UVPoints[1].Y, 0, 1);
+            cps[0, 1] = new NURBS.ControlPoint(UVPoints[2].X, UVPoints[2].Y, 0, 1);
+            cps[1, 1] = new NURBS.ControlPoint(UVPoints[3].X, UVPoints[3].Y, 0, 1);
+
+            surface = new NURBS.Surface(cps, 1, 1);
+
+            Vector3[] UV = surface.ReturnVertices(resolutionU, resolutionV);
+
+            Span<Vector2> NewTextureCords = meshRef.Mesh.TexCoordsAs<Vector2>();
+            for (int i = 0; i < UV.Length; i++)
+            {
+                NewTextureCords[i] = new Vector2(UV[i].X, -UV[i].Y);
+            }
+
+            var Verts = meshRef.Mesh.VerticesAs<Vector3>();
+            for (int i = 0; i < Verts.Length; i++)
+            {
+                Verts[i] = Raymath.Vector3Transform(Verts[i], worldMatrix4x4);
+            }
+
+            TempModel.Model = meshRef.Mesh;
+            TempModel.TextureName = TexturePath;
+
+            return TempModel;
+        }
+
         public struct ControlPoints
         {
             int _tesPatchID = -1;
@@ -250,9 +313,15 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 }
             }
 
-            public Vector3[] ReturnControlPoints()
+            public Vector3[] ReturnControlPoints(bool NoScale =false)
             {
                 Vector3[] tempPoints = new Vector3[16];
+
+                if(NoScale)
+                {
+                    return _worldPoints;
+                }
+
                 //Replace Tessellated Patch Matrix with Correct One
                 if (_tesPatchID != -1)
                 {

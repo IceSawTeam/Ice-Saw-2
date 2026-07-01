@@ -118,6 +118,14 @@ namespace IceSaw2.Manager.Tricky
                         });
                     }
 
+                    if (ImGui.MenuItem("Extract OBJ"))
+                    {
+                        folderPicker.Show("Select Extract Folder", (ExtractPath) =>
+                        {
+                            OBJLevelExtract.ExtractOBJ(ExtractPath);
+                        });
+                    }
+
                     if (ImGui.MenuItem("Rebuild"))
                     {
                         // Handle save

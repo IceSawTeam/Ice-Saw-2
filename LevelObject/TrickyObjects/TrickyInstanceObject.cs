@@ -311,6 +311,17 @@ namespace IceSaw2.LevelObject
             }
         }
 
+        public List<ObjExporter.MassModelData> GenerateModel()
+        {
+            if (TrickyPrefab != null)
+            {
+                return TrickyPrefab.GenerateModel(this);
+            }
+            else
+            {
+                return new List<ObjExporter.MassModelData>();
+            }
+        }
 
         //List<RenderCache> renderCaches = new List<RenderCache>();
 
