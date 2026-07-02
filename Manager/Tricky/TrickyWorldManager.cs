@@ -97,10 +97,10 @@ namespace IceSaw2.Manager.Tricky
                         //filePicker.Open();
                     }
 
-                    if (ImGui.MenuItem("Save"))
-                    {
-                        // Handle save
-                    }
+                    //if (ImGui.MenuItem("Save"))
+                    //{
+                    //    // Handle save
+                    //}
 
                     if (ImGui.MenuItem("Extract"))
                     {
@@ -118,7 +118,7 @@ namespace IceSaw2.Manager.Tricky
                         });
                     }
 
-                    if (ImGui.MenuItem("Extract OBJ"))
+                    if (ImGui.MenuItem("Export OBJ"))
                     {
                         folderPicker.Show("Select Extract Folder", (ExtractPath) =>
                         {
@@ -126,10 +126,10 @@ namespace IceSaw2.Manager.Tricky
                         });
                     }
 
-                    if (ImGui.MenuItem("Rebuild"))
-                    {
-                        // Handle save
-                    }
+                    //if (ImGui.MenuItem("Rebuild"))
+                    //{
+                    //    // Handle save
+                    //}
 
                     if (ImGui.MenuItem("Exit"))
                     {
@@ -140,12 +140,12 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.EndMenu();
                 }
 
-                if (ImGui.BeginMenu("Edit"))
-                {
-                    if (ImGui.MenuItem("Undo")) { }
-                    if (ImGui.MenuItem("Redo")) { }
-                    ImGui.EndMenu();
-                }
+                //if (ImGui.BeginMenu("Edit"))
+                //{
+                //    if (ImGui.MenuItem("Undo")) { }
+                //    if (ImGui.MenuItem("Redo")) { }
+                //    ImGui.EndMenu();
+                //}
 
                 if (ImGui.BeginMenu("Help"))
                 {
@@ -171,10 +171,10 @@ namespace IceSaw2.Manager.Tricky
                     {
                         showProfiler = !showProfiler;
                     }
-                    if (ImGui.MenuItem("ImGui Demo"))
-                    {
-                        showImGuiDemo = !showImGuiDemo;
-                    }
+                    //if (ImGui.MenuItem("ImGui Demo"))
+                    //{
+                    //    showImGuiDemo = !showImGuiDemo;
+                    //}
 
                     ImGui.EndMenu();
                 }

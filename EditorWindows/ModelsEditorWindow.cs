@@ -195,7 +195,6 @@ namespace IceSaw2.EditorWindows
             //                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            ImGui.TextWrapped("This is the viewport area. Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test End");
             ImGui.EndChild();
 
             ImGui.End();
