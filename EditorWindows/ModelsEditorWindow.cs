@@ -4,6 +4,7 @@ using ImGuiNET;
 using Raylib_cs;
 using rlImGui_cs;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace IceSaw2.EditorWindows
 {
@@ -81,11 +82,6 @@ namespace IceSaw2.EditorWindows
                 }
             }
 
-            if (Raylib.IsKeyPressed(KeyboardKey.Slash))
-            {
-                ShowSkybox = !ShowSkybox;
-            }
-
             Raylib.UpdateCamera(ref camera3D, CameraMode.Orbital);
         }
 
@@ -111,7 +107,7 @@ namespace IceSaw2.EditorWindows
             }
             else
             {
-                if (ActiveSkyboxIndex != -1)
+                if (ActiveSkyboxIndex > -1 && ActiveSkyboxIndex < TrickyDataManager.trickySkyboxModelObjects.Count)
                 {
                     Raylib.DrawText(TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Name, 300, 90, 20, Raylib_cs.Color.Black);
                 }
@@ -120,7 +116,7 @@ namespace IceSaw2.EditorWindows
 
                 RaylibCustomGrid.DrawBasic3DGrid(10, 1, Color.Black);
 
-                if (ActiveSkyboxIndex != -1)
+                if (ActiveSkyboxIndex > -1 && ActiveSkyboxIndex < TrickyDataManager.trickySkyboxModelObjects.Count)
                 {
                     TrickyDataManager.trickySkyboxModelObjects[ActiveSkyboxIndex].Render();
                 }
@@ -292,17 +288,6 @@ namespace IceSaw2.EditorWindows
                 }
                 else
                 {
-                    //for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
-                    //{
-                    //var _id = TrickyDataManager.trickyModelObjects[i].HierarchyRender();
-                    //if (_id != -1)
-                    //{
-                    //    ActiveModelIndex = i;
-                    //}
-
-                    //}
-
-
 
                     for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
                     {
@@ -391,15 +376,89 @@ namespace IceSaw2.EditorWindows
                 {
                     for (int i = 0; i < TrickyDataManager.trickySkyboxMaterialObject.Count; i++)
                     {
-                        TrickyDataManager.trickySkyboxMaterialObject[i].HierarchyRender();
+                        var _id = TrickyDataManager.trickySkyboxMaterialObject[i].HierarchyRender();
+                        if (_id != -1)
+                        {
+                            ActiveMaterialIndex = i;
+                        }
                     }
                 }
                 else
                 {
                     for (int i = 0; i < TrickyDataManager.trickySkyboxModelObjects.Count; i++)
                     {
-                        TrickyDataManager.trickySkyboxModelObjects[i].HierarchyRender();
+                        var _modelChildren = TrickyDataManager.trickySkyboxModelObjects[i].Children;
+                        bool isSelected = selectedModelIndices.Contains(i);
+
+                        var _flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+
+                        if (_modelChildren.Count == 0)
+                            _flags |= ImGuiTreeNodeFlags.Leaf;
+
+                        if (isSelected)
+                            _flags |= ImGuiTreeNodeFlags.Selected;
+
+                        if (i == ActiveSkyboxIndex)
+                        {
+                            ImGui.PushStyleColor(ImGuiCol.Header, new System.Numerics.Vector4(0.717f, 0.435f, 0.156f, 1.0f));
+                            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                            ImGui.PushStyleColor(ImGuiCol.HeaderActive, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                        }
+
+                        bool nodeOpen = ImGui.TreeNodeEx($"##Model{i}", _flags, TrickyDataManager.trickySkyboxModelObjects[i].Name);
+
+                        if (i == ActiveSkyboxIndex)
+                        {
+                            ImGui.PopStyleColor(3);
+                        }
+
+                        if (ImGui.IsItemClicked())
+                        {
+                            bool ctrl = ImGui.GetIO().KeyCtrl;
+                            bool shift = ImGui.GetIO().KeyShift;
+
+                            if (shift && ActiveSkyboxIndex >= 0)
+                            {
+                                int start = Math.Min(ActiveSkyboxIndex, i);
+                                int end = Math.Max(ActiveSkyboxIndex, i);
+
+                                for (int j = start; j <= end; j++)
+                                {
+                                    if (!selectedModelIndices.Contains(j))
+                                        selectedModelIndices.Add(j);
+                                }
+                            }
+                            else if (ctrl)
+                            {
+                                if (isSelected)
+                                    selectedModelIndices.Remove(i);
+                                else
+                                    selectedModelIndices.Add(i);
+                            }
+                            else
+                            {
+                                selectedModelIndices.Clear();
+                                selectedModelIndices.Add(i);
+                            }
+
+                            ActiveSkyboxIndex = i;
+                        }
+
+                        if (!selectedModelIndices.Contains(ActiveSkyboxIndex) && selectedModelIndices.Count != 0)
+                        {
+                            ActiveSkyboxIndex = selectedModelIndices[selectedModelIndices.Count - 1];
+                        }
+
+                        if (nodeOpen)
+                        {
+                            for (int j = 0; j < _modelChildren.Count; j++)
+                            {
+                                _modelChildren[j].HierarchyRender();
+                            }
+                            ImGui.TreePop();
+                        }
                     }
+
                 }
             }
 
@@ -477,17 +536,20 @@ namespace IceSaw2.EditorWindows
                     {
                         ImGui.Text("\t- " + flipBook);
                     }
-
                 }
+
             }
             else if (ActiveModelIndex != -1)
             {
-                var activeMdl = TrickyDataManager.trickyModelObjects[ActiveModelIndex];
-                ImGui.SetNextItemWidth(-1);
-                ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
+                if (!ShowSkybox)
+                {
+                    var activeMdl = TrickyDataManager.trickyModelObjects[ActiveModelIndex];
+                    ImGui.SetNextItemWidth(-1);
+                    ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
 
-                ImGui.DragInt("UnknownInt3", ref activeMdl.Unknown3, 0.3f, -1, 99999);
-                ImGui.DragFloat("AnimTime", ref activeMdl.AnimTime, 0.025f, 0, 99999);
+                    ImGui.DragInt("UnknownInt3", ref activeMdl.Unknown3, 0.3f, -1, 99999);
+                    ImGui.DragFloat("AnimTime", ref activeMdl.AnimTime, 0.025f, 0, 99999);
+                }
             }
 
 

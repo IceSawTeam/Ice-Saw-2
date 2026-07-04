@@ -123,6 +123,10 @@ namespace IceSaw2
                         winPos = _worldManager.prefabEditorWindow.winPos;
                         winSize = _worldManager.prefabEditorWindow.winSize;
                         break;
+                    case TrickyWorldManager.WindowMode.Logic:
+                        winPos = _worldManager.logicEditorWindow.winPos;
+                        winSize = _worldManager.logicEditorWindow.winSize;
+                        break;
                 }
             }
 
@@ -145,6 +149,7 @@ namespace IceSaw2
                 {
                     case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUpdate(); break;
                     case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUpdate(); break;
                 }
              }
             Raylib.EndTextureMode();
@@ -162,7 +167,7 @@ namespace IceSaw2
                 {
                     case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUI(); break;
                     case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUI(); break;
-                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUI(); break;
                 }
                 _worldManager.UpdateRender();
              }

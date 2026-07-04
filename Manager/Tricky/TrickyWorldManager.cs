@@ -42,7 +42,7 @@ namespace IceSaw2.Manager.Tricky
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
-            //logicEditorWindow.Initilize();
+            logicEditorWindow.Initilize();
 
             InitalizeAssets();
         }
