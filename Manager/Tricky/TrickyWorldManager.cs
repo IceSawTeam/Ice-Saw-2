@@ -1,4 +1,5 @@
 ﻿using IceSaw2.EditorWindows;
+using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
@@ -29,7 +30,8 @@ namespace IceSaw2.Manager.Tricky
 
         bool showAboutWindow = false;
         bool showImGuiDemo = false;
-        bool showProfiler = true;
+        bool showProfiler = false;
+        bool showSettings = false;
 
         public TrickyWorldManager()
         {
@@ -130,6 +132,11 @@ namespace IceSaw2.Manager.Tricky
                     //{
                     //    // Handle save
                     //}
+
+                    if (ImGui.MenuItem("Settings"))
+                    {
+                        showSettings = !showSettings;
+                    }
 
                     if (ImGui.MenuItem("Exit"))
                     {
@@ -267,7 +274,10 @@ namespace IceSaw2.Manager.Tricky
                     ImGui.End();
                 }
 
-                
+                if(showSettings)
+                {
+                    IMGuiSettings.Render();
+                }
                 
                 if (showProfiler)
                 {
