@@ -102,7 +102,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 {
                     for (int i = 0; i < renderCaches.Count; i++)
                     {
-                        Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4s.ToArray(), renderCaches[i].matrix4X4s.Count);
+                        Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4Array, renderCaches[i].matrix4X4Array.Length);
                     }
                 }
                 else
@@ -146,6 +146,8 @@ namespace IceSaw2.LevelObject.TrickyObjects
                     TempCache.matrix4X4s.Add(worldMatrix4x4);
                 }
 
+                TempCache.matrix4X4Array = TempCache.matrix4X4s.ToArray();
+
                 renderCaches.Add(TempCache);
             }
         }
@@ -156,6 +158,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
             {
                 renderCaches[i].trickyInstanceObjects.Add(trickyInstanceObject);
                 renderCaches[i].matrix4X4s.Add(trickyInstanceObject.worldMatrix4x4 * localMatrix4X4);
+                RebuildMatrixArray(i);
             }
         }
 
@@ -169,8 +172,18 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                     renderCaches[i].trickyInstanceObjects.RemoveAt(Value);
                     renderCaches[i].matrix4X4s.RemoveAt(Value);
+                    RebuildMatrixArray(i);
                 }
             }
+        }
+
+        // renderCaches holds RenderCache structs by value, so the flattened array cache has to be
+        // written back into the list explicitly rather than mutated through the indexer directly.
+        private void RebuildMatrixArray(int i)
+        {
+            var cache = renderCaches[i];
+            cache.matrix4X4Array = cache.matrix4X4s.ToArray();
+            renderCaches[i] = cache;
         }
 
         [Serializable]

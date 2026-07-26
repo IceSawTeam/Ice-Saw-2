@@ -26,6 +26,14 @@ namespace IceSaw2.Renderer
 
         Matrix4x4 PreviousView = new Matrix4x4();
 
+        // Uniform locations never change once the shader is loaded, so they're resolved once in
+        // Init() instead of via GetShaderLocation (a driver call) for every batch, every frame.
+        private int _lightmapsEnabledLoc;
+        private int _controlPointsLoc;
+        private int _diffuseTextureUVsLoc;
+        private int _lightmapTextureUVsLoc;
+        private int _highlightedLoc;
+
         // DEBUG
         public int PatchCount()
         {
@@ -53,6 +61,12 @@ namespace IceSaw2.Renderer
 
             int tex1Loc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmap");
             Raylib_cs.Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, Raylib_cs.ShaderUniformDataType.Sampler2D);
+
+            _lightmapsEnabledLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled");
+            _controlPointsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]");
+            _diffuseTextureUVsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]");
+            _lightmapTextureUVsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]");
+            _highlightedLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]");
         }
 
         public void Clear()
@@ -248,7 +262,7 @@ namespace IceSaw2.Renderer
             //Set if lightmap is enabled
             Raylib_cs.Raylib.SetShaderValue(
             _material.Shader,
-            Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled"),
+            _lightmapsEnabledLoc,
             LightmapEnabled ? 1 : 0,
             Raylib_cs.ShaderUniformDataType.Int
             );
@@ -262,21 +276,21 @@ namespace IceSaw2.Renderer
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]"),
+                    _controlPointsLoc,
                     batch.GetMergedControlPoints(),
                     Raylib_cs.ShaderUniformDataType.Vec3,
                     batch.PatchCount * 16
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]"),
+                    _diffuseTextureUVsLoc,
                     batch.GetMergedDiffuseTextureUVs(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
                     batch.PatchCount * 4
                 );
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]"),
+                    _lightmapTextureUVsLoc,
                     batch.GetMergedLightmapTextureUVs(),
                     Raylib_cs.ShaderUniformDataType.Vec2,
                     batch.PatchCount * 4
@@ -300,7 +314,7 @@ namespace IceSaw2.Renderer
 
                 Raylib_cs.Raylib.SetShaderValueV(
                     _material.Shader,
-                    Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]"),
+                    _highlightedLoc,
                     batch.GetMergedHighlighted(),
                     Raylib_cs.ShaderUniformDataType.Int,
                     batch.PatchCount
@@ -474,34 +488,46 @@ namespace IceSaw2.Renderer
             public uint TextureID;
             public uint LightmapID;
 
+            // Reused across frames instead of allocating fresh arrays every Render() call - a batch's
+            // PatchCount is fixed once it's placed in _drawList, so these only need to be sized once.
+            // The contents are still refreshed from the source PatchEntries every call so live edits
+            // (dragging control points, texture/lightmap changes, highlight toggles) keep showing up.
+            private Vector3[]? _controlPointsBuffer;
+            private Vector2[]? _diffuseUVBuffer;
+            private Vector2[]? _lightmapUVBuffer;
+            private int[]? _highlightedBuffer;
+
             public Vector3[] GetMergedControlPoints()
             {
-                Vector3[] output = new Vector3[PatchCount * 16];
+                if (_controlPointsBuffer == null || _controlPointsBuffer.Length != PatchCount * 16)
+                    _controlPointsBuffer = new Vector3[PatchCount * 16];
                 for (int i = 0; i < PatchCount; i++)
                 {
-                    Patches[i].Controlpoints.CopyTo(output, i * 16);
+                    Patches[i].Controlpoints.CopyTo(_controlPointsBuffer, i * 16);
                 }
-                return output;
+                return _controlPointsBuffer;
             }
 
             public Vector2[] GetMergedDiffuseTextureUVs()
             {
-                Vector2[] output = new Vector2[PatchCount * 4];
+                if (_diffuseUVBuffer == null || _diffuseUVBuffer.Length != PatchCount * 4)
+                    _diffuseUVBuffer = new Vector2[PatchCount * 4];
                 for (int i = 0; i < PatchCount; i++)
                 {
-                    Patches[i].TextureUV.CopyTo(output, i * 4);
+                    Patches[i].TextureUV.CopyTo(_diffuseUVBuffer, i * 4);
                 }
-                return output;
+                return _diffuseUVBuffer;
             }
 
             public Vector2[] GetMergedLightmapTextureUVs()
             {
-                Vector2[] output = new Vector2[PatchCount * 4];
+                if (_lightmapUVBuffer == null || _lightmapUVBuffer.Length != PatchCount * 4)
+                    _lightmapUVBuffer = new Vector2[PatchCount * 4];
                 for (int i = 0; i < PatchCount; i++)
                 {
-                    Patches[i].LightmapUV.CopyTo(output, i * 4);
+                    Patches[i].LightmapUV.CopyTo(_lightmapUVBuffer, i * 4);
                 }
-                return output;
+                return _lightmapUVBuffer;
             }
 
             public List<int> GetMergedLightmapIDs()
@@ -516,7 +542,9 @@ namespace IceSaw2.Renderer
 
             public int[] GetMergedHighlighted()
             {
-                int[] output = new int[PatchCount];
+                if (_highlightedBuffer == null || _highlightedBuffer.Length != PatchCount)
+                    _highlightedBuffer = new int[PatchCount];
+                var output = _highlightedBuffer;
                 for (int i = 0; i < PatchCount; i++)
                 {
                     output[i] = Patches[i].Highlighted ? 1 : 0;

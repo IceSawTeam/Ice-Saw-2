@@ -324,6 +324,9 @@ namespace IceSaw2.LevelObject
             public MaterialRef materialRef;
             public List<TrickyInstanceObject> trickyInstanceObjects;
             public List<Matrix4x4> matrix4X4s;
+            // Cached flattened copy of matrix4X4s, rebuilt only when the list changes (see
+            // TrickyModelMeshObject.RebuildMatrixArray) instead of every frame in Render().
+            public Matrix4x4[] matrix4X4Array;
         }
     }
 }
