@@ -103,7 +103,7 @@ namespace IceSaw2.Manager
                 }
                 else if (obj is TrickyInstanceObject instance)
                 {
-                    Raylib.DrawBoundingBox(Picking.GetInstanceWorldBoundingBox(instance), HighlightColor);
+                    DrawInstanceWireframeHighlight(instance);
                 }
                 else if (obj is MeshBaseObject meshObj && meshObj.meshRef.Mesh.VertexCount > 0)
                 {
@@ -130,6 +130,92 @@ namespace IceSaw2.Manager
                     Raylib.DrawSphereWires(worldPos, IconHighlightRadius, 8, 8, HighlightColor);
                 }
             }
+        }
+
+        // Instances are drawn through a batched render cache shared by every instance of the same
+        // prefab (TrickyModelMeshObject.Render() -> DrawMeshInstanced), so there's no single per-
+        // instance draw call to recolor for just the selected one. Instead this walks the prefab's
+        // actual mesh triangles - transformed the same way the renderer places them - and outlines
+        // every edge directly, so the highlight traces the real model silhouette instead of a box.
+        private static void DrawInstanceWireframeHighlight(TrickyInstanceObject instance)
+        {
+            var prefab = instance.TrickyPrefab;
+            bool drewAny = false;
+
+            if (prefab != null)
+            {
+                Rlgl.Begin(DrawMode.Lines);
+                Rlgl.Color3f(HighlightColor.R / 255f, HighlightColor.G / 255f, HighlightColor.B / 255f);
+
+                for (int i = 0; i < prefab.trickyModelMeshObjects.Count; i++)
+                {
+                    var meshObj = prefab.trickyModelMeshObjects[i];
+                    Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
+
+                    for (int m = 0; m < meshObj.meshes.Count; m++)
+                    {
+                        Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
+                        if (mesh.VertexCount == 0) continue;
+
+                        drewAny |= DrawMeshWireframeEdges(mesh, combined);
+                    }
+                }
+
+                Rlgl.End();
+            }
+
+            if (!drewAny)
+            {
+                // No mesh data resolved - fall back to the bounding box so it's still visibly selected.
+                Raylib.DrawBoundingBox(Picking.GetInstanceWorldBoundingBox(instance), HighlightColor);
+            }
+        }
+
+        private static bool DrawMeshWireframeEdges(Mesh mesh, Matrix4x4 transform)
+        {
+            var verts = mesh.VerticesAs<Vector3>();
+            if (verts.Length == 0) return false;
+
+            var indices = mesh.IndicesAs<ushort>();
+            bool drew = false;
+
+            if (indices.Length >= 3)
+            {
+                for (int t = 0; t + 2 < indices.Length; t += 3)
+                {
+                    DrawTriangleEdges(
+                        Raymath.Vector3Transform(verts[indices[t]], transform),
+                        Raymath.Vector3Transform(verts[indices[t + 1]], transform),
+                        Raymath.Vector3Transform(verts[indices[t + 2]], transform));
+                    drew = true;
+                }
+            }
+            else
+            {
+                // Non-indexed mesh: vertices are already laid out in groups of 3 per triangle.
+                for (int t = 0; t + 2 < verts.Length; t += 3)
+                {
+                    DrawTriangleEdges(
+                        Raymath.Vector3Transform(verts[t], transform),
+                        Raymath.Vector3Transform(verts[t + 1], transform),
+                        Raymath.Vector3Transform(verts[t + 2], transform));
+                    drew = true;
+                }
+            }
+
+            return drew;
+        }
+
+        private static void DrawTriangleEdges(Vector3 a, Vector3 b, Vector3 c)
+        {
+            Rlgl.Vertex3f(a.X, a.Y, a.Z);
+            Rlgl.Vertex3f(b.X, b.Y, b.Z);
+
+            Rlgl.Vertex3f(b.X, b.Y, b.Z);
+            Rlgl.Vertex3f(c.X, c.Y, c.Z);
+
+            Rlgl.Vertex3f(c.X, c.Y, c.Z);
+            Rlgl.Vertex3f(a.X, a.Y, a.Z);
         }
     }
 }
