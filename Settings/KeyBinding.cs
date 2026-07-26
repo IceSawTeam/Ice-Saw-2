@@ -123,8 +123,16 @@ namespace IceSaw2.Settings
                     {
                         DataClass? loadedData = JsonConvert.DeserializeObject<DataClass>(fileText);
                         Debug.Assert(loadedData != null, "DeserializeObject is null");
-                        Data = loadedData;
-                        return;
+                        if (loadedData != null)
+                        {
+                            Data = loadedData;
+                            // A save on disk from before a new action existed (same version, missing
+                            // entry) would otherwise silently drop that action - GetInputActionByName
+                            // falls back to an empty "Invalid" action and it never fires. Backfill any
+                            // actions the code defines that the disk copy doesn't have yet.
+                            MergeMissingDefaultActions();
+                            return;
+                        }
                     }
                 }
             }
@@ -133,6 +141,36 @@ namespace IceSaw2.Settings
             Console.WriteLine("Disk Keybindings were incompatible. Overritten with newer version.");
             Instance.Save();
             return;
+        }
+
+        private void MergeMissingDefaultActions()
+        {
+            DataClass defaults = new DataClass();
+            bool addedAny = false;
+
+            foreach (InputAction defaultAction in defaults.InputMap)
+            {
+                bool exists = false;
+                foreach (InputAction existingAction in Data.InputMap)
+                {
+                    if (existingAction.Name == defaultAction.Name)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (!exists)
+                {
+                    Data.InputMap.Add(defaultAction);
+                    addedAny = true;
+                }
+            }
+
+            if (addedAny)
+            {
+                Save();
+            }
         }
 
 

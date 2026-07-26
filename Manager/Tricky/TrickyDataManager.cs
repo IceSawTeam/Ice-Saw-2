@@ -61,6 +61,11 @@ namespace IceSaw2.Manager.Tricky
         {
             UnloadProject();
 
+            // Selection holds direct object references - without this, reloading/switching
+            // projects would leave stale references to disposed objects from the old level
+            // sitting selected (and potentially still "highlighted" or shown in the Inspector).
+            IceSaw2.Manager.SelectionManager.Clear();
+
             LoadPath = Path.GetDirectoryName(ConfigPath);
 
             LoadTextureMesh();

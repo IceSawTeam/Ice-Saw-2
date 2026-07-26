@@ -12,7 +12,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 {
     public class TrickyPatchObject : BaseObject
     {
-        private int TesPatchID;
+        public int TesPatchID { get; private set; }
         //private bool _holdUpdate;
 
         private Vector4 _lightmapPoint;

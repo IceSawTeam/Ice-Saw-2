@@ -20,14 +20,18 @@ void main() {
 
     vec4 lightmapColor = texture(lightmap, fragTexCoord2);
 
-    const vec4 HIGHLIGHT_TINT = vec4(1, 1, 1, 1);
+    // Matches SelectionManager.HighlightColor (255, 170, 0) so patches look consistent with
+    // every other highlighted object type in the editor.
+    const vec3 HIGHLIGHT_TINT = vec3(1.0, 0.667, 0.0);
+    const float HIGHLIGHT_STRENGTH = 0.55;
+
     vec4 texelColor = textureColor;
      if (lightmapsEnabled == 1) {
          texelColor = (textureColor - lightmapColor) * lightmapColor.w;
          texelColor.w = 1;
     }
     if (highlighted[instanceId] == 1){
-        texelColor *= HIGHLIGHT_TINT;
+        texelColor.rgb = mix(texelColor.rgb, HIGHLIGHT_TINT, HIGHLIGHT_STRENGTH);
     }
     finalColor = texelColor;
 }

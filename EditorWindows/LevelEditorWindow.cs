@@ -1,4 +1,5 @@
 ﻿using IceSaw2.LevelObject;
+using IceSaw2.Manager;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.Renderer;
 using ImGuiNET;
@@ -35,6 +36,12 @@ namespace IceSaw2.EditorWindows
         public bool backFaceCulling = false;
 
         public List<BaseObject> RenderItems = new List<BaseObject>();
+
+        // Selection (click + box select in the viewport)
+        private const float BoxSelectDragThresholdPx = 4f;
+        private bool isBoxSelecting = false;
+        private Vector2 boxSelectStartScreen;
+        private Vector2 boxSelectCurrentScreen;
 
         public void Initilize()
         {
@@ -95,6 +102,8 @@ namespace IceSaw2.EditorWindows
                 RenderList[i].Render();
             }
 
+            SelectionManager.RenderHighlights();
+
             Raylib.EndMode3D();
         }
 
@@ -130,7 +139,7 @@ namespace IceSaw2.EditorWindows
 
             for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
             {
-                TrickyDataManager.LevelNodeTree[i].HierarchyRender();
+                TrickyDataManager.LevelNodeTree[i].HierarchyRender(true);
             }
 
             ImGui.End();
@@ -143,6 +152,21 @@ namespace IceSaw2.EditorWindows
             //ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
             ImGui.Begin("Inspector Panel", flags);
             ImGui.Text("Inspector");
+            ImGui.Separator();
+
+            if (SelectionManager.Selected.Count == 0)
+            {
+                ImGui.TextDisabled("Nothing selected");
+            }
+            else if (SelectionManager.Selected.Count == 1)
+            {
+                ImGui.Text(SelectionManager.Selected[0].Name);
+            }
+            else
+            {
+                ImGui.Text(SelectionManager.Selected.Count + " objects selected");
+            }
+
             ImGui.End();
             //ImGui.PopStyleVar(2);
 
@@ -265,6 +289,15 @@ namespace IceSaw2.EditorWindows
             //ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
             ImGui.EndChild();
 
+            // Box-select rectangle overlay
+            if (isBoxSelecting && Vector2.Distance(boxSelectStartScreen, boxSelectCurrentScreen) >= BoxSelectDragThresholdPx)
+            {
+                uint fillCol = ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.67f, 0f, 0.15f));
+                uint borderCol = ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.67f, 0f, 0.9f));
+                drawList.AddRectFilled(boxSelectStartScreen, boxSelectCurrentScreen, fillCol);
+                drawList.AddRect(boxSelectStartScreen, boxSelectCurrentScreen, borderCol);
+            }
+
             ImGui.End();
             ImGui.PopStyleColor(2);
             ImGui.PopStyleVar(2);
@@ -274,8 +307,13 @@ namespace IceSaw2.EditorWindows
         {
             RenderItems = new List<BaseObject>();
 
-            //RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            // Patches and instances don't render through this list - patches go through the shared
+            // TessellatedPatch batch and instances through TrickyModelMeshObject's render cache, both
+            // driven directly in RenderUpdate() - but both have a no-op BaseObject.Render(), so adding
+            // them here is safe and makes them reachable for viewport picking (see Picking.cs).
             //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);
             RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
             RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
             RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);
@@ -288,6 +326,8 @@ namespace IceSaw2.EditorWindows
 
         public override void LogicUpdate()
         {
+            HandleSelectionInput();
+
             //Update Camera
             //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
             // Viewport Camera
@@ -334,6 +374,65 @@ namespace IceSaw2.EditorWindows
             if (Input.IsActionReleased("CameraActivate"))
             {
                 Raylib.ShowCursor();
+            }
+        }
+
+        private void HandleSelectionInput()
+        {
+            // Right-click flycam owns mouse input while active (left click doubles as its speed boost).
+            if (Input.IsActionDown("CameraActivate"))
+            {
+                isBoxSelecting = false;
+                return;
+            }
+
+            Vector2 mouseScreen = Raylib.GetMousePosition();
+            bool overViewport = winSize.X > 0 && winSize.Y > 0
+                && mouseScreen.X >= winPos.X && mouseScreen.X <= winPos.X + winSize.X
+                && mouseScreen.Y >= winPos.Y && mouseScreen.Y <= winPos.Y + winSize.Y;
+
+            // Note: ImGui's WantCaptureMouse is true just from hovering the (transparent) Viewport
+            // window itself, not only when hovering an actual widget - it can't be used to guard
+            // this. IsAnyItemHovered() only fires for real widgets (the VPS/CMS menu buttons etc.),
+            // so it correctly leaves empty viewport space free for picking.
+            if (Input.IsActionPressed("Click") && overViewport && !ImGui.IsAnyItemHovered())
+            {
+                isBoxSelecting = true;
+                boxSelectStartScreen = mouseScreen;
+                boxSelectCurrentScreen = mouseScreen;
+            }
+
+            if (!isBoxSelecting) return;
+
+            boxSelectCurrentScreen = mouseScreen;
+
+            if (Input.IsActionReleased("Click"))
+            {
+                isBoxSelecting = false;
+
+                bool ctrl = Raylib.IsKeyDown(KeyboardKey.LeftControl) || Raylib.IsKeyDown(KeyboardKey.RightControl);
+                bool shift = Raylib.IsKeyDown(KeyboardKey.LeftShift) || Raylib.IsKeyDown(KeyboardKey.RightShift);
+
+                if (Vector2.Distance(boxSelectStartScreen, mouseScreen) < BoxSelectDragThresholdPx)
+                {
+                    // Simple click
+                    BaseObject? hit = Picking.Pick(mouseScreen, winPos, winSize, viewCamera3D, RenderItems);
+
+                    if (hit != null)
+                    {
+                        SelectionManager.Click(hit, ctrl, shift);
+                    }
+                    else if (!ctrl && !shift)
+                    {
+                        SelectionManager.Clear();
+                    }
+                }
+                else
+                {
+                    // Box select
+                    var hits = Picking.PickBox(boxSelectStartScreen, mouseScreen, winPos, winSize, viewCamera3D, RenderItems);
+                    SelectionManager.Box(hits, ctrl || shift);
+                }
             }
         }
 

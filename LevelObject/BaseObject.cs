@@ -1,4 +1,5 @@
-﻿using IceSaw2.RayWarp;
+﻿using IceSaw2.Manager;
+using IceSaw2.RayWarp;
 using ImGuiNET;
 using Raylib_cs;
 using System.Numerics;
@@ -208,7 +209,13 @@ namespace IceSaw2.LevelObject
             }
         }
 
-        public int HierarchyRender()
+        // driveGlobalSelection wires clicks into the level editor's SelectionManager (so the
+        // outliner and viewport selection stay in sync). It defaults to false and must be passed
+        // explicitly by the level editor's outliner, so the Logic/Models editors - which call this
+        // same method for their own trees and keep their own separate selection state - aren't
+        // affected by it. The clicked ID is still always returned, since ModelsEditorWindow relies
+        // on that to drive its own ActiveMaterialIndex selection.
+        public int HierarchyRender(bool driveGlobalSelection = false)
         {
             var _id = -1;
             if (VisibleHierarchy)
@@ -218,12 +225,19 @@ namespace IceSaw2.LevelObject
                 if (Children.Count == 0)
                     flags |= ImGuiTreeNodeFlags.Leaf;
 
+                if (driveGlobalSelection && SelectionManager.IsSelected(this))
+                    flags |= ImGuiTreeNodeFlags.Selected;
+
                 bool nodeOpen = ImGui.TreeNodeEx(Name + "###" + ID, flags);
 
-                // Handle selection or context menu if needed
+                // Plain click replaces the selection, Ctrl toggles this object, Shift adds it.
                 if (ImGui.IsItemClicked())
                 {
-                    Console.WriteLine($"Selected: " + Name + "###" + ID);
+                    if (driveGlobalSelection)
+                    {
+                        var io = ImGui.GetIO();
+                        SelectionManager.Click(this, io.KeyCtrl, io.KeyShift);
+                    }
                     _id = ID;
                 }
 
@@ -231,7 +245,7 @@ namespace IceSaw2.LevelObject
                 {
                     for (global::System.Int32 i = 0; i < Children.Count; i++)
                     {
-                        Children[i].HierarchyRender();
+                        Children[i].HierarchyRender(driveGlobalSelection);
                     }
                     ImGui.TreePop();
                 }
