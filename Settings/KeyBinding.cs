@@ -80,6 +80,18 @@ namespace IceSaw2.Settings
                 logicSwitch.AddInputEvent(KeyboardKey.N);
                 InputMap.Add(logicSwitch);
 
+                // Gizmo (only read while the fly-cam isn't active - see LevelEditorWindow.HandleGizmoModeSwitch,
+                // so these don't collide with the WASDQE camera bindings above while flying)
+                InputAction gizmoTranslate = new("GizmoTranslate");
+                gizmoTranslate.AddInputEvent(KeyboardKey.W);
+                InputMap.Add(gizmoTranslate);
+                InputAction gizmoRotate = new("GizmoRotate");
+                gizmoRotate.AddInputEvent(KeyboardKey.E);
+                InputMap.Add(gizmoRotate);
+                InputAction gizmoScale = new("GizmoScale");
+                gizmoScale.AddInputEvent(KeyboardKey.R);
+                InputMap.Add(gizmoScale);
+
                 // Other
                 InputAction click = new("Click");
                 click.AddInputEvent(MouseButton.Left);

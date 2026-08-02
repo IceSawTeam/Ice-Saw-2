@@ -311,6 +311,14 @@ namespace IceSaw2.LevelObject
             }
         }
 
+        // Called after Position/Rotation/Scale change on an already-placed instance (e.g. by the
+        // viewport gizmo) so the batched render cache's snapshot of this instance's transform
+        // doesn't go stale - see TrickyModelMeshObject.UpdateRenderCacheTransform.
+        public void RefreshRenderCache()
+        {
+            TrickyPrefab?.UpdateRenderCacheTransform(this);
+        }
+
         public List<ObjExporter.MassModelData> GenerateModel()
         {
             if (TrickyPrefab != null)

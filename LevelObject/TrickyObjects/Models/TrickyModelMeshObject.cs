@@ -186,6 +186,22 @@ namespace IceSaw2.LevelObject.TrickyObjects
             renderCaches[i] = cache;
         }
 
+        // AddToRenderCache snapshots instance.worldMatrix4x4 into matrix4X4s once, at add-time - it
+        // isn't a live reference, so anything that moves/rotates/scales an already-placed instance
+        // (e.g. the gizmo) needs to explicitly resync that snapshot or the render cache silently goes
+        // stale and the drawn mesh stops matching the instance's actual transform.
+        public void UpdateRenderCacheTransform(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < renderCaches.Count; i++)
+            {
+                int idx = renderCaches[i].trickyInstanceObjects.IndexOf(trickyInstanceObject);
+                if (idx < 0) continue;
+
+                renderCaches[i].matrix4X4s[idx] = trickyInstanceObject.worldMatrix4x4 * localMatrix4X4;
+                RebuildMatrixArray(i);
+            }
+        }
+
         [Serializable]
         public struct ObjectAnimation
         {

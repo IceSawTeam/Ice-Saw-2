@@ -103,6 +103,7 @@ namespace IceSaw2.EditorWindows
             }
 
             SelectionManager.RenderHighlights();
+            Gizmo.Render(viewCamera3D, winSize);
 
             Raylib.EndMode3D();
         }
@@ -238,6 +239,25 @@ namespace IceSaw2.EditorWindows
                     ImGui.Checkbox("Backface Culling", ref backFaceCulling);
                     ImGui.Checkbox("Light Colors", ref showLightColors);
 
+                    ImGui.Separator();
+                    ImGui.Text("Gizmo");
+
+                    ImGui.PushItemFlag(ImGuiItemFlags.AutoClosePopups, false);
+
+                    if (ImGui.MenuItem("Move", "W", Gizmo.CurrentMode == Gizmo.Mode.Translate))
+                    {
+                        Gizmo.CurrentMode = Gizmo.Mode.Translate;
+                    }
+                    if (ImGui.MenuItem("Rotate", "E", Gizmo.CurrentMode == Gizmo.Mode.Rotate))
+                    {
+                        Gizmo.CurrentMode = Gizmo.Mode.Rotate;
+                    }
+                    if (ImGui.MenuItem("Scale", "R", Gizmo.CurrentMode == Gizmo.Mode.Scale))
+                    {
+                        Gizmo.CurrentMode = Gizmo.Mode.Scale;
+                    }
+
+                    ImGui.PopItemFlag();
 
                     ImGui.EndMenu();
                 }
@@ -326,6 +346,7 @@ namespace IceSaw2.EditorWindows
 
         public override void LogicUpdate()
         {
+            HandleGizmoModeSwitch();
             HandleSelectionInput();
 
             //Update Camera
@@ -377,6 +398,18 @@ namespace IceSaw2.EditorWindows
             }
         }
 
+        // W/E/R switch the gizmo's mode (Move/Rotate/Scale). Free to use here since they're only
+        // read as camera movement while the fly-cam is active (right-click held), guarded below.
+        private void HandleGizmoModeSwitch()
+        {
+            if (Input.IsActionDown("CameraActivate")) return;
+            if (ImGui.GetIO().WantCaptureKeyboard) return;
+
+            if (Input.IsActionPressed("GizmoTranslate")) Gizmo.CurrentMode = Gizmo.Mode.Translate;
+            else if (Input.IsActionPressed("GizmoRotate")) Gizmo.CurrentMode = Gizmo.Mode.Rotate;
+            else if (Input.IsActionPressed("GizmoScale")) Gizmo.CurrentMode = Gizmo.Mode.Scale;
+        }
+
         private void HandleSelectionInput()
         {
             // Right-click flycam owns mouse input while active (left click doubles as its speed boost).
@@ -390,6 +423,15 @@ namespace IceSaw2.EditorWindows
             bool overViewport = winSize.X > 0 && winSize.Y > 0
                 && mouseScreen.X >= winPos.X && mouseScreen.X <= winPos.X + winSize.X
                 && mouseScreen.Y >= winPos.Y && mouseScreen.Y <= winPos.Y + winSize.Y;
+
+            // The gizmo gets first crack at the click so grabbing a handle doesn't also kick off a
+            // box-select or deselect. Always called (not gated on overViewport) so a drag started
+            // inside the viewport can still be tracked/released if the mouse drifts outside it.
+            if (Gizmo.HandleInput(mouseScreen, winPos, winSize, viewCamera3D, !ImGui.IsAnyItemHovered()))
+            {
+                isBoxSelecting = false;
+                return;
+            }
 
             // Note: ImGui's WantCaptureMouse is true just from hovering the (transparent) Viewport
             // window itself, not only when hovering an actual widget - it can't be used to guard

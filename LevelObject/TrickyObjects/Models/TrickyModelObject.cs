@@ -57,6 +57,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
         }
 
+        public void UpdateRenderCacheTransform(TrickyInstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < trickyModelMeshObjects.Count; i++)
+            {
+                trickyModelMeshObjects[i].UpdateRenderCacheTransform(trickyInstanceObject);
+            }
+        }
+
         public void RemoveFromRenderCache(TrickyInstanceObject trickyInstanceObject)
         {
             for (int i = 0; i < trickyModelMeshObjects.Count; i++)
