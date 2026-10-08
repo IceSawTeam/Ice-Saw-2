@@ -5,6 +5,7 @@ using ImGuiNET;
 using Raylib_cs;
 using SSXLibrary;
 using System.Diagnostics;
+using NativeFileDialogSharp;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -17,9 +18,6 @@ namespace IceSaw2.Manager.Tricky
         public LogicEditorWindow logicEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
-
-        static IMGuiFilePicker filePicker = new();
-        static IMGuiFolderPicker folderPicker = new();
 
         //Icon List
         public List<Texture2D> LightIcons = new List<Texture2D>();
@@ -36,9 +34,6 @@ namespace IceSaw2.Manager.Tricky
         public TrickyWorldManager()
         {
             instance = this;
-
-            filePicker = new IMGuiFilePicker(Settings.General.Instance.data.LastLoad);
-            folderPicker = new IMGuiFolderPicker(Settings.General.Instance.data.LastLoad);
 
             levelEditorWindow.Initilize();
             prefabEditorWindow.Initilize();
@@ -76,8 +71,6 @@ namespace IceSaw2.Manager.Tricky
         {
             Raylib.DrawRectangle(Raylib.GetScreenWidth() / 2 - 8, Raylib.GetScreenHeight() - 32, 95, 26, Raylib.GetColor(0x000000FF));
             Raylib.DrawFPS(Raylib.GetScreenWidth() / 2, Raylib.GetScreenHeight() - 30);
-            filePicker.Render();
-            folderPicker.Render();
             ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
             if (ImGui.BeginMainMenuBar())
@@ -86,50 +79,51 @@ namespace IceSaw2.Manager.Tricky
                 {
                     if (ImGui.MenuItem("Open..."))
                     {
-                        filePicker.Show("Select .SSX File", "ssx", (selectedPath) =>
+                        var result = Dialog.FileOpen("SSX", Settings.General.Instance.data.LastLoad);
+                        if (result.IsOk)
                         {
-                            TrickyDataManager.LoadProject(selectedPath);
-                            Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                            TrickyDataManager.LoadProject(result.Path);
+                            Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
                             Settings.General.Instance.Save();
                             Settings.KeyBinding.Instance.Save();
                             levelEditorWindow.GenerateRenderList();
-                            // Do something with selectedPath
-                        });
-                        // Handle file open
-                        //filePicker.Open();
+                        }
                     }
 
                     if (ImGui.MenuItem("Save"))
                     {
-                        filePicker.Show("Select .SSX File", "ssx", (selectedPath) =>
+                        var result = Dialog.FileSave("SSX", Settings.General.Instance.data.LastLoad);
+                        if (result.IsOk)
                         {
-                            TrickyDataManager.SaveProject(selectedPath);
-                            // Do something with selectedPath
-                        });
+                            TrickyDataManager.SaveProject(result.Path);
+                        }
                     }
 
                     if (ImGui.MenuItem("Extract"))
                     {
-                        string LoadPath = "";
-                        string ExtractPath = "";
                         // Handle save
-                        filePicker.Show("Load .MAP file", "map", (LoadPath) =>
+                        var result = Dialog.FileOpen("map", Settings.General.Instance.data.LastLoad);
+                        if (result.IsOk)
                         {
-                            folderPicker.Show("Select Extract Folder", (ExtractPath) =>
+                            var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
+                            if (FolderSelect.IsOk)
                             {
                                 TrickyLevelInterface trickyLevelInterface = new TrickyLevelInterface();
 
-                                trickyLevelInterface.ExtractTrickyLevelFiles(LoadPath.Replace(".map", ""), ExtractPath);
-                            });
-                        });
+                                trickyLevelInterface.ExtractTrickyLevelFiles(result.Path.Replace(".map", ""), FolderSelect.Path);
+                                Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
+                                Settings.General.Instance.Save();
+                            }
+                        }
                     }
 
                     if (ImGui.MenuItem("Export OBJ"))
                     {
-                        folderPicker.Show("Select Extract Folder", (ExtractPath) =>
+                        var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
+                        if (FolderSelect.IsOk)
                         {
-                            OBJLevelExtract.ExtractOBJ(ExtractPath);
-                        });
+                            OBJLevelExtract.ExtractOBJ(FolderSelect.Path);
+                        }
                     }
 
                     //if (ImGui.MenuItem("Rebuild"))

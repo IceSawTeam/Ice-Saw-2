@@ -68,6 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NativeFileDialogSharp" Version="0.6.0-alpha" />
     <PackageReference Include="Raylib-cs" Version="8.1.0" />
     <PackageReference Include="rlImgui-cs" Version="3.2.0" />
   </ItemGroup>
