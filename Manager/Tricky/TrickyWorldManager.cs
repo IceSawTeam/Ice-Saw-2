@@ -158,7 +158,7 @@ namespace IceSaw2.Manager.Tricky
                     {
                         showAboutWindow = !showAboutWindow;
                     }
-                    if (ImGui.MenuItem("Console"))
+                    if (ImGui.MenuItem("Console") && OperatingSystem.IsWindows())
                     {
                         Settings.General.Instance.data.ConsoleWindow = !Settings.General.Instance.data.ConsoleWindow;
 
