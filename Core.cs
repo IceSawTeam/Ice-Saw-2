@@ -56,7 +56,7 @@ namespace IceSaw2
             {
                 var io = ImGui.GetIO();
                 io.Fonts.Clear();
-                InterNewFont.LoadFont("Fonts.Inter_New.ttf", 14f);
+                InterNewFont.LoadFont("Fonts.Inter_New.ttf", 15f);
             };
             rlImGui.Setup(true);
 
