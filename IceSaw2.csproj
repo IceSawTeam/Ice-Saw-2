@@ -83,4 +83,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="LevelObject\SSX3Objects\" />
+    <Folder Include="LevelObject\OGObjects\" />
+    <Folder Include="Manager\SSX3\" />
+    <Folder Include="Manager\OG\" />
+  </ItemGroup>
+
 </Project>

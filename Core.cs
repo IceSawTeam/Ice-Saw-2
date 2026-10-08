@@ -25,8 +25,10 @@ namespace IceSaw2
         private Vector2 _lastViewportPos = Vector2.Zero;
         private Vector2 _lastViewportSize = Vector2.Zero;
 
+        GameSelection GameSelected = GameSelection.None;
+
         //--------------------- Manager/Module/System declarations here -------------------------
-        private static TrickyWorldManager? _worldManager = null;
+        private static TrickyWorldManager? _trickyWorldManager = null;
 
         public Core()
         {
@@ -64,7 +66,7 @@ namespace IceSaw2
             }
 
             //--------------------- Manager/Module/System initializations here -------------------------
-            _worldManager = new TrickyWorldManager();
+            //_trickyWorldManager = new TrickyWorldManager();
         }
 
         public void Exiting()
@@ -89,15 +91,15 @@ namespace IceSaw2
             // Set the isRunning variable to exit loop.
             // Can change State from here.
             // Communicate with other modules and managers.
-            if (_worldManager != null)
+            if (_trickyWorldManager != null && GameSelected == GameSelection.Tricky)
             {
-                switch (_worldManager.windowMode)
+                switch (_trickyWorldManager.windowMode)
                 {
-                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.LogicUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.LogicUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.World: _trickyWorldManager.levelEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _trickyWorldManager.prefabEditorWindow.LogicUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.LogicUpdate(); break;
                 }
-                _worldManager.UpdateLogic();
+                _trickyWorldManager.UpdateLogic();
             }
         }
 
@@ -111,21 +113,21 @@ namespace IceSaw2
             Vector2 winPos = Vector2.Zero;
             Vector2 winSize = Vector2.Zero;
 
-            if (_worldManager != null)
+            if (_trickyWorldManager != null && GameSelected == GameSelection.Tricky)
             {
-                switch (_worldManager.windowMode)
+                switch (_trickyWorldManager.windowMode)
                 {
                     case TrickyWorldManager.WindowMode.World:
-                        winPos = _worldManager.levelEditorWindow.winPos;
-                        winSize = _worldManager.levelEditorWindow.winSize;
+                        winPos = _trickyWorldManager.levelEditorWindow.winPos;
+                        winSize = _trickyWorldManager.levelEditorWindow.winSize;
                         break;
                     case TrickyWorldManager.WindowMode.Prefabs:
-                        winPos = _worldManager.prefabEditorWindow.winPos;
-                        winSize = _worldManager.prefabEditorWindow.winSize;
+                        winPos = _trickyWorldManager.prefabEditorWindow.winPos;
+                        winSize = _trickyWorldManager.prefabEditorWindow.winSize;
                         break;
                     case TrickyWorldManager.WindowMode.Logic:
-                        winPos = _worldManager.logicEditorWindow.winPos;
-                        winSize = _worldManager.logicEditorWindow.winSize;
+                        winPos = _trickyWorldManager.logicEditorWindow.winPos;
+                        winSize = _trickyWorldManager.logicEditorWindow.winSize;
                         break;
                 }
             }
@@ -143,13 +145,13 @@ namespace IceSaw2
             // Render viewport to texture
             Raylib.BeginTextureMode(_viewportTexture);
             Raylib.ClearBackground(new Color(120, 120, 120));
-            if (_worldManager != null)
+            if (_trickyWorldManager != null && GameSelected == GameSelection.Tricky)
             {
-                switch (_worldManager.windowMode)
+                switch (_trickyWorldManager.windowMode)
                 {
-                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUpdate(); break;
-                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.World: _trickyWorldManager.levelEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _trickyWorldManager.prefabEditorWindow.RenderUpdate(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.RenderUpdate(); break;
                 }
              }
             Raylib.EndTextureMode();
@@ -161,20 +163,55 @@ namespace IceSaw2
                     new Rectangle(_lastViewportPos.X, _lastViewportPos.Y, _lastViewportSize.X, _lastViewportSize.Y),
                     Vector2.Zero, 0, Color.White);
             rlImGui.Begin();
-            if (_worldManager != null)
+
+            if (GameSelected == GameSelection.None)
             {
-                switch (_worldManager.windowMode)
+                ImGui.Text("Available Actions:");
+                ImGui.Separator();
+
+                ImGui.BeginGroup();
+                if (ImGui.Selectable("SSX OG (WIP)"))
                 {
-                    case TrickyWorldManager.WindowMode.World: _worldManager.levelEditorWindow.RenderUI(); break;
-                    case TrickyWorldManager.WindowMode.Prefabs: _worldManager.prefabEditorWindow.RenderUI(); break;
-                    case TrickyWorldManager.WindowMode.Logic: _worldManager.logicEditorWindow.RenderUI(); break;
+                    // Handle Option 1 click
+
                 }
-                _worldManager.UpdateRender();
+                if (ImGui.Selectable("SSX Tricky"))
+                {
+                    // Handle Option 2 click
+                    _trickyWorldManager = new TrickyWorldManager();
+                    GameSelected = GameSelection.Tricky;
+                }
+
+                if (ImGui.Selectable("SSX 3 (WIP)"))
+                {
+                    // Handle Exit click
+                }
+                ImGui.EndGroup();
+            }
+
+
+            if (_trickyWorldManager != null && GameSelected == GameSelection.Tricky)
+            {
+                switch (_trickyWorldManager.windowMode)
+                {
+                    case TrickyWorldManager.WindowMode.World: _trickyWorldManager.levelEditorWindow.RenderUI(); break;
+                    case TrickyWorldManager.WindowMode.Prefabs: _trickyWorldManager.prefabEditorWindow.RenderUI(); break;
+                    case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.RenderUI(); break;
+                }
+                _trickyWorldManager.UpdateRender();
              }
             Raylib.DrawText("Beta Test", 12, Raylib.GetScreenWidth() - 20, 20, Color.Black);
             rlImGui.End();
 
             Raylib.EndDrawing();
+        }
+
+        enum GameSelection
+        {
+            None,
+            OG,
+            Tricky,
+            SSX3,
         }
     }
 }
