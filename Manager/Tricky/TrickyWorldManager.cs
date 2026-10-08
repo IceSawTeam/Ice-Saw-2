@@ -103,7 +103,7 @@ namespace IceSaw2.Manager.Tricky
                     {
                         filePicker.Show("Select .SSX File", "ssx", (selectedPath) =>
                         {
-                            TrickyDataManager.LoadProject(selectedPath);
+                            TrickyDataManager.SaveProject(selectedPath);
                             // Do something with selectedPath
                         });
                     }

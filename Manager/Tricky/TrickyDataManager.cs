@@ -5,6 +5,7 @@ using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using IceSaw2.RayWarp;
 using System.Runtime;
+using SSX_Library.FileHandlers.LevelFiles.Tricky;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -198,7 +199,7 @@ namespace IceSaw2.Manager.Tricky
             {
                 var NewPrefab = new TrickyModelObject();
 
-                NewPrefab.LoadPrefab(prefabJsonHandler.Models[i]);
+                NewPrefab.LoadModelJson(prefabJsonHandler.Models[i]);
 
                 trickyModelObjects.Add(NewPrefab);
             }
@@ -341,7 +342,7 @@ namespace IceSaw2.Manager.Tricky
             {
                 var NewPrefab = new TrickyModelObject();
 
-                NewPrefab.LoadPrefab(prefabSkyboxJsonHandler.Models[i], true);
+                NewPrefab.LoadModelJson(prefabSkyboxJsonHandler.Models[i], true);
 
                 trickySkyboxModelObjects.Add(NewPrefab);
             }
@@ -539,36 +540,167 @@ namespace IceSaw2.Manager.Tricky
             jsonHandler.CreateJson(Path.Combine(LoadPath, "Patches.json"));
 
             //Material
-
+            MaterialJsonHandler matJsonHandler = new MaterialJsonHandler();
+            matJsonHandler.Materials = new List<MaterialJsonHandler.MaterialsJson>();
+            for (int i = 0; i < trickyMaterialObject.Count; i++)
+            {
+                matJsonHandler.Materials.Add(trickyMaterialObject[i].GenerateMaterialJson());
+            }
+            matJsonHandler.CreateJson(Path.Combine(LoadPath, "Materials.json"));
 
             //Model
+            ModelJsonHandler modelJsonHandler = new ModelJsonHandler();
+            modelJsonHandler.Models = new List<ModelJsonHandler.ModelJson>();
+            for (int i = 0; i < trickyModelObjects.Count; i++)
+            {
+                modelJsonHandler.Models.Add(trickyModelObjects[i].GenerateModelJson());
+            }
+            modelJsonHandler.CreateJson(Path.Combine(LoadPath, "Models.json"));
 
             //Instance
+            InstanceJsonHandler instanceJsonHandler = new InstanceJsonHandler();
+            instanceJsonHandler.Instances = new List<InstanceJsonHandler.InstanceJson>();
+            for (int i = 0; i < trickyInstanceObjects.Count; i++)
+            {
+                instanceJsonHandler.Instances.Add(trickyInstanceObjects[i].GenerateInstance());
+            }
+            InstanceJsonHandler.Load(Path.Combine(LoadPath, "Instances.json"));
 
             //Spline
+            SplineJsonHandler splineJsonHandler = new SplineJsonHandler();
+            splineJsonHandler.Splines = new List<SplineJsonHandler.SplineJson>();
+            for (int i = 0; i < trickySplineObjects.Count; i++)
+            {
+                splineJsonHandler.Splines.Add(trickySplineObjects[i].GenerateSpline());
+            }
+            splineJsonHandler.CreateJson(Path.Combine(LoadPath, "Splines.json"));
 
             //Light
+            LightJsonHandler lightJsonHandler = new LightJsonHandler();
+            lightJsonHandler.Lights = new List<LightJsonHandler.LightJson>();
+            for (int i = 0; i < trickyLightObjects.Count; i++)
+            {
+                lightJsonHandler.Lights.Add(trickyLightObjects[i].GenerateLight());
+            }
+            lightJsonHandler.CreateJson(Path.Combine(LoadPath, "Lights.json"));
 
             //Camera
+            CameraJSONHandler cameraJSONHandler = new CameraJSONHandler();
+            cameraJSONHandler.Cameras = new List<CameraJSONHandler.CameraInstance>();
+            for (int i = 0; i < trickyCameraObjects.Count; i++)
+            {
+                cameraJSONHandler.Cameras.Add(trickyCameraObjects[i].GenerateCamera());
+            }
+            cameraJSONHandler.CreateJson(Path.Combine(LoadPath, "Cameras.json"));
 
             //Particle
+            ParticleModelJsonHandler particleModelJsonHandler = new ParticleModelJsonHandler();
+            particleModelJsonHandler.ParticlePrefabs = new List<ParticleModelJsonHandler.ParticleModelJson>();
+            for (int i = 0; i < trickyParticleModelObjects.Count; i++)
+            {
+                particleModelJsonHandler.ParticlePrefabs.Add(trickyParticleModelObjects[i].GenerateParticle());
+            }
+            particleModelJsonHandler.CreateJson(Path.Combine(LoadPath, "ParticleModels.json"));
+
 
             //Particle Instance
+            ParticleInstanceJsonHandler particleInstanceJsonHandler = new ParticleInstanceJsonHandler();
+            particleInstanceJsonHandler.Particles = new List<ParticleInstanceJsonHandler.ParticleJson>();
+            for (int i = 0; i < trickyPaticleInstanceObjects.Count; i++)
+            {
+                particleInstanceJsonHandler.Particles.Add(trickyPaticleInstanceObjects[i].GenerateParticleInstance());
+            }
+            particleInstanceJsonHandler.CreateJson(Path.Combine(LoadPath, "ParticleInstances.json"));
         }
 
         public static void SavePaths()
         {
+            AIPSOPJsonHandler aIPSOPJsonHandler = new AIPSOPJsonHandler();
+            aIPSOPJsonHandler.StartPosList = AIPStartPos;
+            aIPSOPJsonHandler.RaceLines = new List<AIPSOPJsonHandler.PathB>();
+            aIPSOPJsonHandler.AIPaths = new List<AIPSOPJsonHandler.PathA>();
 
+            for (int i = 0; i < trickyAIPAIPath.Count; i++)
+            {
+                aIPSOPJsonHandler.AIPaths.Add(trickyAIPAIPath[i].GeneratePathA());
+            }
+
+            for (int i = 0; i < trickyAIPRaceLine.Count; i++)
+            {
+                aIPSOPJsonHandler.RaceLines.Add(trickyAIPRaceLine[i].GeneratePathB());
+            }
+
+            aIPSOPJsonHandler.CreateJson(Path.Combine(LoadPath, "AIP.json"));
+
+            aIPSOPJsonHandler = new AIPSOPJsonHandler();
+            aIPSOPJsonHandler.StartPosList = SOPStartPos;
+            aIPSOPJsonHandler.RaceLines = new List<AIPSOPJsonHandler.PathB>();
+            aIPSOPJsonHandler.AIPaths = new List<AIPSOPJsonHandler.PathA>();
+
+            for (int i = 0; i < trickySOPAIPath.Count; i++)
+            {
+                aIPSOPJsonHandler.AIPaths.Add(trickySOPAIPath[i].GeneratePathA());
+            }
+
+            for (int i = 0; i < trickySOPRaceLine.Count; i++)
+            {
+                aIPSOPJsonHandler.RaceLines.Add(trickySOPRaceLine[i].GeneratePathB());
+            }
+
+            aIPSOPJsonHandler.CreateJson(Path.Combine(LoadPath, "SOP.json"));
         }
 
         public static void SaveEffects()
         {
+            //Effects
+            SSFJsonHandler sSFJsonHandler = new SSFJsonHandler();
+            sSFJsonHandler.EffectHeaders = new List<SSFJsonHandler.EffectHeaderStruct>();
+            sSFJsonHandler.Functions = new List<SSFJsonHandler.Function>();
+            sSFJsonHandler.EffectSlots = new List<SSFJsonHandler.EffectSlotJson>();
+            sSFJsonHandler.PhysicsHeaders = new List<SSFJsonHandler.PhysicsHeader>();
+            
+            for (int i = 0; i < trickyEffectHeaders.Count; i++)
+            {
+                sSFJsonHandler.EffectHeaders.Add(trickyEffectHeaders[i].GenerateEffectHeader());
+            }
 
+            for (int i = 0; i < trickyFunctionHeaders.Count; i++)
+            {
+                sSFJsonHandler.Functions.Add(trickyFunctionHeaders[i].GenerateFunction());
+            }
+
+            for (int i = 0; i < trickyEffectSlotObjects.Count; i++)
+            {
+                sSFJsonHandler.EffectSlots.Add(trickyEffectSlotObjects[i].SaveEffectSlot());
+            }
+
+            for (int i = 0; i < trickyPhysicsObjects.Count; i++)
+            {
+                sSFJsonHandler.PhysicsHeaders.Add(trickyPhysicsObjects[i].GeneratePhysics());
+            }
+
+            sSFJsonHandler.CreateJson(Path.Combine(LoadPath, "SSFLogic.json"));
         }
 
         public static void SaveSkybox()
         {
+            //Material
+            MaterialJsonHandler matJsonHandler = new MaterialJsonHandler();
+            matJsonHandler.Materials = new List<MaterialJsonHandler.MaterialsJson>();
+            for (int i = 0; i < trickySkyboxMaterialObject.Count; i++)
+            {
+                matJsonHandler.Materials.Add(trickySkyboxMaterialObject[i].GenerateMaterialJson());
+            }
+            matJsonHandler.CreateJson(Path.Combine(LoadPath, "Skybox", "Materials.json"));
 
+            //Model
+            ModelJsonHandler modelJsonHandler = new ModelJsonHandler();
+            modelJsonHandler.Models = new List<ModelJsonHandler.ModelJson>();
+            for (int i = 0; i < trickySkyboxModelObjects.Count; i++)
+            {
+                modelJsonHandler.Models.Add(trickySkyboxModelObjects[i].GenerateModelJson());
+            }
+            modelJsonHandler.CreateJson(Path.Combine(LoadPath, "Skybox", "Models.json"));
         }
 
         public static void UnloadProject()

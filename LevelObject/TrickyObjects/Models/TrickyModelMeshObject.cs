@@ -1,3 +1,5 @@
+using CommunityToolkit.HighPerformance.Helpers;
+using IceSaw2.Batch;
 using IceSaw2.EditorWindows;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.RayWarp;
@@ -92,6 +94,75 @@ namespace IceSaw2.LevelObject.TrickyObjects
             }
 
             GenerateRenderCacheNew();
+        }
+
+        public ModelJsonHandler.ObjectHeader GenerateModelMeshJson()
+        {
+            ModelJsonHandler.ObjectHeader objectHeader = new ModelJsonHandler.ObjectHeader();
+
+            objectHeader.ObjectName = Name;
+
+            objectHeader.ParentID = ParentID;
+            objectHeader.Flags = Flags;
+
+            objectHeader.IncludeAnimation = IncludeAnimation;
+            objectHeader.IncludeMatrix = IncludeMatrix;
+
+            objectHeader.Animation = new ModelJsonHandler.ObjectAnimation();
+            if(objectHeader.IncludeAnimation)
+            {
+                var NewAnimation = new ModelJsonHandler.ObjectAnimation();
+
+                NewAnimation.U1 = Animation.U1;
+                NewAnimation.U2 = Animation.U2;
+                NewAnimation.U3 = Animation.U3;
+                NewAnimation.U4 = Animation.U4;
+                NewAnimation.U5 = Animation.U5;
+                NewAnimation.U6 = Animation.U6;
+                NewAnimation.AnimationAction = Animation.AnimationAction;
+                NewAnimation.AnimationEntries = new List<ModelJsonHandler.AnimationEntry>();
+                for (int i = 0; i < Animation.AnimationEntries.Count; i++)
+                {
+                    var NewAnimationEntry = new ModelJsonHandler.AnimationEntry();
+                    NewAnimationEntry.AnimationMaths = new List<ModelJsonHandler.AnimationMath>();
+                    for (int j = 0; j < Animation.AnimationEntries[i].AnimationMaths.Count; j++)
+                    {
+                        var NewMaths = new ModelJsonHandler.AnimationMath();
+
+                        NewMaths.Value1 = Animation.AnimationEntries[i].AnimationMaths[j].Value1;
+                        NewMaths.Value2 = Animation.AnimationEntries[i].AnimationMaths[j].Value2;
+                        NewMaths.Value3 = Animation.AnimationEntries[i].AnimationMaths[j].Value3;
+                        NewMaths.Value4 = Animation.AnimationEntries[i].AnimationMaths[j].Value4;
+                        NewMaths.Value5 = Animation.AnimationEntries[i].AnimationMaths[j].Value5;
+                        NewMaths.Value6 = Animation.AnimationEntries[i].AnimationMaths[j].Value6;
+
+                        NewAnimationEntry.AnimationMaths.Add(NewMaths);
+                    }
+                    NewAnimation.AnimationEntries.Add(NewAnimationEntry);
+                }
+
+                objectHeader.Animation = NewAnimation;
+            }
+
+            if(objectHeader.IncludeMatrix)
+            {
+                objectHeader.Position = JsonUtil.Vector3ToArray(Position);
+                objectHeader.Scale = JsonUtil.Vector3ToArray(Scale);
+                objectHeader.Rotation = JsonUtil.QuaternionToArray(Rotation);
+            }
+
+            objectHeader.MeshData = new List<ModelJsonHandler.MeshHeader>();
+            for (int i = 0; i < meshes.Count; i++)
+            {
+                ModelJsonHandler.MeshHeader meshHeader = new ModelJsonHandler.MeshHeader();
+
+                meshHeader.MeshPath = meshes[i].MeshPath;
+                meshHeader.MaterialID = meshes[i].MaterialIndex;
+
+                objectHeader.MeshData.Add(meshHeader);
+            }
+
+            return objectHeader;
         }
 
         public override void Render()

@@ -19,7 +19,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public List<TrickyModelMeshObject> trickyModelMeshObjects = new List<TrickyModelMeshObject>();
 
-        public void LoadPrefab(ModelJsonHandler.ModelJson prefabJson, bool skybox = false)
+        public void LoadModelJson(ModelJsonHandler.ModelJson prefabJson, bool skybox = false)
         {
             Skybox = skybox;
 
@@ -39,6 +39,23 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
                 trickyModelMeshObjects.Add(TrickyPrefabMeshObject);
             }
+        }
+
+        public ModelJsonHandler.ModelJson GenerateModelJson()
+        {
+            ModelJsonHandler.ModelJson TempJson = new ModelJsonHandler.ModelJson();
+
+            TempJson.ModelName = Name;
+            TempJson.Unknown3 = Unknown3;
+            TempJson.AnimTime = AnimTime;
+
+            TempJson.ModelObjects = new List<ModelJsonHandler.ObjectHeader>();
+            for (int i = 0; i < trickyModelMeshObjects.Count; i++)
+            {
+                TempJson.ModelObjects.Add(trickyModelMeshObjects[i].GenerateModelMeshJson());
+            }
+
+            return TempJson;
         }
 
         public override void Render()
