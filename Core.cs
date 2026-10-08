@@ -47,7 +47,7 @@ namespace IceSaw2
                                  (int)Settings.General.Instance.data.windowPositionY);
             Raylib.SetWindowSize((int)Settings.General.Instance.data.windowWidth,
                                  (int)Settings.General.Instance.data.windowHeight);
-            Raylib.SetWindowMinSize(1280, 720);
+            Raylib.SetWindowMinSize(640, 360);
             Raylib.SetWindowState(windowFlags);
 
             FontLoader InterNewFont = new();
