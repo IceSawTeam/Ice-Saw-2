@@ -79,7 +79,7 @@ namespace IceSaw2.Manager.Tricky
                 {
                     if (ImGui.MenuItem("Open..."))
                     {
-                        var result = Dialog.FileOpen("SSX", Settings.General.Instance.data.LastLoad);
+                        var result = Dialog.FileOpen("ssx", Settings.General.Instance.data.LastLoad);
                         if (result.IsOk)
                         {
                             TrickyDataManager.LoadProject(result.Path);
@@ -92,7 +92,7 @@ namespace IceSaw2.Manager.Tricky
 
                     if (ImGui.MenuItem("Save"))
                     {
-                        var result = Dialog.FileSave("SSX", Settings.General.Instance.data.LastLoad);
+                        var result = Dialog.FileSave("ssx", Settings.General.Instance.data.LastLoad);
                         if (result.IsOk)
                         {
                             TrickyDataManager.SaveProject(result.Path);
