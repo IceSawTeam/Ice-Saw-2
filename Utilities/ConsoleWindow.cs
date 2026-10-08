@@ -8,28 +8,30 @@ namespace IceSaw2.Utilities
 
         public static void GenerateConsole()
         {
-            #if WINDOWS
-            if (!Initialised)
+            if (OperatingSystem.IsWindows())
             {
-                if (!AttachConsole(-1))
-                    AllocConsole();
+                if (!Initialised)
+                {
+                    if (!AttachConsole(-1))
+                        AllocConsole();
 
-                Initialised = true;
+                    Initialised = true;
+                }
+                else
+                {
+                    var handle = GetConsoleWindow();
+                    ShowWindow(handle, SW_SHOW);
+                }
             }
-            else
-            {
-                var handle = GetConsoleWindow();
-                ShowWindow(handle, SW_SHOW);
-            }
-            #endif
         }
 
         public static void CloseConsole()
         {
-            #if WINDOWS
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_HIDE);
-            #endif
+            if (OperatingSystem.IsWindows())
+            {
+                var handle = GetConsoleWindow();
+                ShowWindow(handle, SW_HIDE);
+            }
         }
 
         #if WINDOWS
