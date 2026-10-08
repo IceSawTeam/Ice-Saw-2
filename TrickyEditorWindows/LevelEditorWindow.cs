@@ -18,6 +18,7 @@ namespace IceSaw2.EditorWindows
         private float mouseSensitivity = 0.003f;
         private float moveSpeed = 0.1f;
         private const float moveSpeedStep = 0.008f;
+        private float moveSpeedChangedTimer = 0.0f;
         private int screenWidth { get { return Raylib.GetScreenWidth(); } }
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }
         public Vector2 winPos;
@@ -307,6 +308,15 @@ namespace IceSaw2.EditorWindows
             ImGui.BeginChild("viewport_content", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), ImGuiChildFlags.None,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             //ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
+
+
+            if (moveSpeedChangedTimer > 0f)
+            {
+                ImGui.Text($"Move Speed: {moveSpeed}");
+                moveSpeedChangedTimer -= Raylib.GetFrameTime();
+            }
+
+
             ImGui.EndChild();
 
             // Box-select rectangle overlay
@@ -389,7 +399,10 @@ namespace IceSaw2.EditorWindows
                     moveSpeed += wheel * moveSpeedStep;
                     moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
                     //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
+                    moveSpeedChangedTimer = 4.0f;
                 }
+                
+
                 viewCamera3D.Target = viewCamera3D.Position + forward;
             }
             if (Input.IsActionReleased("CameraActivate"))
