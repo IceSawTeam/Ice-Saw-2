@@ -4,6 +4,7 @@ using IceSaw2.LevelObject.TrickyObjects;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using IceSaw2.RayWarp;
+using System.Runtime;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -56,6 +57,7 @@ namespace IceSaw2.Manager.Tricky
         public static List<BaseObject> LevelNodeTree = new List<BaseObject>();
 
         public static string LoadPath = "";
+        public static string SavePath = "";
 
         public static void LoadProject(string ConfigPath)
         {
@@ -507,6 +509,66 @@ namespace IceSaw2.Manager.Tricky
             }
 
             LevelNodeTree.Add(baseObject);
+        }
+
+        public static void SaveProject(string ConfigPath)
+        {
+            SavePath = Path.GetDirectoryName(ConfigPath);
+
+            SaveLevelObjects();
+
+            SavePaths();
+
+            SaveEffects();
+
+            SaveSkybox();
+        }
+
+        public static void SaveLevelObjects()
+        {
+            //Object Data
+
+            //Patches
+            PatchesJsonHandler jsonHandler = new PatchesJsonHandler();
+            jsonHandler.Patches = new List<PatchesJsonHandler.PatchJson>();
+
+            for (int i = 0; i < trickyPatchObjects.Count; i++)
+            {
+                jsonHandler.Patches.Add(trickyPatchObjects[i].SavePatch());
+            }
+            jsonHandler.CreateJson(Path.Combine(LoadPath, "Patches.json"));
+
+            //Material
+
+
+            //Model
+
+            //Instance
+
+            //Spline
+
+            //Light
+
+            //Camera
+
+            //Particle
+
+            //Particle Instance
+        }
+
+        public static void SavePaths()
+        {
+
+        }
+
+        public static void SaveEffects()
+        {
+
+        }
+
+        public static void SaveSkybox()
+        {
+
         }
 
         public static void UnloadProject()

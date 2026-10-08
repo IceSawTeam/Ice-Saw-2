@@ -99,10 +99,14 @@ namespace IceSaw2.Manager.Tricky
                         //filePicker.Open();
                     }
 
-                    //if (ImGui.MenuItem("Save"))
-                    //{
-                    //    // Handle save
-                    //}
+                    if (ImGui.MenuItem("Save"))
+                    {
+                        filePicker.Show("Select .SSX File", "ssx", (selectedPath) =>
+                        {
+                            TrickyDataManager.LoadProject(selectedPath);
+                            // Do something with selectedPath
+                        });
+                    }
 
                     if (ImGui.MenuItem("Extract"))
                     {
