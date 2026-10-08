@@ -34,7 +34,6 @@ namespace IceSaw2.Utilities
             }
         }
 
-        #if WINDOWS
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
@@ -53,6 +52,5 @@ namespace IceSaw2.Utilities
 
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
-        #endif
     }
 }
