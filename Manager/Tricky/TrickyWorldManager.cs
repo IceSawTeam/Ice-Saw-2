@@ -5,7 +5,6 @@ using ImGuiNET;
 using Raylib_cs;
 using SSXLibrary;
 using System.Diagnostics;
-using NativeFileDialogSharp;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -79,11 +78,11 @@ namespace IceSaw2.Manager.Tricky
                 {
                     if (ImGui.MenuItem("Open..."))
                     {
-                        var result = Dialog.FileOpen("ssx", Settings.General.Instance.data.LastLoad);
-                        if (result.IsOk)
+                        var selectedFile = FileDialog.OpenFile("ssx");
+                        if (selectedFile != null)
                         {
-                            TrickyDataManager.LoadProject(result.Path);
-                            Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
+                            TrickyDataManager.LoadProject(selectedFile);
+                            Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedFile) ?? "";
                             Settings.General.Instance.Save();
                             Settings.KeyBinding.Instance.Save();
                             levelEditorWindow.GenerateRenderList();
@@ -92,26 +91,25 @@ namespace IceSaw2.Manager.Tricky
 
                     if (ImGui.MenuItem("Save"))
                     {
-                        var result = Dialog.FileSave("ssx", Settings.General.Instance.data.LastLoad);
-                        if (result.IsOk)
+                        var selectedFile = FileDialog.OpenFile("ssx");
+                        if (selectedFile != null)
                         {
-                            TrickyDataManager.SaveProject(result.Path);
+                            TrickyDataManager.SaveProject(selectedFile);
                         }
                     }
 
                     if (ImGui.MenuItem("Extract"))
                     {
-                        // Handle save
-                        var result = Dialog.FileOpen("map", Settings.General.Instance.data.LastLoad);
-                        if (result.IsOk)
+                        var selectedFile = FileDialog.OpenFile("map");
+                        if (selectedFile != null)
                         {
-                            var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
-                            if (FolderSelect.IsOk)
+                            var selectedFolder = FileDialog.OpenFolder();
+                            if (selectedFolder != null)
                             {
                                 TrickyLevelInterface trickyLevelInterface = new TrickyLevelInterface();
 
-                                trickyLevelInterface.ExtractTrickyLevelFiles(result.Path.Replace(".map", ""), FolderSelect.Path);
-                                Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
+                                trickyLevelInterface.ExtractTrickyLevelFiles(Path.GetFileName(selectedFile), selectedFolder);
+                                Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedFile) ?? "";
                                 Settings.General.Instance.Save();
                             }
                         }
@@ -119,10 +117,10 @@ namespace IceSaw2.Manager.Tricky
 
                     if (ImGui.MenuItem("Export OBJ"))
                     {
-                        var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
-                        if (FolderSelect.IsOk)
+                        var selectedFolder = FileDialog.OpenFolder();
+                        if (selectedFolder != null)
                         {
-                            OBJLevelExtract.ExtractOBJ(FolderSelect.Path);
+                            OBJLevelExtract.ExtractOBJ(selectedFolder);
                         }
                     }
 
@@ -186,11 +184,11 @@ namespace IceSaw2.Manager.Tricky
 
                 if (ImGui.MenuItem("[Load last level]"))
                 {
-                    string selectedPath = Settings.General.Instance.data.LastLoad + "/ConfigTricky.ssx";
-                    if (File.Exists(selectedPath))
+                    string selectedFile = Settings.General.Instance.data.LastLoad + "/ConfigTricky.ssx";
+                    if (File.Exists(selectedFile))
                     {
-                        TrickyDataManager.LoadProject(selectedPath);
-                        Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedPath) ?? "";
+                        TrickyDataManager.LoadProject(selectedFile);
+                        Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(selectedFile) ?? "";
                         Settings.General.Instance.Save();
                         Settings.KeyBinding.Instance.Save();
                         levelEditorWindow.GenerateRenderList();
