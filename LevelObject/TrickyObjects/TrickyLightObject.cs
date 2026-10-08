@@ -76,22 +76,38 @@ public class TrickyLightObject : BaseObject
     public override void Render()
     {
         var worldManInstance = TrickyWorldManager.instance;
+        Camera3D camera = worldManInstance.levelEditorWindow.viewCamera3D;
         Texture2D lightIcon = worldManInstance.LightIcons[(int)lightType];
 
+
+        Vector3 cameraPos = camera.Position;
+        Vector3 lightWorldPos = Position * WorldScale;
+
+
+        float pixelSize = 58.0f;
+        float dist = Vector3.Distance(cameraPos, lightWorldPos);
+
+        float worldSize = 2.0f * dist * MathF.Tan(camera.FovY * MathF.PI / 360f) * 
+            (pixelSize / Raylib.GetScreenHeight());
+
+        Vector2 size = new Vector2(worldSize, worldSize);
+
+
+
         Rectangle sourceRec = new Rectangle(0, 0, lightIcon.Width, lightIcon.Height);
-        Vector2 size = new Vector2(0.55f, 0.55f);
-        Vector2 origin = new Vector2(size.X / 2, size.Y / 2);
+        // Vector2 size = new Vector2(0.55f, 0.55f);
+        Vector2 origin = new Vector2(size.X / 2f, size.Y / 2f);
 
         if (worldManInstance.levelEditorWindow.showLightColors)
         {
             Vector3 rgbNorm = Raymath.Vector3Normalize(Colour);
             Color color = new Color(rgbNorm.X, rgbNorm.Y, rgbNorm.Z);
             Raylib.DrawBillboardPro(
-                worldManInstance.levelEditorWindow.viewCamera3D,
+                camera,
                 lightIcon,
                 sourceRec,
-                Position * WorldScale,
-                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                lightWorldPos,
+                camera.Up,
                 size,
                 origin,
                 0f,
@@ -100,11 +116,11 @@ public class TrickyLightObject : BaseObject
         } else
         {
             Raylib.DrawBillboardPro(
-                worldManInstance.levelEditorWindow.viewCamera3D,
+                camera,
                 lightIcon,
                 sourceRec,
-                Position * WorldScale,
-                worldManInstance.levelEditorWindow.viewCamera3D.Up,
+                lightWorldPos,
+                camera.Up,
                 size,
                 origin,
                 0f,
