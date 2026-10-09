@@ -17,7 +17,7 @@ namespace IceSaw2.EditorWindows
         private float pitch = 0.0f;
         private float mouseSensitivity = 0.003f;
         private float moveSpeed = 0.1f;
-        private const float moveSpeedStep = 0.008f;
+        private const float moveSpeedStep = 0.08f;
         private float moveSpeedChangedTimer = 0.0f;
         private int screenWidth { get { return Raylib.GetScreenWidth(); } }
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }
@@ -25,7 +25,7 @@ namespace IceSaw2.EditorWindows
         public Vector2 winSize;
 
         private float axisLineSize = 1000f;
-        private float nearClip = 0.1f;
+        private float nearClip = 1f;
         private float farClip = 100000f;
 
         public Camera3D viewCamera3D = new Camera3D();

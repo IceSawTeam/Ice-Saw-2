@@ -11,7 +11,7 @@ namespace IceSaw2.LevelObject
         public int ID;
         private static int IDCount = 0;
 
-        public static float WorldScale = 0.001f;
+        public static float WorldScale = 0.01f;
         public static Matrix4x4 Default { get { return Raymath.MatrixScale(WorldScale, WorldScale, WorldScale); } }
 
         public string Name = "Null";
