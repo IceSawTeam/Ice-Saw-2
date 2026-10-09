@@ -16,25 +16,25 @@ namespace IceSaw2.LevelObject
 
         public override void Render()
         {
-            //for (int i = 0; i < WorldPathPoints.Count - 1; i++)
-            //{
-            //    Raylib.DrawLine3D(WorldPathPoints[i], WorldPathPoints[i + 1], Color.Blue);
-            //}
-
-            Rlgl.PushMatrix();
-
-            Rlgl.Begin(DrawMode.Lines);
-            Rlgl.Color3f(Colour.X, Colour.Y, Colour.Z);
-
             for (int i = 0; i < WorldLinePoints.Count - 1; i++)
             {
-                Rlgl.Vertex3f(WorldLinePoints[i].X, WorldLinePoints[i].Y, WorldLinePoints[i].Z);
-                Rlgl.Vertex3f(WorldLinePoints[i + 1].X, WorldLinePoints[i + 1].Y, WorldLinePoints[i + 1].Z);
+                Raylib.DrawCylinderEx(WorldLinePoints[i], WorldLinePoints[i + 1], 2f * WorldScale, 2f*WorldScale,4, new Color(Colour.X, Colour.Y, Colour.Z));
             }
 
-            Rlgl.End();
+            //Rlgl.PushMatrix();
 
-            Rlgl.PopMatrix();
+            //Rlgl.Begin(DrawMode.Lines);
+            //Rlgl.Color3f(Colour.X, Colour.Y, Colour.Z);
+
+            //for (int i = 0; i < WorldLinePoints.Count - 1; i++)
+            //{
+            //    Rlgl.Vertex3f(WorldLinePoints[i].X, WorldLinePoints[i].Y, WorldLinePoints[i].Z);
+            //    Rlgl.Vertex3f(WorldLinePoints[i + 1].X, WorldLinePoints[i + 1].Y, WorldLinePoints[i + 1].Z);
+            //}
+
+            //Rlgl.End();
+
+            //Rlgl.PopMatrix();
         }
     }
 }
