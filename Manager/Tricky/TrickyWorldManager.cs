@@ -92,10 +92,14 @@ namespace IceSaw2.Manager.Tricky
 
                     if (ImGui.MenuItem("Save"))
                     {
+                        TrickyDataManager.SaveProject(Path.Combine(Settings.General.Instance.data.LastLoad, "config.ssx"), false);
+                    }
+                    if (ImGui.MenuItem("Save As"))
+                    {
                         var result = Dialog.FileSave("ssx", Settings.General.Instance.data.LastLoad);
                         if (result.IsOk)
                         {
-                            TrickyDataManager.SaveProject(result.Path);
+                            TrickyDataManager.SaveProject(result.Path, false);
                         }
                     }
 

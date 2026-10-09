@@ -512,7 +512,7 @@ namespace IceSaw2.Manager.Tricky
             LevelNodeTree.Add(baseObject);
         }
 
-        public static void SaveProject(string ConfigPath)
+        public static void SaveProject(string ConfigPath, bool SaveAll)
         {
             SavePath = Path.GetDirectoryName(ConfigPath);
 
@@ -523,6 +523,8 @@ namespace IceSaw2.Manager.Tricky
             SaveEffects();
 
             SaveSkybox();
+
+            //Save Textures and Meshes
         }
 
         public static void SaveLevelObjects()
