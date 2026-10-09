@@ -721,6 +721,7 @@ namespace IceSaw2.Manager.Tricky
             //{
             //    Raylib.UnloadMesh(trickyPatchObjects[i].meshRef.Mesh);
             //}
+            Renderer.TessellatedPatch.Instance.Clear();
 
             trickyPatchObjects = new List<TrickyPatchObject>();
 

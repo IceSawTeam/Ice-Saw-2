@@ -77,6 +77,22 @@ namespace IceSaw2.Manager.Tricky
             {
                 if (ImGui.BeginMenu("File"))
                 {
+                    if(ImGui.MenuItem("New"))
+                    {
+                        //Select Folder
+                        var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
+                        if (FolderSelect.IsOk)
+                        {
+                            TrickyLevelInterface trickyLevelInterface = new TrickyLevelInterface();
+                            trickyLevelInterface.GenerateTemplate(FolderSelect.Path);
+                            TrickyDataManager.LoadProject(Path.Combine(FolderSelect.Path, "config.ssx"));
+                            Settings.General.Instance.data.LastLoad = FolderSelect.Path;
+                            Settings.General.Instance.Save();
+                            Settings.KeyBinding.Instance.Save();
+                            levelEditorWindow.GenerateRenderList();
+                        }
+                    }
+
                     if (ImGui.MenuItem("Open..."))
                     {
                         var result = Dialog.FileOpen("ssx", Settings.General.Instance.data.LastLoad);
