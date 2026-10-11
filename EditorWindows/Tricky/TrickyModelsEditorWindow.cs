@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
-    public class ModelsEditorWindow : BaseEditorWindow
+    public class TrickyModelsEditorWindow : BaseEditorWindow
     {
         bool ShowSkybox;
         bool ShowMaterials;

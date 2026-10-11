@@ -13,9 +13,9 @@ namespace IceSaw2.Manager.Tricky
     {
         public static TrickyWorldManager instance = null;
 
-        public LevelEditorWindow levelEditorWindow = new();
-        public ModelsEditorWindow prefabEditorWindow = new();
-        public LogicEditorWindow logicEditorWindow = new();
+        public TrickyLevelEditorWindow levelEditorWindow = new();
+        public TrickyModelsEditorWindow prefabEditorWindow = new();
+        public TrickyLogicEditorWindow logicEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
 

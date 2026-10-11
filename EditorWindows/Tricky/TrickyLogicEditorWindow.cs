@@ -8,7 +8,7 @@ using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
 namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
-    public class LogicEditorWindow : BaseEditorWindow
+    public class TrickyLogicEditorWindow : BaseEditorWindow
     {
         private int screenWidth { get { return Raylib.GetScreenWidth(); } }
         private int screenHeight { get { return Raylib.GetScreenHeight(); } }

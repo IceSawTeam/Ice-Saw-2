@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
-    public class LevelEditorWindow : BaseEditorWindow
+    public class TrickyLevelEditorWindow : BaseEditorWindow
     {
         private const float BOOST_MULTIPLIER = 2.0f;
 

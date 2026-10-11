@@ -16,7 +16,7 @@ namespace IceSaw2.Manager.SSX3
     {
         public static SSX3WorldManager instance = null;
 
-        public LevelEditorWindow levelEditorWindow = new();
+        public SSX3LevelEditorWindow levelEditorWindow = new();
         //public ModelsEditorWindow prefabEditorWindow = new();
         //public LogicEditorWindow logicEditorWindow = new();
 
