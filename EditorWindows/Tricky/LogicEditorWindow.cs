@@ -6,7 +6,7 @@ using SharpGLTF.Schema2;
 using System.Numerics;
 using static ICSharpCode.SharpZipLib.Zip.ExtendedUnixData;
 
-namespace IceSaw2.EditorWindows
+namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
     public class LogicEditorWindow : BaseEditorWindow
     {

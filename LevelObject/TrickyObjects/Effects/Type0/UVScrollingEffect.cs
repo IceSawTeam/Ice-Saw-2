@@ -20,7 +20,7 @@ public class UVScrollingEffect : EffectBase
     public float Unknown3;
     public float Unknown4;
     public float Unknown5;
-    public int Unknown6;
+    public float Unknown6;
 
 
     public override void LoadEffect(SSFJsonHandler.Effect effect)

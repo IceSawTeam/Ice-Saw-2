@@ -29,7 +29,7 @@ public class TrickyPaticleInstanceObject : BaseObject
         Rotation = JsonUtil.ArrayToQuaternion(instanceJsonHandler.Rotation);
         Scale = JsonUtil.ArrayToVector3(instanceJsonHandler.Scale);
 
-        UnknownInt1 = instanceJsonHandler.UnknownInt1;
+        UnknownInt1 = instanceJsonHandler.ParticleModelIndex;
         LowestXYZ = instanceJsonHandler.LowestXYZ;
         HighestXYZ = instanceJsonHandler.HighestXYZ;
         UnknownInt8 = instanceJsonHandler.UnknownInt8;
@@ -48,7 +48,7 @@ public class TrickyPaticleInstanceObject : BaseObject
         particleJson.Rotation = JsonUtil.QuaternionToArray(Rotation);
         particleJson.Scale = JsonUtil.Vector3ToArray(Scale);
 
-        particleJson.UnknownInt1 = UnknownInt1;
+        particleJson.ParticleModelIndex = UnknownInt1;
         particleJson.LowestXYZ = LowestXYZ;
         particleJson.HighestXYZ = HighestXYZ;
         particleJson.UnknownInt8 = UnknownInt8;

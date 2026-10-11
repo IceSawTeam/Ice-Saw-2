@@ -1,3 +1,4 @@
+using IceSaw2.Manager;
 using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using System.Collections;
@@ -112,7 +113,7 @@ public class ObjExporter
         File.WriteAllText(path, ObjData);
     }
 
-    public static void SaveModelList(string SavePath, List<MassModelData> MMD, List<TrickyDataManager.TextureData> textures)
+    public static void SaveModelList(string SavePath, List<MassModelData> MMD, List<DataManagerBase.TextureData> textures)
     {
         string FileNameMain = Path.GetFileNameWithoutExtension(SavePath);
         //String Path down to just folder location

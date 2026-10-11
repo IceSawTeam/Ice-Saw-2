@@ -40,11 +40,11 @@ namespace IceSaw2.Renderer
             return _patchEntries.Count;
         }
 
-        public void Init(List<Raylib_cs.Image> lightmaps)
+        public void Init(List<Raylib_cs.Image> lightmaps, bool Bypass)
         {
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
-            GeneratePaddedLightmaps(lightmaps);
+            GeneratePaddedLightmaps(lightmaps, Bypass);
             Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.All);
 
             var shader = Raylib_cs.Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
@@ -200,9 +200,9 @@ namespace IceSaw2.Renderer
             entry.Highlighted = Highlight;
         }
 
-        public void UpdateLightmaps(List<Raylib_cs.Image> lightmaps)
+        public void UpdateLightmaps(List<Raylib_cs.Image> lightmaps, bool Bypass)
         {
-            GeneratePaddedLightmaps(lightmaps);
+            GeneratePaddedLightmaps(lightmaps, Bypass);
         }
 
         public void Render()
@@ -377,26 +377,43 @@ namespace IceSaw2.Renderer
             }
         }
 
-        private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps)
+        private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps, bool Bypass)
         {
-            foreach (var lightmap in lightmaps)
+            if(!Bypass)
             {
-                var paddedLightmap = Raylib_cs.Raylib.GenImageColor(160, 160, Raylib_cs.Color.Blank);
-                for (int y = 0; y < 16; y++)
+                //Falure due to it needing to be dynamic for ssx 3
+                //Padding doesnt work and might need to do it in shader
+
+                foreach (var lightmap in lightmaps)
                 {
-                    for (int x = 0; x < 16; x++)
+                    var paddedLightmap = Raylib_cs.Raylib.GenImageColor(160, 160, Raylib_cs.Color.Blank);
+                    for (int y = 0; y < 16; y++)
                     {
-                        var srcRect = new Raylib_cs.Rectangle(x * 8, y * 8, 8, 8);
-                        var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
-                        var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
-                        Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.White);
+                        for (int x = 0; x < 16; x++)
+                        {
+                            var srcRect = new Raylib_cs.Rectangle(x * 8, y * 8, 8, 8);
+                            var destRect = new Raylib_cs.Rectangle(x * 10, y * 10, 10, 10);
+                            var paddedTile = PadTile(Raylib_cs.Raylib.ImageFromImage(lightmap, srcRect), 1);
+                            Raylib_cs.Raylib.ImageDraw(ref paddedLightmap, paddedTile, new Raylib_cs.Rectangle(0, 0, 10, 10), destRect, Raylib_cs.Color.White);
+                        }
                     }
+                    var TempLightmap = Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap);
+
+                    Raylib_cs.Raylib.SetTextureFilter(TempLightmap, Raylib_cs.TextureFilter.Bilinear);
+
+                    _paddedLightmaps.Add(TempLightmap);
                 }
-                var TempLightmap = Raylib_cs.Raylib.LoadTextureFromImage(paddedLightmap);
+            }
+            else 
+            {
+                for (int i = 0; i < lightmaps.Count; i++)
+                {
+                    var TempLightmap = Raylib_cs.Raylib.LoadTextureFromImage(lightmaps[i]);
 
-                Raylib_cs.Raylib.SetTextureFilter(TempLightmap, Raylib_cs.TextureFilter.Bilinear);
+                    Raylib_cs.Raylib.SetTextureFilter(TempLightmap, Raylib_cs.TextureFilter.Bilinear);
 
-                _paddedLightmaps.Add(TempLightmap);
+                    _paddedLightmaps.Add(TempLightmap);
+                }
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using IceSaw2.LevelObject;
+﻿using IceSaw2.EditorWindows.TrickyEditorWindows;
+using IceSaw2.LevelObject;
 using IceSaw2.Manager;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.Renderer;
@@ -7,7 +8,7 @@ using Raylib_cs;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
-namespace IceSaw2.EditorWindows
+namespace IceSaw2.EditorWindows.SSX3EditorWindows
 {
     public class LevelEditorWindow : BaseEditorWindow
     {
@@ -26,7 +27,7 @@ namespace IceSaw2.EditorWindows
 
         private float axisLineSize = 1000f;
         private float nearClip = 1f;
-        private float farClip = 100000f;
+        private float farClip = 10000000f;
 
         public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
@@ -72,11 +73,11 @@ namespace IceSaw2.EditorWindows
             Rlgl.DisableDepthMask();
             //Render Skybox
 
-            if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
-            {
-                //TrickyDataManager.trickySkyboxPrefabObjects[0].Render();
-                Raylib.DrawMesh(TrickyDataManager.meshSkybox.Mesh, TrickyDataManager.materialSkybox.Material, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
-            }
+            //if (TrickyDataManager.trickySkyboxModelObjects.Count != 0)
+            //{
+            //    //TrickyDataManager.trickySkyboxPrefabObjects[0].Render();
+            //    Raylib.DrawMesh(TrickyDataManager.meshSkybox.Mesh, TrickyDataManager.materialSkybox.Material, Raymath.MatrixTranslate(viewCamera3D.Position.X, viewCamera3D.Position.Y, viewCamera3D.Position.Z) * BaseObject.Default);
+            //}
             Rlgl.EnableDepthMask();            
 
             //Render Default
@@ -89,10 +90,10 @@ namespace IceSaw2.EditorWindows
             Profiler.UpdateTime("-Patches");
 
             Profiler.SetStartTime("-Instances");
-            for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
-            {
-                TrickyDataManager.trickyModelObjects[i].Render();
-            }
+            //for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
+            //{
+            //    TrickyDataManager.trickyModelObjects[i].Render();
+            //}
             Profiler.UpdateTime("-Instances");
 
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
@@ -139,10 +140,10 @@ namespace IceSaw2.EditorWindows
             ImGui.Begin("Outliner Panel", flags);
             ImGui.Text("Outliner");
 
-            for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
-            {
-                TrickyDataManager.LevelNodeTree[i].HierarchyRender(true);
-            }
+            //for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
+            //{
+            //    TrickyDataManager.LevelNodeTree[i].HierarchyRender(true);
+            //}
 
             ImGui.End();
             //ImGui.PopStyleVar(2);
@@ -342,16 +343,16 @@ namespace IceSaw2.EditorWindows
             // driven directly in RenderUpdate() - but both have a no-op BaseObject.Render(), so adding
             // them here is safe and makes them reachable for viewport picking (see Picking.cs).
             //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);
-            RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
-            RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);
-            RenderItems.AddRange(TrickyDataManager.trickySOPAIPath);
-            RenderItems.AddRange(TrickyDataManager.trickySOPRaceLine);
-            RenderItems.AddRange(TrickyDataManager.trickyLightObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyCameraObjects);
-            RenderItems.AddRange(TrickyDataManager.trickyPaticleInstanceObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickySplineObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyAIPAIPath);
+            //RenderItems.AddRange(TrickyDataManager.trickyAIPRaceLine);
+            //RenderItems.AddRange(TrickyDataManager.trickySOPAIPath);
+            //RenderItems.AddRange(TrickyDataManager.trickySOPRaceLine);
+            //RenderItems.AddRange(TrickyDataManager.trickyLightObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyCameraObjects);
+            //RenderItems.AddRange(TrickyDataManager.trickyPaticleInstanceObjects);
         }
 
         public override void LogicUpdate()

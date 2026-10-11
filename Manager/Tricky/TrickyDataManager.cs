@@ -6,6 +6,7 @@ using SSXLibrary.JsonFiles.Tricky;
 using IceSaw2.RayWarp;
 using System.Runtime;
 using SSX_Library.FileHandlers.LevelFiles.Tricky;
+using static IceSaw2.Manager.DataManagerBase;
 
 namespace IceSaw2.Manager.Tricky
 {
@@ -90,53 +91,17 @@ namespace IceSaw2.Manager.Tricky
                 LightmapArray.Add(Raylib.LoadImageFromTexture(lightmapTexture2Ds[i].texture2D));
             }
 
-            Renderer.TessellatedPatch.Instance.Init(LightmapArray);
+            Renderer.TessellatedPatch.Instance.Init(LightmapArray, false);
         }
 
         public static void LoadTextureMesh()
         {
             //Texture Data
-            worldTextureData = new List<TextureData>();
-            string[] TextureFiles = Directory.GetFiles(Path.Combine(LoadPath,"Textures"), "*.png", SearchOption.AllDirectories);
-            for (int i = 0; i < TextureFiles.Length; i++)
-            {
-                TextureData textureData = new TextureData();
+            worldTextureData = LoadImages(Path.Combine(LoadPath, "Textures"));
 
-                textureData.Name = Path.GetFileName(TextureFiles[i]);
-                textureData.texture2D = Raylib.LoadTexture(TextureFiles[i]);
+            lightmapTexture2Ds = LoadImages(Path.Combine(LoadPath, "Lightmaps"));
 
-                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
-
-                worldTextureData.Add(textureData);
-            }
-
-            lightmapTexture2Ds = new List<TextureData>();
-            string[] LightmapFiles = Directory.GetFiles(Path.Combine(LoadPath, "Lightmaps"), "*.png", SearchOption.AllDirectories);
-            var result = LightmapFiles.OrderBy(x => x).ToArray();
-            for (int i = 0; i < result.Length; i++)
-            {
-                TextureData textureData = new TextureData();
-                textureData.Name = Path.GetFileName(result[i]);
-                textureData.texture2D = Raylib.LoadTexture(result[i]);
-
-                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
-
-                lightmapTexture2Ds.Add(textureData);
-            }
-
-            skyboxTexture2Ds = new List<TextureData>();
-            string[] SkyboxFiles = Directory.GetFiles(Path.Combine(LoadPath, "Skybox", "Textures"), "*.png", SearchOption.AllDirectories);
-            for (int i = 0; i < SkyboxFiles.Length; i++)
-            {
-                TextureData textureData = new TextureData();
-
-                textureData.Name = Path.GetFileName(SkyboxFiles[i]);
-                textureData.texture2D = Raylib.LoadTexture(SkyboxFiles[i]);
-
-                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
-
-                skyboxTexture2Ds.Add(textureData);
-            }
+            skyboxTexture2Ds = lightmapTexture2Ds = LoadImages(Path.Combine(LoadPath, "Skybox", "Textures"));
 
             worldMeshes = new List<MeshData>();
             string[] MeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Meshes"), "*.obj", SearchOption.AllDirectories);
@@ -843,18 +808,6 @@ namespace IceSaw2.Manager.Tricky
                 }
                 return skyboxMeshes[0].mesh;
             }
-        }
-
-        public struct TextureData
-        {
-            public string Name;
-            public Texture2D texture2D;
-        }
-
-        public struct MeshData
-        {
-            public string Name;
-            public MeshRef mesh;
         }
     }
 }

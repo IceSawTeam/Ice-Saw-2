@@ -7,6 +7,7 @@
 #pragma warning disable IDE0079
 #pragma warning disable CA1822
 
+using IceSaw2.Manager.SSX3;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.Utilities;
 using ImGuiNET;
@@ -29,6 +30,7 @@ namespace IceSaw2
 
         //--------------------- Manager/Module/System declarations here -------------------------
         private static TrickyWorldManager? _trickyWorldManager = null;
+        private static SSX3WorldManager? _ssx3WorldManager = null;
 
         public Core()
         {
@@ -101,6 +103,17 @@ namespace IceSaw2
                 }
                 _trickyWorldManager.UpdateLogic();
             }
+
+            if (_ssx3WorldManager != null && GameSelected == GameSelection.SSX3)
+            {
+                switch (_ssx3WorldManager.windowMode)
+                {
+                    case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.LogicUpdate(); break;
+                    //case TrickyWorldManager.WindowMode.Prefabs: _trickyWorldManager.prefabEditorWindow.LogicUpdate(); break;
+                    //case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.LogicUpdate(); break;
+                }
+                _ssx3WorldManager.UpdateLogic();
+            }
         }
 
         public void RenderProcessing()
@@ -132,6 +145,25 @@ namespace IceSaw2
                 }
             }
 
+            if (_ssx3WorldManager != null && GameSelected == GameSelection.SSX3)
+            {
+                switch (_ssx3WorldManager.windowMode)
+                {
+                    case SSX3WorldManager.WindowMode.World:
+                        winPos = _ssx3WorldManager.levelEditorWindow.winPos;
+                        winSize = _ssx3WorldManager.levelEditorWindow.winSize;
+                        break;
+                    //case TrickyWorldManager.WindowMode.Prefabs:
+                    //    winPos = _trickyWorldManager.prefabEditorWindow.winPos;
+                    //    winSize = _trickyWorldManager.prefabEditorWindow.winSize;
+                    //    break;
+                    //case TrickyWorldManager.WindowMode.Logic:
+                    //    winPos = _trickyWorldManager.logicEditorWindow.winPos;
+                    //    winSize = _trickyWorldManager.logicEditorWindow.winSize;
+                    //    break;
+                }
+            }
+
             if (winPos != _lastViewportPos || winSize != _lastViewportSize)
             {
                 if (Raylib.IsRenderTextureValid(_viewportTexture)) Raylib.UnloadRenderTexture(_viewportTexture);
@@ -154,6 +186,16 @@ namespace IceSaw2
                     case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.RenderUpdate(); break;
                 }
              }
+
+            if (_ssx3WorldManager != null && GameSelected == GameSelection.SSX3)
+            {
+                switch (_ssx3WorldManager.windowMode)
+                {
+                    case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.RenderUpdate(); break;
+                    //case TrickyWorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUpdate(); break;
+                    //case TrickyWorldManager.WindowMode.Logic: _ssx3WorldManager.logicEditorWindow.RenderUpdate(); break;
+                }
+            }
             Raylib.EndTextureMode();
 
             // Render viewport texture and GUI
@@ -185,6 +227,9 @@ namespace IceSaw2
                 if (ImGui.Selectable("SSX 3 (WIP)"))
                 {
                     // Handle Exit click
+                    _ssx3WorldManager = new SSX3WorldManager();
+                    GameSelected = GameSelection.SSX3;
+
                 }
                 ImGui.EndGroup();
             }
@@ -200,7 +245,18 @@ namespace IceSaw2
                 }
                 _trickyWorldManager.UpdateRender();
              }
-            Raylib.DrawText("Beta Test", 12, Raylib.GetScreenWidth() - 20, 20, Color.Black);
+
+            if (_ssx3WorldManager != null && GameSelected == GameSelection.SSX3)
+            {
+                switch (_ssx3WorldManager.windowMode)
+                {
+                    case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.RenderUI(); break;
+                    //case SSX3WorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUI(); break;
+                    //case SSX3WorldManager.WindowMode.Logic: _ssx3WorldManager.logicEditorWindow.RenderUI(); break;
+                }
+                _ssx3WorldManager.UpdateRender();
+            }
+
             rlImGui.End();
 
             Raylib.EndDrawing();

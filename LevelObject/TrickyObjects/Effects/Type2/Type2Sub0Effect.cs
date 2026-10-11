@@ -23,7 +23,7 @@ public class Type2Sub0Effect : EffectBase
     public float Unknown7;
     public float Unknown8;
     public float Unknown9;
-    public int Unknown10;
+    public float Unknown10;
     public float Unknown11;
     public float Unknown12;
     public float Unknown13;

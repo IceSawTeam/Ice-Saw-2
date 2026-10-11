@@ -6,7 +6,7 @@ using rlImGui_cs;
 using System.Numerics;
 using System.Security.Cryptography;
 
-namespace IceSaw2.EditorWindows
+namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
     public class ModelsEditorWindow : BaseEditorWindow
     {

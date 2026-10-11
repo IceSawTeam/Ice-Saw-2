@@ -1,11 +1,11 @@
-﻿using IceSaw2.EditorWindows;
-using IceSaw2.Settings;
+﻿using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
 using SSXLibrary;
 using System.Diagnostics;
 using NativeFileDialogSharp;
+using IceSaw2.EditorWindows.TrickyEditorWindows;
 
 namespace IceSaw2.Manager.Tricky
 {

@@ -24,7 +24,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 if (_lightmapPoint != value)
                 {
                     _lightmapPoint = value;
-                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
                 }
             }
         }
@@ -59,14 +59,14 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 if (_lightmapID != value)
                 {
                     _lightmapID = value;
-                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
                 }
             }
         }
 
         public TrickyPatchObject()
         {
-            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, 0, ReturnLightmapPoints(), false);
+            TesPatchID = Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], TrickyDataManager.ReturnTexture(TexturePath, false), UVPoints, 0, ReturnLightmapPoints(_lightmapPoint), false);
 
             controlPoints = new ControlPoints(TesPatchID);
         }
@@ -96,18 +96,6 @@ namespace IceSaw2.LevelObject.TrickyObjects
             TexturePath = patchJson.TexturePath;
             LightmapID = patchJson.LightmapID;
             //GeneratePatch();
-        }
-
-        public Vector2[] ReturnLightmapPoints()
-        {
-            Vector2[] vector2s = new Vector2[4];
-
-            vector2s[0] = new Vector2(LightMapPoint.X, LightMapPoint.Y);
-            vector2s[1] = new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W);
-            vector2s[2] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y);
-            vector2s[3] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W);
-
-            return vector2s;
         }
 
         //public void GeneratePatch()

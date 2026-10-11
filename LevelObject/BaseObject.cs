@@ -11,7 +11,7 @@ namespace IceSaw2.LevelObject
         public int ID;
         private static int IDCount = 0;
 
-        public static float WorldScale = 0.01f;
+        public static float WorldScale = 0.001f;
         public static Matrix4x4 Default { get { return Raymath.MatrixScale(WorldScale, WorldScale, WorldScale); } }
 
         public string Name = "Null";
@@ -289,6 +289,18 @@ namespace IceSaw2.LevelObject
         public void GenertateBBoxWorld()
         {
             worldBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, worldMatrix4x4), Raymath.Vector3Transform(meshBoundingBox.Max, worldMatrix4x4));
+        }
+
+        public Vector2[] ReturnLightmapPoints(Vector4 LightMapPoint)
+        {
+            Vector2[] vector2s = new Vector2[4];
+
+            vector2s[0] = new Vector2(LightMapPoint.X, LightMapPoint.Y);
+            vector2s[1] = new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W);
+            vector2s[2] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y);
+            vector2s[3] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W);
+
+            return vector2s;
         }
 
 
