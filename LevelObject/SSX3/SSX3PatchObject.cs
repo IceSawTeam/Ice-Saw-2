@@ -11,7 +11,6 @@ public class SSX3PatchObject : PatchBaseObject
     public void LoadPatch(PatchesJsonHandler.PatchJson import)
     {
         Name = import.Name;
-        LightMapPoint = JsonUtil.ArrayToVector4(import.LightMapPoint);
 
         LightMapPoint = new Vector4(import.LightMapPoint[0], import.LightMapPoint[1], import.LightMapPoint[2], import.LightMapPoint[3]);
 

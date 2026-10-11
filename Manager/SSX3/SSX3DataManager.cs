@@ -20,6 +20,8 @@ namespace IceSaw2.Manager.SSX3
 
         public static void LoadProject(string ConfigPath)
         {
+            UnloadProject();
+
             levelDatas = new List<LevelData>();
 
             LoadPath = Path.GetDirectoryName(ConfigPath);
@@ -51,7 +53,15 @@ namespace IceSaw2.Manager.SSX3
 
         public static void UnloadProject()
         {
+            for (int i = 0; i < worldTextureData.Count; i++)
+            {
+                Raylib.UnloadTexture(worldTextureData[i].texture2D);
+            }
 
+            for (int i = 0; i < lightmapTexture2Ds.Count; i++)
+            {
+                Raylib.UnloadTexture(lightmapTexture2Ds[i].texture2D);
+            }
         }
 
         public static string[] GenerateLevelList()

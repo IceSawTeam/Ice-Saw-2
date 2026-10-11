@@ -101,7 +101,7 @@ namespace IceSaw2.Manager.Tricky
 
             lightmapTexture2Ds = LoadImages(Path.Combine(LoadPath, "Lightmaps"));
 
-            skyboxTexture2Ds = lightmapTexture2Ds = LoadImages(Path.Combine(LoadPath, "Skybox", "Textures"));
+            skyboxTexture2Ds = LoadImages(Path.Combine(LoadPath, "Skybox", "Textures"));
 
             worldMeshes = new List<MeshData>();
             string[] MeshFiles = Directory.GetFiles(Path.Combine(LoadPath, "Meshes"), "*.obj", SearchOption.AllDirectories);

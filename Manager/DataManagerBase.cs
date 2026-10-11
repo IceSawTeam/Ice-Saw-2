@@ -13,6 +13,7 @@ namespace IceSaw2.Manager
             //Texture Data
             var TempList = new List<TextureData>();
             string[] TextureFiles = Directory.GetFiles(LoadDirectory, "*.png", SearchOption.AllDirectories);
+            var result = TextureFiles.OrderBy(x => x).ToArray();
             for (int i = 0; i < TextureFiles.Length; i++)
             {
                 TextureData textureData = new TextureData();

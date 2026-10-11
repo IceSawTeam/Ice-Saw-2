@@ -23,7 +23,7 @@ namespace IceSaw2.LevelObject
                 if (_lightmapPoint != value)
                 {
                     _lightmapPoint = value;
-                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
                 }
             }
         }
@@ -54,15 +54,15 @@ namespace IceSaw2.LevelObject
                 if (_lightmapID != value)
                 {
                     _lightmapID = value;
-                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
+                    TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints());
                 }
             }
         }
 
 
-        public PatchBaseObject()
+        public PatchBaseObject(int Layer = -1)
         {
-            TesPatchID = IceSaw2.Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], ReturnTexture(TexturePath).Value, UVPoints, 0, ReturnLightmapPoints(_lightmapPoint), false);
+            TesPatchID = IceSaw2.Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], ReturnTexture(TexturePath).Value, UVPoints, 0, ReturnLightmapPoints(), false);
 
             controlPoints = new ControlPoints(TesPatchID);
         }
@@ -145,6 +145,19 @@ namespace IceSaw2.LevelObject
             TempModel.TextureName = TexturePath;
 
             return TempModel;
+        }
+
+
+        public Vector2[] ReturnLightmapPoints()
+        {
+            Vector2[] vector2s = new Vector2[4];
+
+            vector2s[0] = new Vector2(LightMapPoint.X, LightMapPoint.Y);
+            vector2s[1] = new Vector2(LightMapPoint.X, LightMapPoint.Y + LightMapPoint.W);
+            vector2s[2] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y);
+            vector2s[3] = new Vector2(LightMapPoint.X + LightMapPoint.Z, LightMapPoint.Y + LightMapPoint.W);
+
+            return vector2s;
         }
 
         public struct ControlPoints
