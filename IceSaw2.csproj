@@ -85,8 +85,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="LevelObject\SSX3Objects\" />
-    <Folder Include="LevelObject\OGObjects\" />
+    <Folder Include="LevelObject\SSX3\" />
+    <Folder Include="LevelObject\OG\" />
   </ItemGroup>
 
 </Project>

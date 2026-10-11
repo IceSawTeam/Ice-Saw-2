@@ -1,79 +1,12 @@
-//using SSXMultiTool.JsonFiles.SSX3;
-//using SSXMultiTool.Utilities;
-//using System.Collections.Generic;
-//using System.Drawing;
-//using Unity.VisualScripting;
-//using UnityEditor;
-//using UnityEngine;
-
-//[ExecuteInEditMode]
 using IceSaw2.LevelObject;
 using IceSaw2.Manager.SSX3;
-using IceSaw2.Manager.Tricky;
-using IceSaw2.Renderer;
+using Raylib_cs;
 using SSXLibrary.JsonFiles.SSX3;
 using SSXMultiTool.Utilities;
 using System.Numerics;
-using static IceSaw2.LevelObject.TrickyObjects.TrickyPatchObject;
 
-public class SSX3PatchObject : BaseObject
+public class SSX3PatchObject : PatchBaseObject
 {
-    public int TesPatchID { get; private set; }
-    private Vector4 _lightmapPoint;
-    public Vector4 LightMapPoint
-    {
-        get { return _lightmapPoint; }
-        set
-        {
-            if (_lightmapPoint != value)
-            {
-                _lightmapPoint = value;
-                TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
-            }
-        }
-    }
-    public ControlPoints controlPoints;
-
-    public Vector2[] UVPoints = new Vector2[4];
-
-    public int SurfaceType;
-    public bool TrickOnlyPatch;
-
-    public string _texturePath = "";
-    public string TexturePath
-    {
-        get { return _texturePath; }
-        set
-        {
-            if (_texturePath != value)
-            {
-                _texturePath = value;
-                TessellatedPatch.Instance.UpdatePatchTexture(TesPatchID, SSX3DataManager.ReturnTexture(TexturePath), UVPoints);
-            }
-        }
-    }
-
-    private int _lightmapID;
-    public int LightmapID
-    {
-        get { return _lightmapID; }
-        set
-        {
-            if (_lightmapID != value)
-            {
-                _lightmapID = value;
-                TessellatedPatch.Instance.UpdatePatchLightmap(TesPatchID, LightmapID, ReturnLightmapPoints(_lightmapPoint));
-            }
-        }
-    }
-
-    public SSX3PatchObject()
-    {
-        TesPatchID = IceSaw2.Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], SSX3DataManager.ReturnTexture(TexturePath), UVPoints, 0, ReturnLightmapPoints(_lightmapPoint), false);
-
-        controlPoints = new ControlPoints(TesPatchID);
-    }
-
 
     public void LoadPatch(PatchesJsonHandler.PatchJson import)
     {
@@ -98,6 +31,11 @@ public class SSX3PatchObject : BaseObject
 
         TexturePath = import.TextureRID.ToString() + ".png";
         LightmapID = import.LightmapRID;
+    }
+
+    public override Texture2D? ReturnTexture(string Path)
+    {
+        return SSX3DataManager.ReturnTexture(TexturePath);
     }
 
     //    public PatchesJsonHandler.PatchJson GeneratePatch()
