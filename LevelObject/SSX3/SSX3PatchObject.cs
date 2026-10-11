@@ -2,7 +2,6 @@ using IceSaw2.LevelObject;
 using IceSaw2.Manager.SSX3;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.SSX3;
-using SSXMultiTool.Utilities;
 using System.Numerics;
 
 public class SSX3PatchObject : PatchBaseObject
@@ -19,14 +18,10 @@ public class SSX3PatchObject : PatchBaseObject
 
         LightMapPoint = new Vector4(import.LightMapPoint[0], import.LightMapPoint[1], import.LightMapPoint[2], import.LightMapPoint[3]);
 
-        //UVPoints = new Vector2[4];
-
         for (int i = 0; i < 4; i++)
         {
             UVPoints[i] = new Vector2(import.UVPoints[i, 0], import.UVPoints[i, 1]);
         }
-
-        //WorldPoints = new Vector3[16];
 
         for (int y = 0; y < 16; y++)
         {
@@ -126,43 +121,6 @@ public class SSX3PatchObject : PatchBaseObject
     //        patch.Points[15, 2] = RawR4C4.z;
 
     //        return patch;
-    //    }
-
-
-    //    public void UpdateTexture()
-    //    {
-    //        try
-    //        {
-    //            bool Found = false;
-    //            for (int i = 0; i < SSX3WorldManager.Instance.texture2ds.Count; i++)
-    //            {
-    //                if (SSX3WorldManager.Instance.texture2ds[i].Name.ToLower() == TextureAssigment.ToLower())
-    //                {
-    //                    Found = true;
-    //                    meshRenderer.sharedMaterial.SetTexture("_MainTexture", SSX3WorldManager.Instance.texture2ds[i].Texture);
-
-    //                    var Lightmap = SSX3WorldManager.Instance.GrabLightmapTexture(LightMapPoint, LightmapID);
-
-    //                    ImageSize = 1f / Lightmap.Size().x;
-
-    //                    meshRenderer.sharedMaterial.SetTexture("_Lightmap", Lightmap);
-    //                    return;
-    //                }
-    //            }
-
-    //            if (!Found)
-    //            {
-    //                meshRenderer.sharedMaterial.SetTexture("_MainTexture", SSX3WorldManager.Instance.Error);
-    //            }
-    //            else
-    //            {
-
-    //            }
-    //        }
-    //        catch
-    //        {
-    //            meshRenderer.sharedMaterial.SetTexture("_MainTexture", SSX3WorldManager.Instance.Error);
-    //        }
     //    }
 
     //    public enum PatchSurfaceType

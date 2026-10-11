@@ -156,7 +156,7 @@ namespace IceSaw2.Renderer
             // Patches never touch Position, so worldMatrix4x4 stays at the identity - the pivot has
             // to come from the control points themselves instead. Mirrors the same centroid calc
             // TessellatedPatch.PatchEntry.UpdateBoundingSphere() already uses for its bounding sphere.
-            if (primary is TrickyPatchObject patch)
+            if (primary is PatchBaseObject patch)
             {
                 Vector3 sum = Vector3.Zero;
                 for (int i = 0; i < 16; i++) sum += patch.controlPoints[i];
@@ -251,7 +251,7 @@ namespace IceSaw2.Renderer
             // Per-axis scale is only meaningful (and only offered) for a single, non-patch selection -
             // see the class comment on BaseObject.Scale being a plain local vector (patches have no
             // local axes to scale along at all).
-            if (CurrentMode == Mode.Scale && (SelectionManager.Selected.Count > 1 || SelectionManager.Primary is TrickyPatchObject))
+            if (CurrentMode == Mode.Scale && (SelectionManager.Selected.Count > 1 || SelectionManager.Primary is PatchBaseObject))
                 return Handle.None;
 
             Handle best = Handle.None;
@@ -308,7 +308,7 @@ namespace IceSaw2.Renderer
             foreach (var obj in SelectionManager.Selected)
             {
                 Vector3[]? patchPoints = null;
-                if (obj is TrickyPatchObject patch)
+                if (obj is PatchBaseObject patch)
                 {
                     patchPoints = new Vector3[16];
                     for (int i = 0; i < 16; i++) patchPoints[i] = patch.controlPoints[i];
@@ -373,7 +373,7 @@ namespace IceSaw2.Renderer
 
             foreach (var start in _dragStart)
             {
-                if (start.Obj is TrickyPatchObject patch && start.PatchControlPoints != null)
+                if (start.Obj is PatchBaseObject patch && start.PatchControlPoints != null)
                 {
                     for (int i = 0; i < 16; i++) patch.controlPoints[i] = start.PatchControlPoints[i] + deltaPosition;
                     continue;
@@ -415,7 +415,7 @@ namespace IceSaw2.Renderer
 
             foreach (var start in _dragStart)
             {
-                if (start.Obj is TrickyPatchObject patch && start.PatchControlPoints != null)
+                if (start.Obj is PatchBaseObject patch && start.PatchControlPoints != null)
                 {
                     for (int i = 0; i < 16; i++) patch.controlPoints[i] = pivotRaw + (start.PatchControlPoints[i] - pivotRaw) * factor;
                     continue;
@@ -444,7 +444,7 @@ namespace IceSaw2.Renderer
 
             foreach (var start in _dragStart)
             {
-                if (start.Obj is TrickyPatchObject patch)
+                if (start.Obj is PatchBaseObject patch)
                 {
                     for (int i = 0; i < 16; i++)
                     {
@@ -544,7 +544,7 @@ namespace IceSaw2.Renderer
 
         private static void RenderScale(Vector3 pivot, float size)
         {
-            if (SelectionManager.Selected.Count == 1 && SelectionManager.Primary is not TrickyPatchObject)
+            if (SelectionManager.Selected.Count == 1 && SelectionManager.Primary is not PatchBaseObject)
             {
                 DrawScaleAxis(pivot, Vector3.UnitX, size, Handle.AxisX);
                 DrawScaleAxis(pivot, Vector3.UnitY, size, Handle.AxisY);

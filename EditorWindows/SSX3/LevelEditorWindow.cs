@@ -1,6 +1,7 @@
 ﻿using IceSaw2.EditorWindows.TrickyEditorWindows;
 using IceSaw2.LevelObject;
 using IceSaw2.Manager;
+using IceSaw2.Manager.SSX3;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.Renderer;
 using ImGuiNET;
@@ -104,7 +105,10 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
                 RenderList[i].Render();
             }
 
-            SelectionManager.RenderHighlights();
+            if (SSX3DataManager.levelDatas.Count != 0)
+            {
+                SelectionManager.RenderHighlights(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects.ToArray());
+            }
             Gizmo.Render(viewCamera3D, winSize);
 
             Raylib.EndMode3D();
@@ -140,10 +144,13 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             ImGui.Begin("Outliner Panel", flags);
             ImGui.Text("Outliner");
 
-            //for (int i = 0; i < TrickyDataManager.LevelNodeTree.Count; i++)
-            //{
-            //    TrickyDataManager.LevelNodeTree[i].HierarchyRender(true);
-            //}
+            if (SSX3DataManager.levelDatas.Count != 0)
+            {
+                for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects.Count; i++)
+                {
+                    SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects[i].HierarchyRender(true);
+                }
+            }
 
             ImGui.End();
             //ImGui.PopStyleVar(2);
@@ -342,6 +349,12 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             // TessellatedPatch batch and instances through TrickyModelMeshObject's render cache, both
             // driven directly in RenderUpdate() - but both have a no-op BaseObject.Render(), so adding
             // them here is safe and makes them reachable for viewport picking (see Picking.cs).
+
+            if (SSX3DataManager.levelDatas.Count != 0)
+            {
+                RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects);
+            }
+
             //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);
             //RenderItems.AddRange(TrickyDataManager.trickyPatchObjects);
             //RenderItems.AddRange(TrickyDataManager.trickyInstanceObjects);

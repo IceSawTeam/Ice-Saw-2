@@ -71,7 +71,7 @@ namespace IceSaw2.Manager
             Selected.Clear();
         }
 
-        public static void RenderHighlights()
+        public static void RenderHighlights(PatchBaseObject[] patchBaseObjects)
         {
             // Patches highlight through the tessellation shader itself (accurate to the actual
             // surface, unlike a bounding box), which is a persistent per-patch flag rather than
@@ -80,23 +80,22 @@ namespace IceSaw2.Manager
             HashSet<int> selectedPatchIds = new HashSet<int>();
             for (int i = 0; i < Selected.Count; i++)
             {
-                if (Selected[i] is TrickyPatchObject selectedPatch)
+                if (Selected[i] is PatchBaseObject selectedPatch)
                 {
                     selectedPatchIds.Add(selectedPatch.TesPatchID);
                 }
             }
 
-            var allPatches = TrickyDataManager.trickyPatchObjects;
-            for (int i = 0; i < allPatches.Count; i++)
+            for (int i = 0; i < patchBaseObjects.Length; i++)
             {
-                TessellatedPatch.Instance.UpdatePatchHighlight(allPatches[i].TesPatchID, selectedPatchIds.Contains(allPatches[i].TesPatchID));
+                TessellatedPatch.Instance.UpdatePatchHighlight(patchBaseObjects[i].TesPatchID, selectedPatchIds.Contains(patchBaseObjects[i].TesPatchID));
             }
 
             for (int i = 0; i < Selected.Count; i++)
             {
                 var obj = Selected[i];
 
-                if (obj is TrickyPatchObject)
+                if (obj is PatchBaseObject)
                 {
                     // Highlight already handled above via the shader.
                     continue;

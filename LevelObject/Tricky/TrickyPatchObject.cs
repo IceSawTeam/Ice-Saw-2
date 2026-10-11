@@ -1,13 +1,8 @@
-﻿using IceSaw2.Manager.SSX3;
-using IceSaw2.Manager.Tricky;
-using IceSaw2.RayWarp;
-using IceSaw2.Renderer;
-using NURBS;
+﻿using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
 using System.Numerics;
-using static IceSaw2.LevelObject.TrickyObjects.TrickyPatchObject;
 
 namespace IceSaw2.LevelObject.TrickyObjects
 {

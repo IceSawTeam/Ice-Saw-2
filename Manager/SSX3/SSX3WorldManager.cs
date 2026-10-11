@@ -35,7 +35,7 @@ namespace IceSaw2.Manager.SSX3
         bool showSettings = false;
 
         string[] LevelIDs = { "None" };
-        int SelectedLevel = 0;
+        public int SelectedLevel = 0;
 
         public SSX3WorldManager()
         {
@@ -250,6 +250,7 @@ namespace IceSaw2.Manager.SSX3
                     string selectedValue = LevelIDs[SelectedLevel];
                     TessellatedPatch.Instance.ClearRenderLayers();
                     TessellatedPatch.Instance.AddRenderLayer(SelectedLevel);
+                    levelEditorWindow.GenerateRenderList();
                 }
 
                 ImGui.EndMainMenuBar();

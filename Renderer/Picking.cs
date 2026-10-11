@@ -112,7 +112,7 @@ namespace IceSaw2.Renderer
 
         private static Vector3 GetRepresentativeWorldPoint(BaseObject obj)
         {
-            if (obj is TrickyPatchObject patch)
+            if (obj is PatchBaseObject patch)
             {
                 BoundingBox box = GetPatchWorldBoundingBox(patch);
                 return Vector3.Lerp(box.Min, box.Max, 0.5f);
@@ -144,7 +144,7 @@ namespace IceSaw2.Renderer
             // tiles' convex-hull boxes commonly overlap each other significantly, so stopping at
             // the box test alone meant a click could land on a neighboring patch's box instead of
             // (or as well as) the one actually under the cursor.
-            if (obj is TrickyPatchObject patch)
+            if (obj is PatchBaseObject patch)
             {
                 RayCollision boxHit = Raylib.GetRayCollisionBox(ray, GetPatchWorldBoundingBox(patch));
                 if (!boxHit.Hit) return null;
@@ -261,7 +261,7 @@ namespace IceSaw2.Renderer
         // Patches are often nearly flat along one axis (a thin height range relative to their
         // footprint), which leaves very little margin for a grazing ray to register - Inflate()
         // pads that out a little so an edge-of-surface click doesn't fall just outside the box.
-        public static BoundingBox GetPatchWorldBoundingBox(TrickyPatchObject patch)
+        public static BoundingBox GetPatchWorldBoundingBox(PatchBaseObject patch)
         {
             Vector3[] points = patch.controlPoints.ReturnControlPoints(false); // already WorldScale-applied
 
@@ -353,7 +353,7 @@ namespace IceSaw2.Renderer
         // (an approximation of) the actual rendered surface rather than its loose bounding box.
         private const int PatchTessellationResolution = 8;
 
-        private static bool RaycastPatchSurface(TrickyPatchObject patch, Ray ray, out float distance)
+        private static bool RaycastPatchSurface(PatchBaseObject patch, Ray ray, out float distance)
         {
             Vector3[] controlPoints = patch.controlPoints.ReturnControlPoints(false);
 

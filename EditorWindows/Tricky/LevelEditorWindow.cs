@@ -103,7 +103,7 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
                 RenderList[i].Render();
             }
 
-            SelectionManager.RenderHighlights();
+            SelectionManager.RenderHighlights(TrickyDataManager.trickyPatchObjects.ToArray());
             Gizmo.Render(viewCamera3D, winSize);
 
             Raylib.EndMode3D();
