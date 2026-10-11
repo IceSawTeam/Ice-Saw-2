@@ -40,11 +40,11 @@ namespace IceSaw2.Renderer
             return _patchEntries.Count;
         }
 
-        public void Init(List<Raylib_cs.Image> lightmaps, bool Bypass)
+        public void Init(List<Raylib_cs.Image> lightmaps, bool BypassPadding)
         {
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
-            GeneratePaddedLightmaps(lightmaps, Bypass);
+            GeneratePaddedLightmaps(lightmaps, BypassPadding);
             Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.All);
 
             var shader = Raylib_cs.Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
@@ -379,10 +379,10 @@ namespace IceSaw2.Renderer
 
         private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps, bool Bypass)
         {
-            if(!Bypass)
+            //Falure due to it needing to be dynamic for ssx 3
+            //Padding doesnt work and might need to do it in shader
+            if (!Bypass)
             {
-                //Falure due to it needing to be dynamic for ssx 3
-                //Padding doesnt work and might need to do it in shader
 
                 foreach (var lightmap in lightmaps)
                 {
