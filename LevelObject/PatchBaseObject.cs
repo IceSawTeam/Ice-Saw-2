@@ -13,6 +13,7 @@ namespace IceSaw2.LevelObject
 {
     public class PatchBaseObject : BaseObject
     {
+        public int RenderLayer = 0;
         public int TesPatchID { get; private set; }
         private Vector4 _lightmapPoint;
         public Vector4 LightMapPoint
@@ -60,9 +61,11 @@ namespace IceSaw2.LevelObject
         }
 
 
-        public PatchBaseObject(int Layer = -1)
+        public PatchBaseObject(int Layer = 0)
         {
-            TesPatchID = IceSaw2.Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], ReturnTexture(TexturePath).Value, UVPoints, 0, ReturnLightmapPoints(), false);
+            RenderLayer = Layer;
+
+            TesPatchID = IceSaw2.Renderer.TessellatedPatch.Instance.AddPatch(new Vector3[16], ReturnTexture(TexturePath).Value, UVPoints, 0, ReturnLightmapPoints(), false, RenderLayer);
 
             controlPoints = new ControlPoints(TesPatchID);
         }
@@ -163,11 +166,9 @@ namespace IceSaw2.LevelObject
         public struct ControlPoints
         {
             int _tesPatchID = -1;
-            int _layer = -1;
-            public ControlPoints(int TesPatchID = -1, int Layer = -1)
+            public ControlPoints(int TesPatchID = -1)
             {
                 _tesPatchID = TesPatchID;
-                _layer = Layer;
             }
 
             private Vector3[] _worldPoints = new Vector3[16];

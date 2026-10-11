@@ -37,6 +37,7 @@ namespace IceSaw2.Manager.SSX3
             {
                 LevelData levelData = new LevelData();
                 levelData.LevelName = config.LevelInfoList[i].LevelName;
+                levelData.LevelID = i;
                 levelData.LoadLevel(Path.Combine(LoadPath, "Levels", config.LevelInfoList[i].LevelName));
                 levelDatas.Add(levelData);
             }
@@ -89,6 +90,7 @@ namespace IceSaw2.Manager.SSX3
 
         public class LevelData
         {
+            public int LevelID;
             public string LevelName;
             public List<SSX3PatchObject> ssx3PatchObjects;
 
@@ -100,7 +102,7 @@ namespace IceSaw2.Manager.SSX3
                 PatchesJsonHandler jsonHandler = PatchesJsonHandler.Load(Path.Combine(LevelDirectory, "Patches.json"));
                 for (int i = 0; i < jsonHandler.Patches.Count; i++)
                 {
-                    SSX3PatchObject patchObject = new SSX3PatchObject();
+                    SSX3PatchObject patchObject = new SSX3PatchObject(LevelID);
 
                     patchObject.LoadPatch(jsonHandler.Patches[i]);
 

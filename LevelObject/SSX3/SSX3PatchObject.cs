@@ -7,6 +7,11 @@ using System.Numerics;
 
 public class SSX3PatchObject : PatchBaseObject
 {
+    public SSX3PatchObject(int id) : base(id)
+    {
+
+    }
+
 
     public void LoadPatch(PatchesJsonHandler.PatchJson import)
     {

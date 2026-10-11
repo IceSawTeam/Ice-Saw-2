@@ -1,5 +1,6 @@
 ﻿using IceSaw2.EditorWindows.SSX3EditorWindows;
 using IceSaw2.Manager.Tricky;
+using IceSaw2.Renderer;
 using IceSaw2.Settings;
 using IceSaw2.Utilities;
 using ImGuiNET;
@@ -247,6 +248,8 @@ namespace IceSaw2.Manager.SSX3
                 {
                     // The user selected a new item
                     string selectedValue = LevelIDs[SelectedLevel];
+                    TessellatedPatch.Instance.ClearRenderLayers();
+                    TessellatedPatch.Instance.AddRenderLayer(SelectedLevel);
                 }
 
                 ImGui.EndMainMenuBar();

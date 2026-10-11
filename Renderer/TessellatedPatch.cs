@@ -19,6 +19,8 @@ namespace IceSaw2.Renderer
         private readonly List<PatchEntry?> _patchEntries = [];
         private readonly List<Batch> _drawList = [];
 
+        public List<int> RenderingLayers = new List<int>();
+
         public bool WireOverlayEnabled = false;
         public bool LightmapEnabled = true;
 
@@ -34,6 +36,8 @@ namespace IceSaw2.Renderer
         private int _lightmapTextureUVsLoc;
         private int _highlightedLoc;
 
+        private bool _forceRegen;
+
         // DEBUG
         public int PatchCount()
         {
@@ -42,6 +46,8 @@ namespace IceSaw2.Renderer
 
         public void Init(List<Raylib_cs.Image> lightmaps, bool BypassPadding)
         {
+            RenderingLayers = new List<int>();
+            RenderingLayers.Add(0);
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
             GeneratePaddedLightmaps(lightmaps, BypassPadding);
@@ -69,6 +75,18 @@ namespace IceSaw2.Renderer
             _highlightedLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "highlighted[0]");
         }
 
+        public void ClearRenderLayers()
+        {
+            RenderingLayers.Clear();
+            _forceRegen = true;
+        }
+
+        public void AddRenderLayer(int LayerID)
+        {
+            RenderingLayers.Add(LayerID);
+            _forceRegen = true;
+        }
+
         public void Clear()
         {
             _patchEntries.Clear();
@@ -76,6 +94,7 @@ namespace IceSaw2.Renderer
             {
                 Raylib_cs.Raylib.UnloadTexture(lightmap);
             }
+            _forceRegen = true;
         }
 
         public int AddPatch(
@@ -84,7 +103,7 @@ namespace IceSaw2.Renderer
                 Vector2[] TextureUV,
                 int LightmapID,
                 Vector2[] LightmapUV,
-                bool Highlighted)
+                bool Highlighted, int RenderLayer)
         {
             bool foundEmptySpot = false;
             int foundID = 0;
@@ -100,6 +119,7 @@ namespace IceSaw2.Renderer
 
             PatchEntry entry = new()
             {
+                RenderLayer = RenderLayer,
                 Controlpoints = Controlpoints,
                 Texture = Texture,
                 TextureUV = TextureUV,
@@ -210,8 +230,9 @@ namespace IceSaw2.Renderer
             unsafe { if (_material.Shader.Locs == null) return; }
 
             Matrix4x4 projection = Raylib_cs.Rlgl.GetMatrixModelview();
-            if (PreviousView != projection)
+            if (PreviousView != projection || _forceRegen)
             {
+                _forceRegen = false;
                 PreviousView = projection;
                 _drawList.Clear();
                 List<Batch> drawList = new List<Batch>();
@@ -219,6 +240,7 @@ namespace IceSaw2.Renderer
                 for (int a = 0; a < _patchEntries.Count; a++)
                 {
                     if (_patchEntries[a] == null) continue;
+                    if (!RenderingLayers.Contains(_patchEntries[a].RenderLayer)) continue;
 
                     // Frustum cull and fill draw list by batching them
                     if (FrustumCulling.IsSphereInFrustum(_patchEntries[a].Sphere.Position, _patchEntries[a].Sphere.Radius))
@@ -462,6 +484,7 @@ namespace IceSaw2.Renderer
 
         private class PatchEntry
         {
+            public int RenderLayer;
             public Vector3[] Controlpoints = new Vector3[16];
             public Raylib_cs.Texture2D Texture;
             public Vector2[] TextureUV = new Vector2[4]; // List count is 4
