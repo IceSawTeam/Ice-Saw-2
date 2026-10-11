@@ -1,5 +1,4 @@
-﻿using IceSaw2.EditorWindows.TrickyEditorWindows;
-using IceSaw2.LevelObject;
+﻿using IceSaw2.LevelObject;
 using IceSaw2.Manager;
 using IceSaw2.Manager.SSX3;
 using IceSaw2.Manager.Tricky;
@@ -11,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace IceSaw2.EditorWindows.SSX3EditorWindows
 {
-    public class LevelEditorWindow : BaseEditorWindow
+    public class SSX3LevelEditorWindow : BaseEditorWindow
     {
         private const float BOOST_MULTIPLIER = 2.0f;
 
