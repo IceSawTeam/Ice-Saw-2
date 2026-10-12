@@ -12,7 +12,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 {
     public class SSX3LevelEditorWindow : BaseEditorWindow
     {
-        CameraController controller = new CameraController();
+        public CameraController controller = new CameraController();
         public Vector2 winPos;
         public Vector2 winSize;
 

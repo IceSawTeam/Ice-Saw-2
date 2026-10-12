@@ -63,7 +63,7 @@ public class TrickyPaticleInstanceObject : BaseObject
     public override void Render()
     {
         var worldManInstance = TrickyWorldManager.instance;
-        Camera3D camera = worldManInstance.levelEditorWindow.viewCamera3D;
+        Camera3D camera = worldManInstance.levelEditorWindow.controller.viewCamera3D;
         Texture2D particleIcon = worldManInstance.ParticleIcon;
 
 

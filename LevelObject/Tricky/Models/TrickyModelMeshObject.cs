@@ -179,9 +179,9 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 else
                 {
                     Matrix4x4 matrix4X4 = Default;
-                    matrix4X4.M14 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.X;
-                    matrix4X4.M24 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Y;
-                    matrix4X4.M34 = TrickyWorldManager.instance.levelEditorWindow.viewCamera3D.Position.Z;
+                    matrix4X4.M14 = TrickyWorldManager.instance.levelEditorWindow.controller.viewCamera3D.Position.X;
+                    matrix4X4.M24 = TrickyWorldManager.instance.levelEditorWindow.controller.viewCamera3D.Position.Y;
+                    matrix4X4.M34 = TrickyWorldManager.instance.levelEditorWindow.controller.viewCamera3D.Position.Z;
 
                     for (int i = 0; i < renderCaches.Count; i++)
                     {

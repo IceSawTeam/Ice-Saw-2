@@ -11,7 +11,7 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
 {
     public class TrickyLevelEditorWindow : BaseEditorWindow
     {
-        CameraController controller = new CameraController();
+        public CameraController controller = new CameraController();
         public Vector2 winPos;
         public Vector2 winSize;
 
