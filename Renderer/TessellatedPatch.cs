@@ -37,6 +37,7 @@ namespace IceSaw2.Renderer
         private int _highlightedLoc;
 
         private bool _forceRegen;
+        private bool _bypassPadding;
 
         // DEBUG
         public int PatchCount()
@@ -46,11 +47,12 @@ namespace IceSaw2.Renderer
 
         public void Init(List<Raylib_cs.Image> lightmaps, bool BypassPadding)
         {
+            _bypassPadding = BypassPadding;
             RenderingLayers = new List<int>();
             RenderingLayers.Add(0);
             GenerateMesh();
             Raylib_cs.Raylib.UploadMesh(ref _mesh, false);
-            GeneratePaddedLightmaps(lightmaps, BypassPadding);
+            GeneratePaddedLightmaps(lightmaps);
             Raylib_cs.Raylib.SetTraceLogLevel(Raylib_cs.TraceLogLevel.All);
 
             var shader = Raylib_cs.Raylib.LoadShaderFromMemory(LoadEmbeddedFile.LoadText("Shaders.TessellatedPatchBatch.vs", System.Text.Encoding.UTF8),
@@ -131,15 +133,18 @@ namespace IceSaw2.Renderer
 
             //Readjust points for padding tiles
 
-            entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
-            entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
-            entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
-            entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
+            if (!_bypassPadding)
+            {
+                entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
+                entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
+                entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
+                entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
 
-            entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
-            entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+                entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
+                entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
+                entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
+                entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+            }
 
             if (foundEmptySpot)
             {
@@ -220,9 +225,9 @@ namespace IceSaw2.Renderer
             entry.Highlighted = Highlight;
         }
 
-        public void UpdateLightmaps(List<Raylib_cs.Image> lightmaps, bool Bypass)
+        public void UpdateLightmaps(List<Raylib_cs.Image> lightmaps)
         {
-            GeneratePaddedLightmaps(lightmaps, Bypass);
+            GeneratePaddedLightmaps(lightmaps);
         }
 
         public void Render()
@@ -399,11 +404,11 @@ namespace IceSaw2.Renderer
             }
         }
 
-        private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps, bool Bypass)
+        private void GeneratePaddedLightmaps(List<Raylib_cs.Image> lightmaps)
         {
             //Falure due to it needing to be dynamic for ssx 3
             //Padding doesnt work and might need to do it in shader
-            if (!Bypass)
+            if (!_bypassPadding)
             {
 
                 foreach (var lightmap in lightmaps)
