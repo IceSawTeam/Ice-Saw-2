@@ -203,12 +203,13 @@ namespace IceSaw2.Renderer
 
         public void UpdatePatchLightmap(int patchID, int lightmapID, Vector2[] lightmapUV)
         {
-            if (!_bypassPadding)
-            {
                 var entry = _patchEntries[patchID];
                 Debug.Assert(entry != null);
                 entry.LightmapID = lightmapID;
                 entry.LightmapUV = lightmapUV;
+
+            if (!_bypassPadding)
+            {
                 entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
                 entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
                 entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
