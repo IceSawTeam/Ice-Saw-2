@@ -17,7 +17,7 @@ namespace IceSaw2.Manager.SSX3
         public static SSX3WorldManager instance = null;
 
         public SSX3LevelEditorWindow levelEditorWindow = new();
-        //public ModelsEditorWindow prefabEditorWindow = new();
+        public SSX3ModelsEditorWindow prefabEditorWindow = new();
         //public LogicEditorWindow logicEditorWindow = new();
 
         public WindowMode windowMode = WindowMode.World;
@@ -83,21 +83,6 @@ namespace IceSaw2.Manager.SSX3
             {
                 if (ImGui.BeginMenu("File"))
                 {
-                    if (ImGui.MenuItem("New"))
-                    {
-                        ////Select Folder
-                        //var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
-                        //if (FolderSelect.IsOk)
-                        //{
-                        //    TrickyLevelInterface trickyLevelInterface = new TrickyLevelInterface();
-                        //    trickyLevelInterface.GenerateTemplate(FolderSelect.Path);
-                        //    TrickyDataManager.LoadProject(Path.Combine(FolderSelect.Path, "config.ssx"));
-                        //    Settings.General.Instance.data.LastLoad = FolderSelect.Path;
-                        //    Settings.General.Instance.Save();
-                        //    Settings.KeyBinding.Instance.Save();
-                        //    levelEditorWindow.GenerateRenderList();
-                        //}
-                    }
 
                     if (ImGui.MenuItem("Open..."))
                     {
@@ -111,19 +96,6 @@ namespace IceSaw2.Manager.SSX3
                             Settings.KeyBinding.Instance.Save();
                             levelEditorWindow.GenerateRenderList();
                         }
-                    }
-
-                    if (ImGui.MenuItem("Save"))
-                    {
-                        //TrickyDataManager.SaveProject(Path.Combine(Settings.General.Instance.data.LastLoad, "config.ssx"), false);
-                    }
-                    if (ImGui.MenuItem("Save As"))
-                    {
-                        //var result = Dialog.FileSave("ssx", Settings.General.Instance.data.LastLoad);
-                        //if (result.IsOk)
-                        //{
-                        //    TrickyDataManager.SaveProject(result.Path, false);
-                        //}
                     }
 
                     if (ImGui.MenuItem("Extract"))
@@ -144,14 +116,14 @@ namespace IceSaw2.Manager.SSX3
                         }
                     }
 
-                    if (ImGui.MenuItem("Export OBJ"))
-                    {
-                        //var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
-                        //if (FolderSelect.IsOk)
-                        //{
-                        //    OBJLevelExtract.ExtractOBJ(FolderSelect.Path);
-                        //}
-                    }
+                    //if (ImGui.MenuItem("Export OBJ"))
+                    //{
+                    //    //var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
+                    //    //if (FolderSelect.IsOk)
+                    //    //{
+                    //    //    OBJLevelExtract.ExtractOBJ(FolderSelect.Path);
+                    //    //}
+                    //}
 
                     //if (ImGui.MenuItem("Rebuild"))
                     //{
@@ -237,7 +209,7 @@ namespace IceSaw2.Manager.SSX3
 
                 if (ImGui.MenuItem("Models", "", windowMode == WindowMode.Prefabs))
                 {
-                    //windowMode = WindowMode.Prefabs;
+                    windowMode = WindowMode.Prefabs;
                 }
                 if (ImGui.MenuItem("Logic", "", windowMode == WindowMode.Logic))
                 {

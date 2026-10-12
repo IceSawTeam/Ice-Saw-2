@@ -49,10 +49,10 @@ namespace IceSaw2.LevelObject.SSX3
 
         public void LoadMaterial(MaterialJsonHandler.Material bin0)
         {
-            Name = RID.ToString();
-
             TrackID = bin0.TrackID;
             RID = bin0.RID;
+
+            Name = RID.ToString();
 
             TexturePath = bin0.TextureName;
             U1 = bin0.U1;

@@ -109,7 +109,7 @@ namespace IceSaw2
                 switch (_ssx3WorldManager.windowMode)
                 {
                     case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.LogicUpdate(); break;
-                    //case TrickyWorldManager.WindowMode.Prefabs: _trickyWorldManager.prefabEditorWindow.LogicUpdate(); break;
+                    case SSX3WorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.LogicUpdate(); break;
                     //case TrickyWorldManager.WindowMode.Logic: _trickyWorldManager.logicEditorWindow.LogicUpdate(); break;
                 }
                 _ssx3WorldManager.UpdateLogic();
@@ -153,14 +153,14 @@ namespace IceSaw2
                         winPos = _ssx3WorldManager.levelEditorWindow.winPos;
                         winSize = _ssx3WorldManager.levelEditorWindow.winSize;
                         break;
-                    //case TrickyWorldManager.WindowMode.Prefabs:
-                    //    winPos = _trickyWorldManager.prefabEditorWindow.winPos;
-                    //    winSize = _trickyWorldManager.prefabEditorWindow.winSize;
-                    //    break;
-                    //case TrickyWorldManager.WindowMode.Logic:
-                    //    winPos = _trickyWorldManager.logicEditorWindow.winPos;
-                    //    winSize = _trickyWorldManager.logicEditorWindow.winSize;
-                    //    break;
+                    case SSX3WorldManager.WindowMode.Prefabs:
+                        winPos = _ssx3WorldManager.prefabEditorWindow.winPos;
+                        winSize = _ssx3WorldManager.prefabEditorWindow.winSize;
+                        break;
+                        //case TrickyWorldManager.WindowMode.Logic:
+                        //    winPos = _trickyWorldManager.logicEditorWindow.winPos;
+                        //    winSize = _trickyWorldManager.logicEditorWindow.winSize;
+                        //    break;
                 }
             }
 
@@ -192,7 +192,7 @@ namespace IceSaw2
                 switch (_ssx3WorldManager.windowMode)
                 {
                     case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.RenderUpdate(); break;
-                    //case TrickyWorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUpdate(); break;
+                    case SSX3WorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUpdate(); break;
                     //case TrickyWorldManager.WindowMode.Logic: _ssx3WorldManager.logicEditorWindow.RenderUpdate(); break;
                 }
             }
@@ -251,7 +251,7 @@ namespace IceSaw2
                 switch (_ssx3WorldManager.windowMode)
                 {
                     case SSX3WorldManager.WindowMode.World: _ssx3WorldManager.levelEditorWindow.RenderUI(); break;
-                    //case SSX3WorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUI(); break;
+                    case SSX3WorldManager.WindowMode.Prefabs: _ssx3WorldManager.prefabEditorWindow.RenderUI(); break;
                     //case SSX3WorldManager.WindowMode.Logic: _ssx3WorldManager.logicEditorWindow.RenderUI(); break;
                 }
                 _ssx3WorldManager.UpdateRender();
