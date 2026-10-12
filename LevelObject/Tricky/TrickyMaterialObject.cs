@@ -3,7 +3,7 @@ using IceSaw2.Utilities;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 
-namespace IceSaw2.LevelObject.Materials
+namespace IceSaw2.LevelObject.Tricky
 {
     public class TrickyMaterialObject : MeshBaseObject
     {

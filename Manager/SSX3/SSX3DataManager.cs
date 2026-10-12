@@ -1,8 +1,7 @@
 ﻿
-using IceSaw2.LevelObject.TrickyObjects;
-using IceSaw2.Manager.Tricky;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.SSX3;
+using IceSaw2.LevelObject.SSX3;
 using static IceSaw2.Manager.DataManagerBase;
 
 namespace IceSaw2.Manager.SSX3
@@ -93,6 +92,7 @@ namespace IceSaw2.Manager.SSX3
             public int LevelID;
             public string LevelName;
             public List<SSX3PatchObject> ssx3PatchObjects;
+            public List<SSX3MaterialObject> ssx3MaterialObjects;
 
 
             public void LoadLevel(string LevelDirectory)
@@ -110,6 +110,17 @@ namespace IceSaw2.Manager.SSX3
                 }
 
                 //Materials
+                ssx3MaterialObjects = new List<SSX3MaterialObject>();
+                MaterialJsonHandler materialsJsonHandler = MaterialJsonHandler.Load(Path.Combine(LevelDirectory, "Materials.json"));
+                for (int i = 0; i < materialsJsonHandler.Materials.Count; i++)
+                {
+                    SSX3MaterialObject ssx3MaterialObject = new SSX3MaterialObject();
+
+                    ssx3MaterialObject.LoadMaterial(materialsJsonHandler.Materials[i]);
+
+                    ssx3MaterialObjects.Add(ssx3MaterialObject);
+                }
+
                 //Models
                 //Instances
                 //Splines
