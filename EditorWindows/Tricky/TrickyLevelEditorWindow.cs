@@ -338,6 +338,7 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
             HandleGizmoModeSwitch();
             HandleSelectionInput();
 
+            controller.ControllerLogic();
             //Update Camera
             //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
             // Viewport Camera
