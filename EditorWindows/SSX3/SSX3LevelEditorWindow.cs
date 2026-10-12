@@ -12,24 +12,11 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 {
     public class SSX3LevelEditorWindow : BaseEditorWindow
     {
-        private const float BOOST_MULTIPLIER = 2.0f;
-
-        private float yaw = 0.0f;
-        private float pitch = 0.0f;
-        private float mouseSensitivity = 0.003f;
-        private float moveSpeed = 0.1f;
-        private const float moveSpeedStep = 0.08f;
-        private float moveSpeedChangedTimer = 0.0f;
-        private int screenWidth { get { return Raylib.GetScreenWidth(); } }
-        private int screenHeight { get { return Raylib.GetScreenHeight(); } }
+        CameraController controller = new CameraController();
         public Vector2 winPos;
         public Vector2 winSize;
 
         private float axisLineSize = 1000f;
-        private float nearClip = 1f;
-        private float farClip = 10000000f;
-
-        public Camera3D viewCamera3D = new Camera3D();
         public bool Open = true;
 
         public ShadingType shadingType;
@@ -47,11 +34,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 
         public void Initilize()
         {
-            viewCamera3D.Position = new Vector3(0f, 0f, 0.1f);
-            viewCamera3D.Target = viewCamera3D.Position + new Vector3(0, 1, 0);
-            viewCamera3D.Up = new Vector3(0, 0, 1);
-            viewCamera3D.FovY = 65f;
-            viewCamera3D.Projection = CameraProjection.Perspective;
+
         }
 
         public override void RenderUpdate()
@@ -65,11 +48,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
                 Rlgl.DisableBackfaceCulling();
             }
 
-            Rlgl.SetClipPlanes(nearClip, farClip);
-
-            //Render 3D
-            Raylib.BeginMode3D(viewCamera3D);
-            FrustumCulling.UpdateFrustum(viewCamera3D);
+            controller.Begin3D();
             Rlgl.DisableDepthMask();
             //Render Skybox
 
@@ -108,7 +87,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             {
                 SelectionManager.RenderHighlights(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects.ToArray());
             }
-            Gizmo.Render(viewCamera3D, winSize);
+            Gizmo.Render(controller.viewCamera3D, winSize);
 
             Raylib.EndMode3D();
         }
@@ -276,27 +255,27 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 
                     ImGui.Separator();
 
-                    if (ImGui.RadioButton("Perspective", viewCamera3D.Projection == CameraProjection.Perspective))
+                    if (ImGui.RadioButton("Perspective", controller.viewCamera3D.Projection == CameraProjection.Perspective))
                     {
-                        viewCamera3D.Projection = CameraProjection.Perspective;
+                        controller.viewCamera3D.Projection = CameraProjection.Perspective;
                     }
                     ImGui.SameLine();
-                    if (ImGui.RadioButton("Orthographic", viewCamera3D.Projection == CameraProjection.Orthographic))
+                    if (ImGui.RadioButton("Orthographic", controller.viewCamera3D.Projection == CameraProjection.Orthographic))
                     {
-                        viewCamera3D.Projection = CameraProjection.Orthographic;
+                        controller.viewCamera3D.Projection = CameraProjection.Orthographic;
                     }
 
-                    ImGui.DragFloat("Near Clip", ref nearClip, 0.01f, 0.000001f, 10000f);
-                    ImGui.DragFloat("Far Clip", ref farClip, 1f, 0.000002f, 100000f);
+                    ImGui.DragFloat("Near Clip", ref controller.nearClip, 0.01f, 0.000001f, 10000f);
+                    ImGui.DragFloat("Far Clip", ref controller.farClip, 1f, 0.000002f, 100000f);
 
-                    if(nearClip<=0)
+                    if(controller.nearClip <=0)
                     {
-                        nearClip = 0.001f;
+                        controller.nearClip = 0.001f;
                     }
 
-                    if(farClip <= 0)
+                    if(controller.farClip <= 0)
                     {
-                        farClip = 0.001f;
+                        controller.farClip = 0.001f;
                     }
 
                     ImGui.EndMenu();
@@ -317,10 +296,10 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             //ImGui.TextWrapped("This is the viewport area! Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test ");
 
 
-            if (moveSpeedChangedTimer > 0f)
+            if (controller.moveSpeedChangedTimer > 0f)
             {
-                ImGui.Text($"Move Speed: {moveSpeed}");
-                moveSpeedChangedTimer -= Raylib.GetFrameTime();
+                ImGui.Text($"Move Speed: {controller.moveSpeed}");
+                controller.moveSpeedChangedTimer -= Raylib.GetFrameTime();
             }
 
 
@@ -375,53 +354,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             //Update Camera
             //Raylib.UpdateCamera(ref viewCamera3D, CameraMode.Free);
             // Viewport Camera
-            if (Input.IsActionDown("CameraActivate"))
-            {
-                Raylib.HideCursor();
-
-                // Look
-                Vector2 mouseDelta = Raylib.GetMouseDelta();
-                yaw += mouseDelta.X * mouseSensitivity;
-                pitch -= mouseDelta.Y * mouseSensitivity;
-                pitch = Math.Clamp(pitch, -1.5f, 1.5f);
-
-                Raylib.SetMousePosition(screenWidth / 2, screenHeight / 2);
-
-                Vector3 forward = new Vector3(MathF.Cos(pitch) * MathF.Sin(yaw), MathF.Cos(pitch) * MathF.Cos(yaw), MathF.Sin(pitch));
-                Vector3 right = new Vector3(MathF.Sin(yaw - MathF.PI / 2f), MathF.Cos(yaw - MathF.PI / 2f), 0f);
-                Vector3 up = Raymath.Vector3CrossProduct(forward, right);
-
-                viewCamera3D.Up = up;
-
-                // Movement
-                Vector3 newPosition = new Vector3(0, 0, 0);
-                // Vector3 newPosition = Raymath.Vector3Zero();
-                float currentSpeed = moveSpeed;
-                if (Input.IsActionDown("CameraBoost")) currentSpeed *= BOOST_MULTIPLIER;
-                if (Input.IsActionDown("CameraMoveForward")) newPosition += forward;
-                if (Input.IsActionDown("CameraMoveBack")) newPosition -= forward;
-                if (Input.IsActionDown("CameraMoveRight")) newPosition -= right;
-                if (Input.IsActionDown("CameraMoveLeft")) newPosition += right;
-                if (Input.IsActionDown("CameraMoveUp")) newPosition += up;
-                if (Input.IsActionDown("CameraMoveDown")) newPosition -= up;
-                viewCamera3D.Position += Raymath.Vector3Normalize(newPosition) * currentSpeed;
-
-                float wheel = Raylib.GetMouseWheelMove();
-                if (wheel != 0)
-                {
-                    moveSpeed += wheel * moveSpeedStep;
-                    moveSpeed = Math.Clamp(moveSpeed, 0.008f, 200f);
-                    //Debug.WriteLine(moveSpeed, currentSpeed.ToString());
-                    moveSpeedChangedTimer = 4.0f;
-                }
-                
-
-                viewCamera3D.Target = viewCamera3D.Position + forward;
-            }
-            if (Input.IsActionReleased("CameraActivate"))
-            {
-                Raylib.ShowCursor();
-            }
+            controller.ControllerLogic();
         }
 
         // W/E/R switch the gizmo's mode (Move/Rotate/Scale). Free to use here since they're only
@@ -453,7 +386,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             // The gizmo gets first crack at the click so grabbing a handle doesn't also kick off a
             // box-select or deselect. Always called (not gated on overViewport) so a drag started
             // inside the viewport can still be tracked/released if the mouse drifts outside it.
-            if (Gizmo.HandleInput(mouseScreen, winPos, winSize, viewCamera3D, !ImGui.IsAnyItemHovered()))
+            if (Gizmo.HandleInput(mouseScreen, winPos, winSize, controller.viewCamera3D, !ImGui.IsAnyItemHovered()))
             {
                 isBoxSelecting = false;
                 return;
@@ -484,7 +417,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
                 if (Vector2.Distance(boxSelectStartScreen, mouseScreen) < BoxSelectDragThresholdPx)
                 {
                     // Simple click
-                    BaseObject? hit = Picking.Pick(mouseScreen, winPos, winSize, viewCamera3D, RenderItems);
+                    BaseObject? hit = Picking.Pick(mouseScreen, winPos, winSize, controller.viewCamera3D, RenderItems);
 
                     if (hit != null)
                     {
@@ -498,7 +431,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
                 else
                 {
                     // Box select
-                    var hits = Picking.PickBox(boxSelectStartScreen, mouseScreen, winPos, winSize, viewCamera3D, RenderItems);
+                    var hits = Picking.PickBox(boxSelectStartScreen, mouseScreen, winPos, winSize, controller.viewCamera3D, RenderItems);
                     SelectionManager.Box(hits, ctrl || shift);
                 }
             }
