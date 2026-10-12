@@ -203,19 +203,22 @@ namespace IceSaw2.Renderer
 
         public void UpdatePatchLightmap(int patchID, int lightmapID, Vector2[] lightmapUV)
         {
-            var entry = _patchEntries[patchID];
-            Debug.Assert(entry != null);
-            entry.LightmapID = lightmapID;
-            entry.LightmapUV = lightmapUV;
-            entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
-            entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
-            entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
-            entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
+            if (!_bypassPadding)
+            {
+                var entry = _patchEntries[patchID];
+                Debug.Assert(entry != null);
+                entry.LightmapID = lightmapID;
+                entry.LightmapUV = lightmapUV;
+                entry.LightmapUV[0] = ConvertLightmapUV(entry.LightmapUV[0]);
+                entry.LightmapUV[1] = ConvertLightmapUV(entry.LightmapUV[1]);
+                entry.LightmapUV[2] = ConvertLightmapUV(entry.LightmapUV[2]);
+                entry.LightmapUV[3] = ConvertLightmapUV(entry.LightmapUV[3]);
 
-            entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
-            entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
-            entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+                entry.LightmapUV[0] += new Vector2(LightmapPixelSize, LightmapPixelSize);
+                entry.LightmapUV[1] += new Vector2(LightmapPixelSize, -LightmapPixelSize);
+                entry.LightmapUV[2] += new Vector2(-LightmapPixelSize, LightmapPixelSize);
+                entry.LightmapUV[3] += new Vector2(-LightmapPixelSize, -LightmapPixelSize);
+            }
         }
 
         public void UpdatePatchHighlight(int patchID, bool Highlight)
