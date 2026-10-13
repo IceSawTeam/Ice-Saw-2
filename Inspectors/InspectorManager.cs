@@ -74,7 +74,7 @@ namespace IceSaw2.Inspectors
                 float value = first[c];
                 bool mixed = targets.Any(t => get(t)[c] != value);
                 if (c > 0) ImGui.SameLine();
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / (4 - c));
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / (3 - c));
                 if (ImGui.DragFloat("##" + c, ref value, 0.01f, 0, 0, mixed ? "--" : "%.3f"))
                     foreach (var t in targets) { var v = get(t); v[c] = value; set(t, v); }
             }
@@ -91,7 +91,7 @@ namespace IceSaw2.Inspectors
                 float value = first[c];
                 bool mixed = targets.Any(t => get(t)[c] != value);
                 if (c > 0) ImGui.SameLine();
-                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / (4 - c));
+                ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / (2 - c));
                 if (ImGui.DragFloat("##" + c, ref value, 0.01f, 0, 0, mixed ? "--" : "%.3f"))
                     foreach (var t in targets) { var v = get(t); v[c] = value; set(t, v); }
             }
