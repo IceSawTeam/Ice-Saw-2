@@ -17,7 +17,7 @@ namespace IceSaw2.Inspectors
             if (mixed)
                 value = "";
 
-            if (ImGui.InputTextWithHint(label, mixed ? "--" : "", ref value, 512, ImGuiInputTextFlags.EnterReturnsTrue))
+            if (ImGui.InputTextWithHint(label, mixed ? "--" : "", ref value, 512))
                 foreach (var t in targets) set(t, value);
         }
 
