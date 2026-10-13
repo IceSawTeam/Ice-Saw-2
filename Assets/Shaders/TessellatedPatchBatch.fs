@@ -27,7 +27,7 @@ void main() {
 
     vec4 texelColor = textureColor;
      if (lightmapsEnabled == 1) {
-         texelColor = ((textureColor - lightmapColor) * lightmapColor.w * 2);
+         texelColor = (((textureColor/2) - lightmapColor) * lightmapColor.w)*2f;
          texelColor.w = 1;
     }
     if (highlighted[instanceId] == 1){
