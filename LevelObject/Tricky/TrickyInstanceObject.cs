@@ -16,11 +16,11 @@ namespace IceSaw2.LevelObject
             get { return ObjectType.Instance; }
         }
 
-        int ModelID;
+        public int ModelID;
         //public TrickyPrefabObject PrefabObject;
 
-        int PrevInstance; //Next Connected Model 
-        int NextInstance; //Prev Connected Model
+        public int PrevInstance; //Next Connected Model 
+        public int NextInstance; //Prev Connected Model
 
         //public TrickyInstanceObject PrevInstanceObject;
         //public TrickyInstanceObject NextInstanceObject;
@@ -52,10 +52,10 @@ namespace IceSaw2.LevelObject
         public int CollsionMode;
         public string[] CollsionModelPaths = [];
 
-        int EffectSlotIndex;
+        public int EffectSlotIndex;
         //public EffectSlotObject EffectSlotObject;
 
-        int PhysicsIndex;
+        public int PhysicsIndex;
         //public PhysicsObject PhysicsObject;
 
         public int U8;

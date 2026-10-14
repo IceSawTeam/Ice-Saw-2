@@ -1,4 +1,5 @@
-﻿using IceSaw2.LevelObject.TrickyObjects;
+﻿using IceSaw2.LevelObject;
+using IceSaw2.LevelObject.TrickyObjects;
 using ImGuiNET;
 using SharpGLTF.Runtime;
 using System;
@@ -11,10 +12,8 @@ namespace IceSaw2.Inspectors.Tricky
     {
         public static void Draw(IReadOnlyList<TrickyPatchObject> patches)
         {
-            InspectorManager.Text("Name", patches, p => p.Name, (p, v) => p.Name = v);
-            InspectorManager.Vector3("Position", patches, p => p.Position, (p, v) => p.Position = v);
-            InspectorManager.Vector3("Scale", patches, p => p.Scale, (p, v) => p.Scale = v);
-            InspectorManager.Vector3("Rotation", patches, p => p.EulerAngles, (p, v) => p.EulerAngles = v);
+            InspectorManager.DrawStandardDetails<BaseObject>(patches);
+
             InspectorManager.Vector4("Lightmap", patches, p => p.LightMapPoint, (p, v) => p.LightMapPoint = v);
             ImGui.Spacing();
             if (ImGui.CollapsingHeader($"UV Points"))

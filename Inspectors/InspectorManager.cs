@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using IceSaw2.LevelObject;
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -9,6 +10,13 @@ namespace IceSaw2.Inspectors
 {
     public class InspectorManager
     {
+        public static void DrawStandardDetails<T>(IReadOnlyList<BaseObject> objects)
+        {
+            Text("Name", objects, p => p.Name, (p, v) => p.Name = v);
+            Vector3("Position", objects, p => p.Position, (p, v) => p.Position = v);
+            Vector3("Scale", objects, p => p.Scale, (p, v) => p.Scale = v);
+            Vector3("Rotation", objects, p => p.EulerAngles, (p, v) => p.EulerAngles = v);
+        }
         public static void Text<T>(string label, IReadOnlyList<T> targets, Func<T, string> get, Action<T, string> set)
         {
             string value = get(targets[0]) ?? "";
