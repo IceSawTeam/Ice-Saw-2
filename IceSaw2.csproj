@@ -85,8 +85,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Inspectors\SSX3\" />
-    <Folder Include="Inspectors\OG\" />
     <Folder Include="LevelObject\OG\" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Reflection.Emit;
 using System.Text;
 
-namespace IceSaw2.Inspectors
+namespace IceSaw2.Manager
 {
     public class InspectorManager
     {

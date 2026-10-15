@@ -1,5 +1,4 @@
-﻿using IceSaw2.Inspectors.Tricky;
-using IceSaw2.LevelObject;
+﻿using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager;
 using IceSaw2.Manager.Tricky;
@@ -137,6 +136,8 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
             ImGui.Text("Inspector");
             ImGui.Separator();
 
+            //Swap how its drawn so basic details get drawn first then the by groupings
+
             foreach (var group in SelectionManager.Selected.GroupBy(o => o.GetType()))
             {
                 if (!ImGui.CollapsingHeader($"{group.Key.Name} ({group.Count()})###{group.Key.Name}", ImGuiTreeNodeFlags.DefaultOpen))
@@ -145,10 +146,10 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
                 switch (group.First())
                 {
                     case TrickyPatchObject:
-                        PatchInspector.Draw(group.Cast<TrickyPatchObject>().ToList());
+                        TrickyPatchObject.Draw(group.Cast<TrickyPatchObject>().ToList());
                         break;
                     case TrickyInstanceObject:
-                        //InstanceInspector.Draw(group.Cast<TrickyInstanceObject>().ToList());
+                        TrickyInstanceObject.Draw(group.Cast<TrickyInstanceObject>().ToList());
                         break;
                     default:
                         ImGui.TextDisabled("No inspector yet");

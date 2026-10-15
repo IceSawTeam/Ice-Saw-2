@@ -1,4 +1,6 @@
-﻿using IceSaw2.Manager.Tricky;
+﻿using IceSaw2.Manager;
+using IceSaw2.Manager.Tricky;
+using ImGuiNET;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
@@ -71,6 +73,34 @@ namespace IceSaw2.LevelObject.TrickyObjects
             patch.LightmapID = LightmapID;
 
             return patch;
+        }
+
+        public static void Draw(IReadOnlyList<TrickyPatchObject> patches)
+        {
+            InspectorManager.DrawStandardDetails<BaseObject>(patches);
+
+            InspectorManager.Vector4("Lightmap", patches, p => p.LightMapPoint, (p, v) => p.LightMapPoint = v);
+            ImGui.Spacing();
+            if (ImGui.CollapsingHeader($"UV Points"))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    InspectorManager.Vector2("UV Point " + (i + 1), patches, p => p.UVPoints[i], (p, v) => p.UVPoints[i] = v);
+                }
+            }
+
+            if (ImGui.CollapsingHeader($"Control Point"))
+            {
+                for (int i = 0; i < 16; i++)
+                {
+                    InspectorManager.Vector3("Control Point " + (i + 1), patches, p => p.controlPoints[i], (p, v) => p.controlPoints[i] = v);
+                }
+            }
+
+            InspectorManager.Int("Surface Type", patches, p => p.SurfaceType, (p, v) => p.SurfaceType = v);
+            InspectorManager.Bool("Trick Only Patch", patches, p => p.TrickOnlyPatch, (p, v) => p.TrickOnlyPatch = v);
+            InspectorManager.Text("Texture Path", patches, p => p.TexturePath, (p, v) => p.TexturePath = v);
+            InspectorManager.Int("Lightmap ID", patches, p => p.LightmapID, (p, v) => p.LightmapID = v);
         }
     }
 }

@@ -1,5 +1,8 @@
+using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Manager;
 using IceSaw2.Manager.Tricky;
 using IceSaw2.Utilities;
+using ImGuiNET;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 
@@ -153,6 +156,37 @@ namespace IceSaw2.LevelObject.Tricky
             }
         }
 
+        public static void Draw(IReadOnlyList<TrickyMaterialObject> materials)
+        {
+            InspectorManager.Text<TrickyMaterialObject>("Name", materials, p => p.Name, (p, v) => p.Name = v);
 
+            InspectorManager.Text<TrickyMaterialObject>("Texture Path", materials, p => p.TexturePath, (p, v) => p.TexturePath = v);
+
+            InspectorManager.Int<TrickyMaterialObject>("U2", materials, p => p.UnknownInt2, (p, v) => p.UnknownInt2 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U3", materials, p => p.UnknownInt3, (p, v) => p.UnknownInt3 = v);
+
+            InspectorManager.Float<TrickyMaterialObject>("FU1", materials, p => p.UnknownFloat1, (p, v) => p.UnknownFloat1 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU2", materials, p => p.UnknownFloat2, (p, v) => p.UnknownFloat2 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU3", materials, p => p.UnknownFloat3, (p, v) => p.UnknownFloat3 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU4", materials, p => p.UnknownFloat4, (p, v) => p.UnknownFloat4 = v);
+
+            InspectorManager.Int<TrickyMaterialObject>("U8", materials, p => p.UnknownInt8, (p, v) => p.UnknownInt8 = v);
+
+            InspectorManager.Float<TrickyMaterialObject>("FU5", materials, p => p.UnknownFloat5, (p, v) => p.UnknownFloat5 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU6", materials, p => p.UnknownFloat6, (p, v) => p.UnknownFloat6 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU7", materials, p => p.UnknownFloat7, (p, v) => p.UnknownFloat7 = v);
+            InspectorManager.Float<TrickyMaterialObject>("FU8", materials, p => p.UnknownFloat8, (p, v) => p.UnknownFloat8 = v);
+
+            InspectorManager.Int<TrickyMaterialObject>("U13", materials, p => p.UnknownInt13, (p, v) => p.UnknownInt13 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U14", materials, p => p.UnknownInt14, (p, v) => p.UnknownInt14 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U15", materials, p => p.UnknownInt15, (p, v) => p.UnknownInt15 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U16", materials, p => p.UnknownInt16, (p, v) => p.UnknownInt16 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U17", materials, p => p.UnknownInt17, (p, v) => p.UnknownInt17 = v);
+            InspectorManager.Int<TrickyMaterialObject>("U18", materials, p => p.UnknownInt18, (p, v) => p.UnknownInt18 = v);
+
+            InspectorManager.Int<TrickyMaterialObject>("U20", materials, p => p.UnknownInt20, (p, v) => p.UnknownInt20 = v);
+
+            //FlipBook list
+        }
     }
 }
