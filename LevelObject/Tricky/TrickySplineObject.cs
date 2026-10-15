@@ -1,4 +1,5 @@
-﻿using IceSaw2.Manager;
+﻿using IceSaw2.LevelObject.Tricky;
+using IceSaw2.Manager;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using SSXMultiTool.Utilities;
@@ -156,6 +157,17 @@ namespace IceSaw2.LevelObject.TrickyObjects
         //{
         //    return TrickyLevelManager.Instance.transform.InverseTransformPoint(transform.TransformPoint(point));
         //}
+
+        public static void Draw(IReadOnlyList<TrickySplineObject> splines)
+        {
+            InspectorManager.DrawStandardDetails<BaseObject>(splines);
+
+            InspectorManager.Int("U0", splines, p => p.U0, (p, v) => p.U0 = v);
+            InspectorManager.Int("U1", splines, p => p.U1, (p, v) => p.U1 = v);
+            InspectorManager.Int("Spline Style", splines, p => p.SplineStyle, (p, v) => p.SplineStyle = v);
+
+            //Spline Segments
+        }
 
         [System.Serializable]
         public struct SplineSegment
