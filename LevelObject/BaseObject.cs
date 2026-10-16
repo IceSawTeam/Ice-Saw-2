@@ -8,6 +8,7 @@ namespace IceSaw2.LevelObject
 {
     public class BaseObject
     {
+        [HideInInspector]
         public int ID;
         private static int IDCount = 0;
 
@@ -17,6 +18,8 @@ namespace IceSaw2.LevelObject
         public string Name = "Null";
 
         private BaseObject? _parent = null;
+
+        [HideInInspector]
         public BaseObject? parent
         {
             get
@@ -57,6 +60,7 @@ namespace IceSaw2.LevelObject
         }
 
         private Quaternion _rotation = Quaternion.Identity;
+        [HideInInspector]
         public Quaternion Rotation
         {
             get
@@ -64,18 +68,6 @@ namespace IceSaw2.LevelObject
             set
             {
                 _rotation = value;
-                UpdateMatrix();
-            }
-        }
-
-        private Vector3 _scale = Vector3.One;
-        public Vector3 Scale
-        {
-            get
-                { return _scale; }
-            set
-            {
-                _scale = value;
                 UpdateMatrix();
             }
         }
@@ -88,6 +80,18 @@ namespace IceSaw2.LevelObject
             set
             {
                 Rotation = Raymath.QuaternionFromEuler(value.Z, value.Y, value.X);
+            }
+        }
+
+        private Vector3 _scale = Vector3.One;
+        public Vector3 Scale
+        {
+            get
+                { return _scale; }
+            set
+            {
+                _scale = value;
+                UpdateMatrix();
             }
         }
         public Matrix4x4 localMatrix4X4
@@ -110,13 +114,17 @@ namespace IceSaw2.LevelObject
             //    }
             //}
         }
-
+        [HideInInspector]
         public BoundingBox meshBoundingBox;
+        [HideInInspector]
         public BoundingBox localBoundingBox;
+        [HideInInspector]
         public BoundingBox worldBoundingBox;
-
+        [HideInInspector]
         public bool Visible = true;
+        [HideInInspector]
         public bool Enabled = true;
+        [HideInInspector]
         public bool VisibleHierarchy = true;
 
 
@@ -291,6 +299,7 @@ namespace IceSaw2.LevelObject
             worldBoundingBox = new BoundingBox(Raymath.Vector3Transform(meshBoundingBox.Min, worldMatrix4x4), Raymath.Vector3Transform(meshBoundingBox.Max, worldMatrix4x4));
         }
 
+        public virtual void OnInspectorChanged(string member) { }
 
         public enum ObjectType
         {

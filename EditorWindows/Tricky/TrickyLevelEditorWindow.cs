@@ -148,11 +148,11 @@ namespace IceSaw2.EditorWindows.TrickyEditorWindows
                     case TrickyPatchObject:
                         TrickyPatchObject.Draw(group.Cast<TrickyPatchObject>().ToList());
                         break;
-                    case TrickyInstanceObject:
-                        TrickyInstanceObject.Draw(group.Cast<TrickyInstanceObject>().ToList());
-                        break;
+                    //case TrickyInstanceObject:
+                    //    TrickyInstanceObject.Draw(group.Cast<TrickyInstanceObject>().ToList());
+                    //    break;
                     default:
-                        ImGui.TextDisabled("No inspector yet");
+                        InspectorManager.Draw(group.ToList());
                         break;
                 }
             }
