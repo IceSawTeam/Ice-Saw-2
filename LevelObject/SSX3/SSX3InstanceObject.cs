@@ -16,11 +16,6 @@ public class SSX3InstanceObject : BaseObject
     public int U1;
     public int U2;
     public int U3;
-
-    public Vector4 V0;
-    public Vector3 V1;
-    public Vector3 V2;
-
     public int U4;
 
     public int ModelTrackID;
@@ -48,10 +43,6 @@ public class SSX3InstanceObject : BaseObject
         U1 = bin3.U1;
         U2 = bin3.U2;
         U3 = bin3.U3;
-
-        V0 = JsonUtil.ArrayToVector4(bin3.V0);
-        V1 = JsonUtil.ArrayToVector3(bin3.V1);
-        V2 = JsonUtil.ArrayToVector3(bin3.V2);
 
         TrackID = bin3.TrackID;
         RID = bin3.RID;
