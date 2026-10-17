@@ -76,7 +76,7 @@ public class SSX3InstanceObject : BaseObject
     {
         if (ModelRID != -1)
         {
-            PrefabObject = SSX3DataManager.levelDatas[ModelTrackID].ssx3ModelObjects[ModelRID];
+            PrefabObject = SSX3DataManager.ReturnModel(ModelRID, ModelTrackID);
             AddToModelRender();
         }
     }

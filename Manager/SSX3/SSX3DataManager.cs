@@ -90,6 +90,11 @@ namespace IceSaw2.Manager.SSX3
             return SSX3WorldManager.instance.ErrorTexture;
         }
 
+        public static SSX3ModelObject ReturnModel(int RID, int TrackID)
+        {
+            return levelDatas[TrackID].ReturnModel(RID);
+        }
+
         public static MeshRef ReturnMesh(string FileName, int ID)
         {
             return levelDatas[ID].ReturnMesh(FileName);
@@ -206,6 +211,18 @@ namespace IceSaw2.Manager.SSX3
                     }
                 }
                 return ssx3MaterialObjects[0].materialRef;
+            }
+
+            public SSX3ModelObject ReturnModel(int ID)
+            {
+                for (int i = 0; i < ssx3ModelObjects.Count; i++)
+                {
+                    if (ssx3ModelObjects[i].RID == ID)
+                    {
+                        return ssx3ModelObjects[i];
+                    }
+                }
+                return ssx3ModelObjects[0];
             }
         }
     }
