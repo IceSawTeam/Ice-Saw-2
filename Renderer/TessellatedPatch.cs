@@ -35,6 +35,7 @@ namespace IceSaw2.Renderer
         private int _diffuseTextureUVsLoc;
         private int _lightmapTextureUVsLoc;
         private int _highlightedLoc;
+        private int _ssx3;
 
         private bool _forceRegen;
         private bool _bypassPadding;
@@ -71,6 +72,7 @@ namespace IceSaw2.Renderer
             Raylib_cs.Raylib.SetShaderValue(_material.Shader, tex1Loc, 13, Raylib_cs.ShaderUniformDataType.Sampler2D);
 
             _lightmapsEnabledLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapsEnabled");
+            _ssx3 = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "SSX3");
             _controlPointsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "controlPoints[0]");
             _diffuseTextureUVsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "diffuseTextureUVs[0]");
             _lightmapTextureUVsLoc = Raylib_cs.Raylib.GetShaderLocation(_material.Shader, "lightmapTextureUVs[0]");
@@ -295,6 +297,14 @@ namespace IceSaw2.Renderer
             _material.Shader,
             _lightmapsEnabledLoc,
             LightmapEnabled ? 1 : 0,
+            Raylib_cs.ShaderUniformDataType.Int
+            );
+
+            //SSX3
+            Raylib_cs.Raylib.SetShaderValue(
+            _material.Shader,
+            _ssx3,
+            _bypassPadding ? 1 : 0,
             Raylib_cs.ShaderUniformDataType.Int
             );
 
