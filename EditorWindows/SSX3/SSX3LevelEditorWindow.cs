@@ -69,10 +69,13 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             Profiler.UpdateTime("-Patches");
 
             Profiler.SetStartTime("-Instances");
-            //for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
-            //{
-            //    TrickyDataManager.trickyModelObjects[i].Render();
-            //}
+            if (SSX3DataManager.levelDatas.Count != 0)
+            {
+                for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects.Count; i++)
+                {
+                    SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects[i].Render();
+                }
+            }
             Profiler.UpdateTime("-Instances");
 
             var RenderList = CollectionsMarshal.AsSpan(RenderItems);
@@ -331,6 +334,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             if (SSX3DataManager.levelDatas.Count != 0)
             {
                 RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects);
+                RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3Instances);
             }
 
             //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);

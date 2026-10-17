@@ -24,7 +24,7 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public List<Meshes> meshes = new List<Meshes>();
 
-        private List<RenderCache> renderCaches = new List<RenderCache>();
+        private List<TrickyRenderCache> renderCaches = new List<TrickyRenderCache>();
 
         public void LoadModelMeshObject(ModelJsonHandler.ObjectHeader objectHeader, bool skybox)
         {
@@ -201,11 +201,11 @@ namespace IceSaw2.LevelObject.TrickyObjects
 
         public void GenerateRenderCacheNew()
         {
-            renderCaches = new List<RenderCache>();
+            renderCaches = new List<TrickyRenderCache>();
 
             for (global::System.Int32 j = 0; j < meshes.Count; j++)
             {
-                var TempCache = new RenderCache();
+                var TempCache = new TrickyRenderCache();
 
                 TempCache.meshRef = meshes[j].meshRef;
                 TempCache.materialRef = meshes[j].materialRef;

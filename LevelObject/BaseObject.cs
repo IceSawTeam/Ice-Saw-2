@@ -327,11 +327,22 @@ namespace IceSaw2.LevelObject
             PathB
         }
 
-        public struct RenderCache
+        public struct TrickyRenderCache
         {
             public MeshRef meshRef;
             public MaterialRef materialRef;
             public List<TrickyInstanceObject> trickyInstanceObjects;
+            public List<Matrix4x4> matrix4X4s;
+            // Cached flattened copy of matrix4X4s, rebuilt only when the list changes (see
+            // TrickyModelMeshObject.RebuildMatrixArray) instead of every frame in Render().
+            public Matrix4x4[] matrix4X4Array;
+        }
+
+        public struct SSX3RenderCache
+        {
+            public MeshRef meshRef;
+            public MaterialRef materialRef;
+            public List<SSX3InstanceObject> ssx3InstanceObjects;
             public List<Matrix4x4> matrix4X4s;
             // Cached flattened copy of matrix4X4s, rebuilt only when the list changes (see
             // TrickyModelMeshObject.RebuildMatrixArray) instead of every frame in Render().

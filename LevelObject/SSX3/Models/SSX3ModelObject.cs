@@ -1,88 +1,147 @@
-//using SSXMultiTool.JsonFiles.SSX3;
-//using SSXMultiTool.Utilities;
-//using System;
-//using System.Collections.Generic;
-//using UnityEditor;
-//using UnityEditor.UIElements;
-//using UnityEngine;
-//using UnityEngine.UIElements;
-//using static SSXMultiTool.JsonFiles.SSX3.MDRJsonHandler;
+using IceSaw2.LevelObject;
+using IceSaw2.LevelObject.TrickyObjects;
+using IceSaw2.Manager.SSX3;
+using IceSaw2.Manager.Tricky;
+using Raylib_cs;
+using SSXLibrary.FileHandlers.LevelFiles.SSX3PS2.SSBData;
+using SSXLibrary.JsonFiles.SSX3;
+using System.Numerics;
+namespace IceSaw2.LevelObject.SSX3
+{
+    public class SSX3ModelObject : BaseObject
+    {
+        public override ObjectType Type
+        {
+            get { return ObjectType.Prefab; }
+        }
 
-//[ExecuteInEditMode]
-//[SelectionBase]
-//public class SSX3ModelObject : MonoBehaviour
-//{
-//    public int TrackID;
-//    public int RID;
+        public int TrackID;
+        public int RID;
 
-//    public int U3;
-//    public int U4;
+        public int U3;
+        public int U4;
 
-//    public float U6;
+        public float U6;
 
-//    public List<ObjectID> MaterialList;
+        public List<ObjectID> MaterialList;
+
+        public List<SSX3ModelMeshObject> ssx3ModelMeshObjects = new List<SSX3ModelMeshObject>();
 
 
-//    public void LoadModel(MDRJsonHandler.MainModelHeader model)
-//    {
-//        transform.name = model.Name;
+        public void LoadModel(MDRJsonHandler.MainModelHeader model)
+        {
+            Name = model.Name;
 
-//        TrackID = model.TrackID;
-//        RID = model.RID;
+            TrackID = model.TrackID;
+            RID = model.RID;
 
-//        U3 = model.U3;
-//        U4 = model.U4;
+            U3 = model.U3;
+            U4 = model.U4;
 
-//        U6 = model.U6;
+            U6 = model.U6;
 
-//        MaterialList = model.MaterialList;
+            ssx3ModelMeshObjects = new List<SSX3ModelMeshObject>();
 
-//        for (int i = 0; i < model.ModelObjects.Count; i++)
-//        {
-//            GameObject ChildMesh = new GameObject(i.ToString());
+            for (int i = 0; i < model.ModelObjects.Count; i++)
+            {
+                var TempChild = new SSX3ModelMeshObject();
 
-//            ChildMesh.transform.parent = transform;
-//            ChildMesh.transform.localPosition = Vector3.zero;
-//            ChildMesh.transform.localScale = Vector3.one;
-//            ChildMesh.transform.localRotation = new Quaternion(0, 0, 0, 0);
+                TempChild.LoadPrefab(model.ModelObjects[i]);
 
-//            ChildMesh.AddComponent<SSX3ModelMeshObject>().LoadPrefab(model.ModelObjects[i]);
+                ssx3ModelMeshObjects.Add(TempChild);
 
-//        }
-//    }
+            }
+        }
 
-//    public GameObject GemerateModel()
-//    {
-//        GameObject MainObject = new GameObject(transform.name);
-//        MainObject.transform.hideFlags = HideFlags.HideInHierarchy;
-//        var TempList = GetComponentsInChildren<SSX3ModelMeshObject>();
+        public override void Render()
+        {
+            for (int i = 0; i < ssx3ModelMeshObjects.Count; i++)
+            {
+                ssx3ModelMeshObjects[i].Render();
+            }
+        }
 
-//        for (int i = 0; i < TempList.Length; i++)
-//        {
-//            var TempListChild = TempList[i].GetComponentsInChildren<SSX3ModelMaterialObject>();
-//            for (int j = 0; j < TempListChild.Length; j++)
-//            {
-//                GameObject ChildMesh = new GameObject(i.ToString());
-//                ChildMesh.transform.parent = MainObject.transform;
-//                ChildMesh.transform.localPosition = TempList[i].transform.localPosition;
-//                ChildMesh.transform.localScale = TempList[i].transform.localScale;
-//                ChildMesh.transform.localRotation = Quaternion.identity;
-//                //TempList[i].transform.localRotation;
-//                var TempMeshFilter = ChildMesh.AddComponent<MeshFilter>();
-//                var TempRenderer = ChildMesh.AddComponent<MeshRenderer>();
-//                //ChildMesh.AddComponent<SelectParent>();
-//                TempMeshFilter.mesh = TempListChild[j].mesh;
-//                try
-//                {
-//                    TempRenderer.material = SSX3ModelMaterialObject.GenerateMaterial(MaterialList[TempListChild[j].MaterialID].RID, this.gameObject);
-//                }
-//                catch
-//                {
+        public void AddToRenderCache(SSX3InstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < ssx3ModelMeshObjects.Count; i++)
+            {
+                ssx3ModelMeshObjects[i].AddToRenderCache(trickyInstanceObject);
+            }
+        }
 
-//                }
-//            }
-//        }
+        public void UpdateRenderCacheTransform(SSX3InstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < ssx3ModelMeshObjects.Count; i++)
+            {
+                ssx3ModelMeshObjects[i].UpdateRenderCacheTransform(trickyInstanceObject);
+            }
+        }
 
-//        return MainObject;
-//    }
-//}
+        public void RemoveFromRenderCache(SSX3InstanceObject trickyInstanceObject)
+        {
+            for (int i = 0; i < ssx3ModelMeshObjects.Count; i++)
+            {
+                ssx3ModelMeshObjects[i].RemoveFromRenderCache(trickyInstanceObject);
+            }
+        }
+
+        public List<ObjExporter.MassModelData> GenerateModel(SSX3InstanceObject trickyInstanceObject)
+        {
+            List<ObjExporter.MassModelData> massModelDatas = new List<ObjExporter.MassModelData>();
+
+            int ModelID = 0;
+
+            for (int i = 0; i < ssx3ModelMeshObjects.Count; i++)
+            {
+                for (int j = 0; j < ssx3ModelMeshObjects[i].meshes.Count; j++)
+                {
+                    ObjExporter.MassModelData data = new ObjExporter.MassModelData();
+
+                    data.Name = trickyInstanceObject.Name + " " + ModelID;
+                    data.Model = new Mesh(ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.TriangleCount * 3, ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.TriangleCount);
+                    data.Model.AllocVertices();
+                    data.Model.AllocTexCoords();
+                    data.Model.AllocIndices();
+                    data.Model.AllocNormals();
+
+                    var Vert = data.Model.VerticesAs<Vector3>();
+                    var oldVert = ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.VerticesAs<Vector3>();
+                    for (int k = 0; k < Vert.Length; k++)
+                    {
+                        Vert[k] = Raymath.Vector3Transform(oldVert[k], (trickyInstanceObject.worldMatrix4x4 * ssx3ModelMeshObjects[i].localMatrix4X4));
+                    }
+
+                    var Tex = data.Model.TexCoordsAs<Vector2>();
+                    var oldTex = ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.TexCoordsAs<Vector2>();
+                    for (int k = 0; k < Tex.Length; k++)
+                    {
+                        Tex[k] = new Vector2(oldTex[k].X, -oldTex[k].Y);
+                    }
+
+                    var indices = data.Model.IndicesAs<ushort>();
+                    var oldindices = ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.IndicesAs<ushort>();
+                    for (int k = 0; k < indices.Length; k++)
+                    {
+                        indices[k] = oldindices[k];
+                    }
+
+                    var Normal = data.Model.NormalsAs<Vector3>();
+                    var oldNormal = ssx3ModelMeshObjects[i].meshes[j].meshRef.Mesh.NormalsAs<Vector3>();
+                    for (int k = 0; k < Normal.Length; k++)
+                    {
+                        Normal[k] = oldNormal[k];
+                    }
+
+                    data.TextureName = SSX3DataManager.levelDatas[ssx3ModelMeshObjects[i].meshes[j].MaterialIndex.TrackID].ssx3MaterialObjects[ssx3ModelMeshObjects[i].meshes[j].MaterialIndex.RID].TexturePath;
+
+                    ModelID++;
+
+                    massModelDatas.Add(data);
+                }
+
+            }
+
+            return massModelDatas;
+        }
+    }
+}
