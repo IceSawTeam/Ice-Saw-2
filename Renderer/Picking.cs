@@ -124,6 +124,12 @@ namespace IceSaw2.Renderer
                 return Vector3.Lerp(box.Min, box.Max, 0.5f);
             }
 
+            if (obj is SSX3InstanceObject instance1)
+            {
+                BoundingBox box = GetInstanceWorldBoundingBox(instance1);
+                return Vector3.Lerp(box.Min, box.Max, 0.5f);
+            }
+
             if (obj is MeshBaseObject meshObj && meshObj.meshRef.Mesh.VertexCount > 0)
             {
                 return Vector3.Lerp(obj.worldBoundingBox.Min, obj.worldBoundingBox.Max, 0.5f);
@@ -161,6 +167,14 @@ namespace IceSaw2.Renderer
                 if (!boxHit.Hit) return null;
 
                 return RaycastInstanceMeshes(instance, ray, out float instanceDist) ? instanceDist : (float?)null;
+            }
+
+            if (obj is SSX3InstanceObject instance1)
+            {
+                RayCollision boxHit = Raylib.GetRayCollisionBox(ray, GetInstanceWorldBoundingBox(instance1));
+                if (!boxHit.Hit) return null;
+
+                return RaycastInstanceMeshes(instance1, ray, out float instanceDist) ? instanceDist : (float?)null;
             }
 
             // Real mesh objects: broad-phase bounding box, then exact triangle test.
@@ -333,6 +347,43 @@ namespace IceSaw2.Renderer
             return Inflate(new BoundingBox(min, max));
         }
 
+        public static BoundingBox GetInstanceWorldBoundingBox(SSX3InstanceObject instance)
+        {
+            Vector3 min = new Vector3(float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue);
+            bool any = false;
+
+            var prefab = instance.PrefabObject;
+            if (prefab != null)
+            {
+                for (int i = 0; i < prefab.ssx3ModelMeshObjects.Count; i++)
+                {
+                    var meshObj = prefab.ssx3ModelMeshObjects[i];
+                    Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
+
+                    for (int m = 0; m < meshObj.meshes.Count; m++)
+                    {
+                        Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
+                        if (mesh.VertexCount == 0) continue;
+
+                        BoundingBox localBox = Raylib.GetMeshBoundingBox(mesh);
+                        ExpandByTransformedBox(ref min, ref max, localBox, combined);
+                        any = true;
+                    }
+                }
+            }
+
+            if (!any)
+            {
+                // No prefab/mesh data resolved - fall back to a small box around the instance origin
+                // so it's still clickable rather than silently unselectable.
+                Vector3 p = new Vector3(instance.worldMatrix4x4.M14, instance.worldMatrix4x4.M24, instance.worldMatrix4x4.M34);
+                return new BoundingBox(p - new Vector3(0.15f), p + new Vector3(0.15f));
+            }
+
+            return Inflate(new BoundingBox(min, max));
+        }
+
         private static void ExpandByTransformedBox(ref Vector3 min, ref Vector3 max, BoundingBox box, Matrix4x4 transform)
         {
             for (int i = 0; i < 8; i++)
@@ -432,6 +483,36 @@ namespace IceSaw2.Renderer
             for (int i = 0; i < prefab.trickyModelMeshObjects.Count; i++)
             {
                 var meshObj = prefab.trickyModelMeshObjects[i];
+                Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
+
+                for (int m = 0; m < meshObj.meshes.Count; m++)
+                {
+                    Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
+                    if (mesh.VertexCount == 0) continue;
+
+                    RayCollision meshHit = Raylib.GetRayCollisionMesh(ray, mesh, combined);
+                    if (meshHit.Hit && meshHit.Distance < distance)
+                    {
+                        distance = meshHit.Distance;
+                        hit = true;
+                    }
+                }
+            }
+
+            return hit;
+        }
+
+        private static bool RaycastInstanceMeshes(SSX3InstanceObject instance, Ray ray, out float distance)
+        {
+            distance = float.MaxValue;
+            bool hit = false;
+
+            var prefab = instance.PrefabObject;
+            if (prefab == null) return false;
+
+            for (int i = 0; i < prefab.ssx3ModelMeshObjects.Count; i++)
+            {
+                var meshObj = prefab.ssx3ModelMeshObjects[i];
                 Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
 
                 for (int m = 0; m < meshObj.meshes.Count; m++)

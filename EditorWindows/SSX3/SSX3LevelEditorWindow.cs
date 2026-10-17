@@ -1,4 +1,6 @@
 ﻿using IceSaw2.LevelObject;
+using IceSaw2.LevelObject.SSX3;
+using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager;
 using IceSaw2.Manager.SSX3;
 using IceSaw2.Manager.Tricky;
@@ -127,9 +129,9 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 
             if (SSX3DataManager.levelDatas.Count != 0)
             {
-                for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects.Count; i++)
+                for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].LevelNodeTree.Count; i++)
                 {
-                    SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects[i].HierarchyRender(true);
+                    SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].LevelNodeTree[i].HierarchyRender(true);
                 }
             }
 
@@ -145,17 +147,23 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             ImGui.Text("Inspector");
             ImGui.Separator();
 
-            if (SelectionManager.Selected.Count == 0)
+            foreach (var group in SelectionManager.Selected.GroupBy(o => o.GetType()))
             {
-                ImGui.TextDisabled("Nothing selected");
-            }
-            else if (SelectionManager.Selected.Count == 1)
-            {
-                ImGui.Text(SelectionManager.Selected[0].Name);
-            }
-            else
-            {
-                ImGui.Text(SelectionManager.Selected.Count + " objects selected");
+                if (!ImGui.CollapsingHeader($"{group.Key.Name} ({group.Count()})###{group.Key.Name}", ImGuiTreeNodeFlags.DefaultOpen))
+                    continue;
+
+                switch (group.First())
+                {
+                    //case SSX3PatchObject:
+                    //    TrickyPatchObject.Draw(group.Cast<TrickyPatchObject>().ToList());
+                    //    break;
+                    //case TrickyInstanceObject:
+                    //    TrickyInstanceObject.Draw(group.Cast<TrickyInstanceObject>().ToList());
+                    //    break;
+                    default:
+                        InspectorManager.Draw(group.ToList());
+                        break;
+                }
             }
 
             ImGui.End();

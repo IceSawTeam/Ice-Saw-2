@@ -104,6 +104,10 @@ namespace IceSaw2.Manager
                 {
                     DrawInstanceWireframeHighlight(instance);
                 }
+                else if (obj is SSX3InstanceObject instance1)
+                {
+                    DrawInstanceWireframeHighlight(instance1);
+                }
                 else if (obj is MeshBaseObject meshObj && meshObj.meshRef.Mesh.VertexCount > 0)
                 {
                     Raylib.DrawBoundingBox(obj.worldBoundingBox, HighlightColor);
@@ -149,6 +153,40 @@ namespace IceSaw2.Manager
                 for (int i = 0; i < prefab.trickyModelMeshObjects.Count; i++)
                 {
                     var meshObj = prefab.trickyModelMeshObjects[i];
+                    Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
+
+                    for (int m = 0; m < meshObj.meshes.Count; m++)
+                    {
+                        Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
+                        if (mesh.VertexCount == 0) continue;
+
+                        drewAny |= DrawMeshWireframeEdges(mesh, combined);
+                    }
+                }
+
+                Rlgl.End();
+            }
+
+            if (!drewAny)
+            {
+                // No mesh data resolved - fall back to the bounding box so it's still visibly selected.
+                Raylib.DrawBoundingBox(Picking.GetInstanceWorldBoundingBox(instance), HighlightColor);
+            }
+        }
+
+        private static void DrawInstanceWireframeHighlight(SSX3InstanceObject instance)
+        {
+            var prefab = instance.PrefabObject;
+            bool drewAny = false;
+
+            if (prefab != null)
+            {
+                Rlgl.Begin(DrawMode.Lines);
+                Rlgl.Color3f(HighlightColor.R / 255f, HighlightColor.G / 255f, HighlightColor.B / 255f);
+
+                for (int i = 0; i < prefab.ssx3ModelMeshObjects.Count; i++)
+                {
+                    var meshObj = prefab.ssx3ModelMeshObjects[i];
                     Matrix4x4 combined = instance.worldMatrix4x4 * meshObj.localMatrix4X4;
 
                     for (int m = 0; m < meshObj.meshes.Count; m++)

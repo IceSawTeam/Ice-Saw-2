@@ -1,6 +1,7 @@
 ﻿
 using IceSaw2.LevelObject;
 using IceSaw2.LevelObject.SSX3;
+using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.RayWarp;
 using Raylib_cs;
 using SSXLibrary.JsonFiles.SSX3;
@@ -117,6 +118,8 @@ namespace IceSaw2.Manager.SSX3
             public List<MeshData> worldMeshes = new List<MeshData>();
 
 
+            public List<BaseObject> LevelNodeTree = new List<BaseObject>();
+
             public void LoadLevel(string LevelDirectory)
             {
                 //Patches
@@ -186,7 +189,40 @@ namespace IceSaw2.Manager.SSX3
 
                 //ETC
 
+                LoadTreeNode();
+            }
 
+            public void LoadTreeNode()
+            {
+                //Attempt to load JSON First if none do base load
+
+                BaseObject baseObject = new BaseObject();
+                baseObject.Name = "Patches";
+
+                for (int i = 0; i < ssx3PatchObjects.Count; i++)
+                {
+                    baseObject.AddChild(ssx3PatchObjects[i]);
+                }
+
+                LevelNodeTree.Add(baseObject);
+
+                baseObject = new BaseObject();
+                baseObject.Name = "Instances";
+
+                for (int i = 0; i < ssx3Instances.Count; i++)
+                {
+                    baseObject.AddChild(ssx3Instances[i]);
+                }
+
+                LevelNodeTree.Add(baseObject);
+
+                //baseObject = new BaseObject();
+                //baseObject.Name = "Splines";
+
+                //for (int i = 0; i < trickySplineObjects.Count; i++)
+                //{
+                //    baseObject.AddChild(trickySplineObjects[i]);
+                //}
             }
 
             public MeshRef ReturnMesh(string FileName)
