@@ -14,14 +14,14 @@ namespace IceSaw2.Manager
             var TempList = new List<TextureData>();
             string[] TextureFiles = Directory.GetFiles(LoadDirectory, "*.png", SearchOption.AllDirectories);
             var result = TextureFiles.OrderBy(x => x).ToArray();
-            for (int i = 0; i < TextureFiles.Length; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 TextureData textureData = new TextureData();
 
-                textureData.Name = Path.GetFileName(TextureFiles[i]);
-                textureData.texture2D = Raylib.LoadTexture(TextureFiles[i]);
+                textureData.Name = Path.GetFileName(result[i]);
+                textureData.texture2D = Raylib.LoadTexture(result[i]);
 
-                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
+                //Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
 
                 TempList.Add(textureData);
             }
