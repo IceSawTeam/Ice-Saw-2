@@ -4,7 +4,7 @@ using Raylib_cs;
 using SSXLibrary.JsonFiles.Tricky;
 using IceSaw2.RayWarp;
 using System.Runtime;
-using SSX_Library.FileHandlers.LevelFiles.Tricky;
+using SSXLibrary.FileHandlers.LevelFiles.Tricky;
 using static IceSaw2.Manager.DataManagerBase;
 using IceSaw2.LevelObject.Tricky;
 

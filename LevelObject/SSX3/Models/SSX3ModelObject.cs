@@ -3,7 +3,7 @@ using IceSaw2.LevelObject.TrickyObjects;
 using IceSaw2.Manager.SSX3;
 using IceSaw2.Manager.Tricky;
 using Raylib_cs;
-using SSXLibrary.FileHandlers.LevelFiles.SSX3PS2.SSBData;
+using SSXLibrary.FileHandlers.LevelFiles.SSX3PS2.SSB3Data;
 using SSXLibrary.JsonFiles.SSX3;
 using System.Numerics;
 namespace IceSaw2.LevelObject.SSX3

@@ -44,12 +44,12 @@ public class SSX3InstanceObject : BaseObject
         U2 = bin3.U2;
         U3 = bin3.U3;
 
-        TrackID = bin3.TrackID;
-        RID = bin3.RID;
+        TrackID = bin3.objectID.TrackID;
+        RID = bin3.objectID.RID;
         U4 = bin3.U4;
 
-        ModelTrackID = bin3.ModelTrackID;
-        ModelRID = bin3.ModelRID;
+        ModelTrackID = bin3.Model.TrackID;
+        ModelRID = bin3.objectID.RID;
 
         U6 = bin3.U6;
         U7 = bin3.U7;
