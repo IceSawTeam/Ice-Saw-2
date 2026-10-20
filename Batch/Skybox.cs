@@ -196,28 +196,31 @@ namespace IceSaw2.Batch
                 rowHighestHeight = Math.Max(rowHighestHeight, paddedImage.Height);
 
                 // Update mesh's UV coords to atlas
-                var ModelVertices = model.meshRef.Mesh.TexCoordsAs<Vector2>();
-                for (int i = 0; i < ModelVertices.Length; i++)
+                if (model.meshRef != null)
                 {
-                    ModelVertices[i].Y *= -1;
-
-                    // Size in normalized space
-                    var width = uvRect.Width / resolution;
-                    var height = uvRect.Height / resolution;
-
-                    // Offset position in normalized space
-                    var offsetX = uvRect.X / resolution;
-                    var offsetY = uvRect.Y / resolution;
-
-                    // Flip the UV map upside down.
-                    offsetY += height;
-                    height *= -1;
-
-                    ModelVertices[i] = new Vector2
+                    var ModelVertices = model.meshRef.Mesh.TexCoordsAs<Vector2>();
+                    for (int i = 0; i < ModelVertices.Length; i++)
                     {
-                        X = (ModelVertices[i].X * width) + offsetX,
-                        Y = (ModelVertices[i].Y * height) + offsetY,
-                    };
+                        ModelVertices[i].Y *= -1;
+
+                        // Size in normalized space
+                        var width = uvRect.Width / resolution;
+                        var height = uvRect.Height / resolution;
+
+                        // Offset position in normalized space
+                        var offsetX = uvRect.X / resolution;
+                        var offsetY = uvRect.Y / resolution;
+
+                        // Flip the UV map upside down.
+                        offsetY += height;
+                        height *= -1;
+
+                        ModelVertices[i] = new Vector2
+                        {
+                            X = (ModelVertices[i].X * width) + offsetX,
+                            Y = (ModelVertices[i].Y * height) + offsetY,
+                        };
+                    }
                 }
             }
 
@@ -226,8 +229,11 @@ namespace IceSaw2.Batch
             int triangleCount = 0;
             foreach (var model in models)
             {
-                vertexCount += model.meshRef.Mesh.VertexCount;
-                triangleCount += model.meshRef.Mesh.TriangleCount;
+                if (model.meshRef != null)
+                {
+                    vertexCount += model.meshRef.Mesh.VertexCount;
+                    triangleCount += model.meshRef.Mesh.TriangleCount;
+                }
             }
             var batchedMesh = new Raylib_cs.Mesh(vertexCount, triangleCount);
             batchedMesh.AllocVertices();
@@ -245,31 +251,34 @@ namespace IceSaw2.Batch
             int PrevIndex = 0;
             foreach (var model in models)
             {
-                var ModelVertices = model.meshRef.Mesh.VerticesAs<Vector3>();
-                var ModelMeshNormal = model.meshRef.Mesh.NormalsAs<Vector3>();
-                var ModelMeshIndices = model.meshRef.Mesh.IndicesAs<ushort>();
-                var ModelMeshTex = model.meshRef.Mesh.TexCoordsAs<Vector2>();
-                for (var i = 0; i < ModelVertices.Length; i++)
+                if (model.meshRef != null)
                 {
-                    batchedMeshVertices[vertexIndex] = ModelVertices[i];
-                    vertexIndex++;
+                    var ModelVertices = model.meshRef.Mesh.VerticesAs<Vector3>();
+                    var ModelMeshNormal = model.meshRef.Mesh.NormalsAs<Vector3>();
+                    var ModelMeshIndices = model.meshRef.Mesh.IndicesAs<ushort>();
+                    var ModelMeshTex = model.meshRef.Mesh.TexCoordsAs<Vector2>();
+                    for (var i = 0; i < ModelVertices.Length; i++)
+                    {
+                        batchedMeshVertices[vertexIndex] = ModelVertices[i];
+                        vertexIndex++;
+                    }
+                    for (var i = 0; i < ModelMeshIndices.Length; i++)
+                    {
+                        batchedMeshIndices[indicesIndex] = (ushort)(ModelMeshIndices[i] + (ushort)PrevIndex);
+                        indicesIndex++;
+                    }
+                    for (var i = 0; i < ModelMeshNormal.Length; i++)
+                    {
+                        batchedMeshNormal[normalsIndex] = ModelMeshNormal[i];
+                        normalsIndex++;
+                    }
+                    for (var i = 0; i < ModelMeshTex.Length; i++)
+                    {
+                        batchedMeshTexCord[TexIndex] = ModelMeshTex[i];
+                        TexIndex++;
+                    }
+                    PrevIndex += ModelVertices.Length;
                 }
-                for (var i = 0; i < ModelMeshIndices.Length; i++)
-                {
-                    batchedMeshIndices[indicesIndex] = (ushort)(ModelMeshIndices[i] + (ushort)PrevIndex);
-                    indicesIndex++;
-                }
-                for (var i = 0; i < ModelMeshNormal.Length; i++)
-                {
-                    batchedMeshNormal[normalsIndex] = ModelMeshNormal[i];
-                    normalsIndex++;
-                }
-                for (var i = 0; i < ModelMeshTex.Length; i++)
-                {
-                    batchedMeshTexCord[TexIndex] = ModelMeshTex[i];
-                    TexIndex++;
-                }
-                PrevIndex += ModelVertices.Length;
             }
             return (batchedMesh, batchedTexture);
         }

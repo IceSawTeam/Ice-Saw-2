@@ -795,7 +795,7 @@ namespace IceSaw2.Manager.Tricky
                         return worldMeshes[i].mesh;
                     }
                 }
-                return worldMeshes[0].mesh;
+                return null;
             }
             else
             {
@@ -806,7 +806,7 @@ namespace IceSaw2.Manager.Tricky
                         return skyboxMeshes[i].mesh;
                     }
                 }
-                return skyboxMeshes[0].mesh;
+                return null;
             }
         }
     }

@@ -326,12 +326,15 @@ namespace IceSaw2.Renderer
 
                     for (int m = 0; m < meshObj.meshes.Count; m++)
                     {
-                        Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
-                        if (mesh.VertexCount == 0) continue;
+                        if (meshObj.meshes[m].meshRef != null)
+                        {
+                            Mesh mesh = meshObj.meshes[m].meshRef.Mesh;
+                            if (mesh.VertexCount == 0) continue;
 
-                        BoundingBox localBox = Raylib.GetMeshBoundingBox(mesh);
-                        ExpandByTransformedBox(ref min, ref max, localBox, combined);
-                        any = true;
+                            BoundingBox localBox = Raylib.GetMeshBoundingBox(mesh);
+                            ExpandByTransformedBox(ref min, ref max, localBox, combined);
+                            any = true;
+                        }
                     }
                 }
             }

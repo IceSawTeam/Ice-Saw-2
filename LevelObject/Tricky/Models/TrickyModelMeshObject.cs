@@ -173,7 +173,10 @@ namespace IceSaw2.LevelObject.TrickyObjects
                 {
                     for (int i = 0; i < renderCaches.Count; i++)
                     {
-                        Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4Array, renderCaches[i].matrix4X4Array.Length);
+                        if (renderCaches[i].meshRef != null)
+                        {
+                            Raylib.DrawMeshInstanced(renderCaches[i].meshRef.Mesh, renderCaches[i].materialRef.Material, renderCaches[i].matrix4X4Array, renderCaches[i].matrix4X4Array.Length);
+                        }
                     }
                 }
                 else
