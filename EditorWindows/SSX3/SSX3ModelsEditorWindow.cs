@@ -1,4 +1,5 @@
-﻿using IceSaw2.Manager.SSX3;
+﻿using IceSaw2.Manager;
+using IceSaw2.Manager.SSX3;
 using IceSaw2.Utilities;
 using ImGuiNET;
 using Raylib_cs;
@@ -73,7 +74,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
 
             if (ActiveModelIndex != -1)
             {
-                //TrickyDataManager.trickyModelObjects[ActiveModelIndex].Render();
+                SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects[ActiveModelIndex].Render();
             }
 
             Raylib.EndMode3D();
@@ -230,7 +231,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             {
                 for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects.Count; i++)
                 {
-                    var _id = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[i].HierarchyRender();
+                    var _id = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[i].HierarchyRender(true);
                     if (_id != -1)
                     {
                         ActiveMaterialIndex = i;
@@ -239,81 +240,82 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             }
             else
             {
-                //for (int i = 0; i < TrickyDataManager.trickyModelObjects.Count; i++)
-                //{
-                //    var _modelChildren = TrickyDataManager.trickyModelObjects[i].Children;
-                //    bool isSelected = selectedModelIndices.Contains(i);
+                for (int i = 0; i < SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects.Count(); i++)
+                {
+                    SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects[i].HierarchyRender(true);
+                    //var _modelChildren = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects[i].Children;
+                    //bool isSelected = selectedModelIndices.Contains(i);
 
-                //    var _flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
+                    //var _flags = ImGuiTreeNodeFlags.OpenOnArrow | ImGuiTreeNodeFlags.SpanAvailWidth;
 
-                //    if (_modelChildren.Count == 0)
-                //        _flags |= ImGuiTreeNodeFlags.Leaf;
+                    //if (_modelChildren.Count == 0)
+                    //    _flags |= ImGuiTreeNodeFlags.Leaf;
 
-                //    if (isSelected)
-                //        _flags |= ImGuiTreeNodeFlags.Selected;
+                    //if (isSelected)
+                    //    _flags |= ImGuiTreeNodeFlags.Selected;
 
-                //    if (i == ActiveModelIndex)
-                //    {
-                //        ImGui.PushStyleColor(ImGuiCol.Header, new System.Numerics.Vector4(0.717f, 0.435f, 0.156f, 1.0f));
-                //        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
-                //        ImGui.PushStyleColor(ImGuiCol.HeaderActive, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
-                //    }
+                    //if (i == ActiveModelIndex)
+                    //{
+                    //    ImGui.PushStyleColor(ImGuiCol.Header, new System.Numerics.Vector4(0.717f, 0.435f, 0.156f, 1.0f));
+                    //    ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                    //    ImGui.PushStyleColor(ImGuiCol.HeaderActive, new System.Numerics.Vector4(0.9f, 0.6f, 0.3f, 1.0f));
+                    //}
 
-                //    bool nodeOpen = ImGui.TreeNodeEx($"##Model{i}", _flags, TrickyDataManager.trickyModelObjects[i].Name);
+                    //bool nodeOpen = ImGui.TreeNodeEx($"##Model{i}", _flags, SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3ModelObjects[i].Name);
 
-                //    if (i == ActiveModelIndex)
-                //    {
-                //        ImGui.PopStyleColor(3);
-                //    }
+                    //if (i == ActiveModelIndex)
+                    //{
+                    //    ImGui.PopStyleColor(3);
+                    //}
 
-                //    if (ImGui.IsItemClicked())
-                //    {
-                //        bool ctrl = ImGui.GetIO().KeyCtrl;
-                //        bool shift = ImGui.GetIO().KeyShift;
+                    //if (ImGui.IsItemClicked())
+                    //{
+                    //    bool ctrl = ImGui.GetIO().KeyCtrl;
+                    //    bool shift = ImGui.GetIO().KeyShift;
 
-                //        if (shift && ActiveModelIndex >= 0)
-                //        {
-                //            int start = Math.Min(ActiveModelIndex, i);
-                //            int end = Math.Max(ActiveModelIndex, i);
+                    //    if (shift && ActiveModelIndex >= 0)
+                    //    {
+                    //        int start = Math.Min(ActiveModelIndex, i);
+                    //        int end = Math.Max(ActiveModelIndex, i);
 
-                //            for (int j = start; j <= end; j++)
-                //            {
-                //                if (!selectedModelIndices.Contains(j))
-                //                    selectedModelIndices.Add(j);
-                //            }
-                //        }
-                //        else if (ctrl)
-                //        {
-                //            if (isSelected)
-                //                selectedModelIndices.Remove(i);
-                //            else
-                //                selectedModelIndices.Add(i);
-                //        }
-                //        else
-                //        {
-                //            selectedModelIndices.Clear();
-                //            selectedModelIndices.Add(i);
-                //        }
+                    //        for (int j = start; j <= end; j++)
+                    //        {
+                    //            if (!selectedModelIndices.Contains(j))
+                    //                selectedModelIndices.Add(j);
+                    //        }
+                    //    }
+                    //    else if (ctrl)
+                    //    {
+                    //        if (isSelected)
+                    //            selectedModelIndices.Remove(i);
+                    //        else
+                    //            selectedModelIndices.Add(i);
+                    //    }
+                    //    else
+                    //    {
+                    //        selectedModelIndices.Clear();
+                    //        selectedModelIndices.Add(i);
+                    //    }
 
-                //        ActiveModelIndex = i;
-                //    }
+                    //    ActiveModelIndex = i;
+                    //}
 
-                //    if (!selectedModelIndices.Contains(ActiveModelIndex) && selectedModelIndices.Count != 0)
-                //    {
-                //        ActiveModelIndex = selectedModelIndices[selectedModelIndices.Count - 1];
-                //    }
+                    //if (!selectedModelIndices.Contains(ActiveModelIndex) && selectedModelIndices.Count != 0)
+                    //{
+                    //    ActiveModelIndex = selectedModelIndices[selectedModelIndices.Count - 1];
+                    //}
 
 
 
-                //    if (nodeOpen)
-                //    {
-                //        for (int j = 0; j < _modelChildren.Count; j++)
-                //        {
-                //            _modelChildren[j].HierarchyRender();
-                //        }
-                //        ImGui.TreePop();
-                //    }
-                //}
+                    //if (nodeOpen)
+                    //{
+                    //    for (int j = 0; j < _modelChildren.Count; j++)
+                    //    {
+                    //        _modelChildren[j].HierarchyRender();
+                    //    }
+                    //    ImGui.TreePop();
+                    //}
+                }
 
             }
             // Add your sidebar content here
@@ -332,73 +334,92 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             ImGui.Begin("Inspector Panel", flags);
             ImGui.Text("Inspector");
 
-
-            if (ShowMaterials && ActiveMaterialIndex != -1)
+            foreach (var group in SelectionManager.Selected.GroupBy(o => o.GetType()))
             {
-                var activeMat = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[ActiveMaterialIndex];
+                if (!ImGui.CollapsingHeader($"{group.Key.Name} ({group.Count()})###{group.Key.Name}", ImGuiTreeNodeFlags.DefaultOpen))
+                    continue;
 
-                //bool selectionChanged = ActiveMaterialIndex != _bufferEntityIndex;
-                //bool inputActive = ImGui.IsAnyItemActive();
-
-                //if (selectionChanged && !inputActive)
-                //{
-                //    _bufferEntityIndex = ActiveMaterialIndex;
-                //    Array.Clear(_nameBuffer, 0, _nameBuffer.Length);
-
-                //    var nameBytes = System.Text.Encoding.UTF8.GetBytes(activeMat.Name);
-                //    Array.Copy(nameBytes, _nameBuffer, Math.Min(nameBytes.Length, _nameBuffer.Length - 1));
-                //}
-
-                //if (ImGui.InputText("##Material Name", _nameBuffer, (uint)_nameBuffer.Length))
-                //{
-                //    int nullIndex = Array.IndexOf(_nameBuffer, (byte)0);
-                //    if (nullIndex < 0) nullIndex = _nameBuffer.Length;
-                //    activeMat.Name = System.Text.Encoding.UTF8.GetString(_nameBuffer, 0, nullIndex);
-                //}
-
-                ImGui.SetNextItemWidth(-1);
-                ImGui.InputTextWithHint($"##Material Name {ActiveMaterialIndex}", "Enter material name...", ref activeMat.Name, 128);
-                //ImGui.Text("Name | " + activeMat.Name);
-                ImGui.Text("Main Texture | " + activeMat.TexturePath);
-                rlImGui.Image(SSX3DataManager.ReturnTexture(activeMat.TexturePath));
-                activeMat.TexturePath = ImGUIUtil.TextInput(activeMat.TexturePath, 99999);
-                //ImGui.DragInt("UnknownInt2", ref activeMat.UnknownInt2, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt3", ref activeMat.UnknownInt3, 0.3f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat1", ref activeMat.UnknownFloat1, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat2", ref activeMat.UnknownFloat2, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat3", ref activeMat.UnknownFloat3, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat4", ref activeMat.UnknownFloat4, 0.25f, -1, 99999);
-                //ImGui.DragInt("UnknownInt8", ref activeMat.UnknownInt8, 0.3f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat5", ref activeMat.UnknownFloat5, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat6", ref activeMat.UnknownFloat6, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat7", ref activeMat.UnknownFloat7, 0.25f, -1, 99999);
-                //ImGui.DragFloat("UnknownFloat8", ref activeMat.UnknownFloat8, 0.25f, -1, 99999);
-                //ImGui.DragInt("UnknownInt13", ref activeMat.UnknownInt13, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt14", ref activeMat.UnknownInt14, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt15", ref activeMat.UnknownInt15, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt16", ref activeMat.UnknownInt16, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt17", ref activeMat.UnknownInt17, 0.3f, -1, 99999);
-                //ImGui.DragInt("UnknownInt18", ref activeMat.UnknownInt18, 0.3f, -1, 99999);
-
-                //ImGui.DragInt("UnknownInt20", ref activeMat.UnknownInt20, 0.3f, -1, 99999);
-
-                ImGui.Text("Texture Flipbook:");
-
-                //foreach (string flipBook in activeMat.TextureFlipbook)
-                //{
-                //    ImGui.Text("\t- " + flipBook);
-                //}
-
+                switch (group.First())
+                {
+                    //case SSX3PatchObject:
+                    //    TrickyPatchObject.Draw(group.Cast<TrickyPatchObject>().ToList());
+                    //    break;
+                    //case TrickyInstanceObject:
+                    //    TrickyInstanceObject.Draw(group.Cast<TrickyInstanceObject>().ToList());
+                    //    break;
+                    default:
+                        InspectorManager.Draw(group.ToList());
+                        break;
+                }
             }
-            else if (ActiveModelIndex != -1)
-            {
-                //var activeMdl = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[ActiveMaterialIndex];
-                //ImGui.SetNextItemWidth(-1);
-                //ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
 
-                //ImGui.DragInt("UnknownInt3", ref activeMdl.Unknown3, 0.3f, -1, 99999);
-                //ImGui.DragFloat("AnimTime", ref activeMdl.AnimTime, 0.025f, 0, 99999);
-            }
+
+            //if (ShowMaterials && ActiveMaterialIndex != -1)
+            //{
+            //    var activeMat = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[ActiveMaterialIndex];
+
+            //    //bool selectionChanged = ActiveMaterialIndex != _bufferEntityIndex;
+            //    //bool inputActive = ImGui.IsAnyItemActive();
+
+            //    //if (selectionChanged && !inputActive)
+            //    //{
+            //    //    _bufferEntityIndex = ActiveMaterialIndex;
+            //    //    Array.Clear(_nameBuffer, 0, _nameBuffer.Length);
+
+            //    //    var nameBytes = System.Text.Encoding.UTF8.GetBytes(activeMat.Name);
+            //    //    Array.Copy(nameBytes, _nameBuffer, Math.Min(nameBytes.Length, _nameBuffer.Length - 1));
+            //    //}
+
+            //    //if (ImGui.InputText("##Material Name", _nameBuffer, (uint)_nameBuffer.Length))
+            //    //{
+            //    //    int nullIndex = Array.IndexOf(_nameBuffer, (byte)0);
+            //    //    if (nullIndex < 0) nullIndex = _nameBuffer.Length;
+            //    //    activeMat.Name = System.Text.Encoding.UTF8.GetString(_nameBuffer, 0, nullIndex);
+            //    //}
+
+            //    ImGui.SetNextItemWidth(-1);
+            //    ImGui.InputTextWithHint($"##Material Name {ActiveMaterialIndex}", "Enter material name...", ref activeMat.Name, 128);
+            //    //ImGui.Text("Name | " + activeMat.Name);
+            //    ImGui.Text("Main Texture | " + activeMat.TexturePath);
+            //    rlImGui.Image(SSX3DataManager.ReturnTexture(activeMat.TexturePath));
+            //    activeMat.TexturePath = ImGUIUtil.TextInput(activeMat.TexturePath, 99999);
+            //    //ImGui.DragInt("UnknownInt2", ref activeMat.UnknownInt2, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt3", ref activeMat.UnknownInt3, 0.3f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat1", ref activeMat.UnknownFloat1, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat2", ref activeMat.UnknownFloat2, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat3", ref activeMat.UnknownFloat3, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat4", ref activeMat.UnknownFloat4, 0.25f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt8", ref activeMat.UnknownInt8, 0.3f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat5", ref activeMat.UnknownFloat5, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat6", ref activeMat.UnknownFloat6, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat7", ref activeMat.UnknownFloat7, 0.25f, -1, 99999);
+            //    //ImGui.DragFloat("UnknownFloat8", ref activeMat.UnknownFloat8, 0.25f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt13", ref activeMat.UnknownInt13, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt14", ref activeMat.UnknownInt14, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt15", ref activeMat.UnknownInt15, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt16", ref activeMat.UnknownInt16, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt17", ref activeMat.UnknownInt17, 0.3f, -1, 99999);
+            //    //ImGui.DragInt("UnknownInt18", ref activeMat.UnknownInt18, 0.3f, -1, 99999);
+
+            //    //ImGui.DragInt("UnknownInt20", ref activeMat.UnknownInt20, 0.3f, -1, 99999);
+
+            //    ImGui.Text("Texture Flipbook:");
+
+            //    //foreach (string flipBook in activeMat.TextureFlipbook)
+            //    //{
+            //    //    ImGui.Text("\t- " + flipBook);
+            //    //}
+
+            //}
+            //else if (ActiveModelIndex != -1)
+            //{
+            //    //var activeMdl = SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3MaterialObjects[ActiveMaterialIndex];
+            //    //ImGui.SetNextItemWidth(-1);
+            //    //ImGui.InputTextWithHint($"##Model Name {ActiveModelIndex}", "Enter model name...", ref activeMdl.Name, 128);
+
+            //    //ImGui.DragInt("UnknownInt3", ref activeMdl.Unknown3, 0.3f, -1, 99999);
+            //    //ImGui.DragFloat("AnimTime", ref activeMdl.AnimTime, 0.025f, 0, 99999);
+            //}
 
             ImGui.End();
             //ImGui.PopStyleVar(2);

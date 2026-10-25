@@ -109,6 +109,24 @@ namespace IceSaw2.Manager.SSX3
                             {
                                 SSBExtractingHandler ssbExtractingHandler = new SSBExtractingHandler();
 
+                                ssbExtractingHandler.LoadAndExtractSSBFromSBD(result.Path, FolderSelect.Path, false);
+                                Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
+                                Settings.General.Instance.Save();
+                            }
+                        }
+                    }
+
+                    if (ImGui.MenuItem("Quick Extract (Debug)"))
+                    {
+                        //Handle save
+                        var result = Dialog.FileOpen("ssb", Settings.General.Instance.data.LastLoad);
+                        if (result.IsOk)
+                        {
+                            var FolderSelect = Dialog.FolderPicker(Settings.General.Instance.data.LastLoad);
+                            if (FolderSelect.IsOk)
+                            {
+                                SSBExtractingHandler ssbExtractingHandler = new SSBExtractingHandler();
+
                                 ssbExtractingHandler.LoadAndExtractSSBFromSBD(result.Path, FolderSelect.Path, true);
                                 Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
                                 Settings.General.Instance.Save();

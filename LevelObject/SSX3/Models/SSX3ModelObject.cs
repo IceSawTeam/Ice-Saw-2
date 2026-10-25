@@ -23,8 +23,6 @@ namespace IceSaw2.LevelObject.SSX3
 
         public float U6;
 
-        public List<ObjectID> MaterialList;
-
         public List<SSX3ModelMeshObject> ssx3ModelMeshObjects = new List<SSX3ModelMeshObject>();
 
 
