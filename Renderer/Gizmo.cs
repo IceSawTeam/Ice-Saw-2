@@ -479,6 +479,7 @@ namespace IceSaw2.Renderer
         private static void RefreshRenderCacheIfInstance(BaseObject obj)
         {
             if (obj is TrickyInstanceObject instance) instance.RefreshRenderCache();
+            if (obj is SSX3InstanceObject instance1) instance1.RefreshRenderCache();
         }
 
         private static void EndDrag()

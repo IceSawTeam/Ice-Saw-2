@@ -18,7 +18,7 @@ namespace IceSaw2.LevelObject
         {
             for (int i = 0; i < WorldLinePoints.Count - 1; i++)
             {
-                Raylib.DrawCylinderEx(WorldLinePoints[i], WorldLinePoints[i + 1], 3f * WorldScale, 3f*WorldScale,4, new Color(Colour.X, Colour.Y, Colour.Z));
+                Raylib.DrawCylinderEx(WorldLinePoints[i], WorldLinePoints[i + 1], 4f * WorldScale, 4f*WorldScale,4, new Color(Colour.X, Colour.Y, Colour.Z));
             }
 
             //Rlgl.PushMatrix();

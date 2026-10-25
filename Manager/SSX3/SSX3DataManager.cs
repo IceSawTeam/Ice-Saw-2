@@ -115,6 +115,8 @@ namespace IceSaw2.Manager.SSX3
             public List<SSX3ModelObject> ssx3ModelObjects;
             public List<SSX3InstanceObject> ssx3Instances;
 
+            public List<SSX3SplineObject> ssx3Splines;
+
             public List<MeshData> worldMeshes = new List<MeshData>();
 
 
@@ -186,6 +188,16 @@ namespace IceSaw2.Manager.SSX3
                 }
 
                 //Splines
+                ssx3Splines = new List<SSX3SplineObject>();
+                SplineJsonHandler splineJsonHandler = SplineJsonHandler.Load(Path.Combine(LevelDirectory, "Splines.json"));
+                for (int i = 0; i < splineJsonHandler.Splines.Count; i++)
+                {
+                    var Spline = new SSX3SplineObject();
+
+                    Spline.LoadSpline(splineJsonHandler.Splines[i]);
+
+                    ssx3Splines.Add(Spline);
+                }
 
                 //ETC
 
@@ -216,13 +228,15 @@ namespace IceSaw2.Manager.SSX3
 
                 LevelNodeTree.Add(baseObject);
 
-                //baseObject = new BaseObject();
-                //baseObject.Name = "Splines";
+                baseObject = new BaseObject();
+                baseObject.Name = "Splines";
 
-                //for (int i = 0; i < trickySplineObjects.Count; i++)
-                //{
-                //    baseObject.AddChild(trickySplineObjects[i]);
-                //}
+                for (int i = 0; i < ssx3Splines.Count; i++)
+                {
+                    baseObject.AddChild(ssx3Splines[i]);
+                }
+
+                LevelNodeTree.Add(baseObject);
             }
 
             public MeshRef ReturnMesh(string FileName)

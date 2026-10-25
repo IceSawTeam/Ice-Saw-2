@@ -343,6 +343,7 @@ namespace IceSaw2.EditorWindows.SSX3EditorWindows
             {
                 RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3PatchObjects);
                 RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3Instances);
+                RenderItems.AddRange(SSX3DataManager.levelDatas[SSX3WorldManager.instance.SelectedLevel].ssx3Splines);
             }
 
             //RenderItems.AddRange(TrickyDataManager.trickyModelObjects);

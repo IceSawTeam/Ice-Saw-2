@@ -21,7 +21,7 @@ namespace IceSaw2.Manager
                 textureData.Name = Path.GetFileName(result[i]);
                 textureData.texture2D = Raylib.LoadTexture(result[i]);
 
-                //Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
+                Raylib.SetTextureFilter(textureData.texture2D, TextureFilter.Bilinear);
 
                 TempList.Add(textureData);
             }
