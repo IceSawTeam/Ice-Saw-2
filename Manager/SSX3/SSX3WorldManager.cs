@@ -109,7 +109,7 @@ namespace IceSaw2.Manager.SSX3
                             {
                                 SSBExtractingHandler ssbExtractingHandler = new SSBExtractingHandler();
 
-                                ssbExtractingHandler.LoadAndExtractSSBFromSBD(result.Path, FolderSelect.Path);
+                                ssbExtractingHandler.LoadAndExtractSSBFromSBD(result.Path, FolderSelect.Path, true);
                                 Settings.General.Instance.data.LastLoad = Path.GetDirectoryName(result.Path) ?? "";
                                 Settings.General.Instance.Save();
                             }

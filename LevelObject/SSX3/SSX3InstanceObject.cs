@@ -17,6 +17,7 @@ public class SSX3InstanceObject : BaseObject
     public int U2;
     public int U3;
     public int U4;
+    public int U5;
 
     public int ModelTrackID;
     public int ModelRID;
@@ -47,6 +48,7 @@ public class SSX3InstanceObject : BaseObject
         TrackID = bin3.objectID.TrackID;
         RID = bin3.objectID.RID;
         U4 = bin3.U4;
+        U5 = bin3.U5;
 
         ModelTrackID = bin3.Model.TrackID;
         ModelRID = bin3.Model.RID;
